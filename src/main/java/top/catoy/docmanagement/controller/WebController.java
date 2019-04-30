@@ -36,14 +36,13 @@ public class WebController {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseBean login(@RequestParam("username") String username,
                               @RequestParam("password")String password) {
         System.out.println("用户名:"+username+"密码:"+password);
         ResponseBean result = userService.Login(username,password);
         if(result.getMsg().equals("登录成功")){
             String token = JWTUtil.sign((User) result.getData(),password);
-            System.out.println(JWTUtil.getUserInfo(token));
             return new ResponseBean(ResponseBean.SUCCESS, "Login success", JWTUtil.sign((User) result.getData(), password));
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"登录失败",null);
