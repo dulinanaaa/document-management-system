@@ -27,12 +27,12 @@ public class ExceptionController {
         return new ResponseBean(401, "Unauthorized", null);
     }
 
-    // 捕捉其他所有异常
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ResponseBean globalException(HttpServletRequest request, Throwable ex) {
-//        return new ResponseBean(getStatus(request).value(), ex.getMessage(), null);
-//    }
+     //捕捉其他所有异常
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseBean globalException(HttpServletRequest request, Throwable ex) {
+        return new ResponseBean(getStatus(request).value(), ex.getMessage(), null);
+    }
 
     private HttpStatus getStatus(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
