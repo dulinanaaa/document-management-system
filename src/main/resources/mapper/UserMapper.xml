@@ -22,4 +22,8 @@
         SELECT * FROM user
     </select>
 
+    <select id="selectUserById" parameterType="int" resultMap="UserMap">
+        SELECT * FROM user WHERE user_id=#{userId}
+    </select>
+
 </mapper>

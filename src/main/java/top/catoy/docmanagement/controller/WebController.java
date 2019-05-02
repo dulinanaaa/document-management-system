@@ -12,8 +12,10 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import top.catoy.docmanagement.domain.LogSearchParams;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
+import top.catoy.docmanagement.service.LogService;
 import top.catoy.docmanagement.service.UserService;
 import top.catoy.docmanagement.utils.FileDownLoadUtil;
 import top.catoy.docmanagement.utils.JWTUtil;
@@ -35,6 +37,9 @@ public class WebController {
     public void setService(UserService userService) {
         this.userService = userService;
     }
+
+    @Autowired
+    private LogService logService;
 
     @PostMapping("/public/login")
     public ResponseBean login(@RequestParam("username") String username,
@@ -71,6 +76,29 @@ public class WebController {
         }else {
             return result;
         }
+    }
+
+    @GetMapping("/admin/getAllLogs")
+    public ResponseBean getAllLogs(@RequestParam String currentPage,
+                                   @RequestParam String pageSize){
+        ResponseBean result = logService.getAllLogs(Integer.parseInt(currentPage),Integer.parseInt(pageSize));
+        System.out.println(result);
+        return result;
+    }
+//    @GetMapping("/admin/getLogsBySearchParam")
+//    public ResponseBean getAllLogs(@RequestParam String currentPage,
+//                                   @RequestParam String pageSize,
+//                                   @RequestParam String searchParam){
+//        ResponseBean result = logService.getLogsBySearchParam(searchParam,Integer.parseInt(currentPage),Integer.parseInt(pageSize));
+//        System.out.println(result);
+//        return result;
+//    }
+
+    @PostMapping("/admin/getLogsBySearchParam")
+    public ResponseBean getLogsBySearchParam(@RequestBody LogSearchParams logSearchParams){
+        ResponseBean result = logService.getLogsBySearchParam(logSearchParams);
+        System.out.println(result);
+        return result;
     }
 
     @GetMapping("/article")
