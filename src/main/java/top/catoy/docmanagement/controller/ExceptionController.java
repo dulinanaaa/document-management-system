@@ -17,14 +17,14 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
     public ResponseBean handle401(ShiroException e) {
-        return new ResponseBean(401, e.getMessage(), null);
+        return new ResponseBean(ResponseBean.FAILURE, e.getMessage(), null);
     }
 
     // 捕捉UnauthorizedException
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseBean handle401() {
-        return new ResponseBean(401, "Unauthorized", null);
+        return new ResponseBean(ResponseBean.FAILURE, "Unauthorized", null);
     }
 
      //捕捉其他所有异常

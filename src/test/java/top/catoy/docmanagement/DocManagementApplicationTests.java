@@ -11,6 +11,7 @@ import top.catoy.docmanagement.domain.Log;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
 import top.catoy.docmanagement.mapper.DocLabelMapper;
 import top.catoy.docmanagement.mapper.LogMapper;
+import top.catoy.docmanagement.mapper.UserMapper;
 import top.catoy.docmanagement.service.DocLabelService;
 import top.catoy.docmanagement.service.LogService;
 
@@ -33,6 +34,10 @@ public class DocManagementApplicationTests {
 
     @Autowired
     private DocLabelService docLabelService;
+
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Test
     public void contextLoads() {
@@ -123,6 +128,22 @@ public class DocManagementApplicationTests {
 //        System.out.println(docLabelService.getAllDocLabels().toString());
 //        System.out.println(docLabelService.delDocLabel(docLabel).toString());
         System.out.println(docLabelService.getSonDocLabels(19));
+    }
+
+    @Test
+    public void getDepartmentNameById(){
+        int num = 1;
+
+        System.out.println(departmentMapper.getDepartmentNameById(num));
+
+
+    }
+
+
+    @Test
+    public void testdeleteuser(){
+        int id = 5;
+        System.out.println(userMapper.deleteUserById(5));
     }
 
 }
