@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import top.catoy.docmanagement.domain.Department;
 import top.catoy.docmanagement.domain.DocLabel;
 import top.catoy.docmanagement.domain.Log;
+import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
 import top.catoy.docmanagement.mapper.DocLabelMapper;
 import top.catoy.docmanagement.mapper.LogMapper;
@@ -56,14 +57,16 @@ public class DocManagementApplicationTests {
 
     @Test
     public void testLogService(){
-        int sun = 0;
-        sun = logService.insertLog(1,"删除用户","用户管理");
-        if(sun > 0){
-            System.out.println("日志插入成功");
-        }else {
-            System.out.println("日志插入失败");
-        }
-
+//        int sun = 0;
+//        ResponseBean responseBean = logService.insertLog(1,"删除用户","用户管理");
+//        if(sun > 0){
+//            System.out.println("日志插入成功");
+//        }else {
+//            System.out.println("日志插入失败");
+//        }
+//        ResponseBean responseBean = logService.getLogsBySearchParam("1",1,10);
+//        System.out.println(responseBean);
+//        System.out.println(responseBean.getData().toString());
     }
 
     @Test

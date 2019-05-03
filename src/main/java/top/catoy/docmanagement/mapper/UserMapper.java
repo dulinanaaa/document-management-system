@@ -13,4 +13,6 @@ public interface UserMapper {
     List<User> getAllUsers();
 
     int deleteUserById(int id);
+
+    User selectUserById(@Param("userId") int userId);
 }
