@@ -17,7 +17,6 @@ public class UserGroupServiceImpl implements UserGroupService {
         return userGroupMapper.getUserGroupById(id);
     }
 
-
     @Override
     public int updatePermission() {
         return 0;

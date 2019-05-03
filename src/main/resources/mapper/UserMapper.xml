@@ -11,8 +11,11 @@
         <result column="department_id" property="departmentId"></result>
         <result column="user_lock" property="userLock"></result>
         <result column="group_id" property="groupId"></result>
-
     </resultMap>
+
+    <delete id="deleteUserById">
+        delete from user where user_id = #{id}
+    </delete>
 
     <select id="getUserByName" parameterType="String" resultMap="UserMap">
         SELECT * FROM user WHERE user_name= #{userName}

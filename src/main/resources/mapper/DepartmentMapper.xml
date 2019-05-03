@@ -20,4 +20,8 @@
         INSERT INTO department(department_name,super_id) VALUES(#{departmentName},#{superId})
     </insert>
 
+    <select id="getDepartmentNameById" resultType="String">
+        SELECT department_name FROM `department` WHERE department_id = #{id};
+    </select>
+
 </mapper>
