@@ -12,13 +12,18 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import top.catoy.docmanagement.domain.LogSearchParams;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
+import top.catoy.docmanagement.domain.UsertableInfo;
+import top.catoy.docmanagement.mapper.DepartmentMapper;
+import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.LogService;
+import top.catoy.docmanagement.service.UserGroupService;
 import top.catoy.docmanagement.service.UserService;
 import top.catoy.docmanagement.utils.FileDownLoadUtil;
 import top.catoy.docmanagement.utils.JWTUtil;
@@ -37,6 +42,12 @@ public class WebController {
     private UserService userService;
 
     @Autowired
+    private DepartmentService departmentService;
+
+    @Autowired
+    private UserGroupService userGroupService;
+
+    @Autowired
     public void setService(UserService userService) {
         this.userService = userService;
     }
@@ -44,15 +55,25 @@ public class WebController {
     @Autowired
     private LogService logService;
 
+
+    @Value("${jwt.secret}")
+    private String serct;
+
     @PostMapping("/public/login")
     public ResponseBean login(@RequestParam("username") String username,
                               @RequestParam("password")String password) {
-        System.out.println("用户名:"+username+"密码:"+password);
-        ResponseBean result = userService.Login(username,password);
 
+        ResponseBean result = userService.Login(username,password);
+        System.out.println(result);
+        if(result.getMsg().equals("用户已锁定")){
+            return new ResponseBean(ResponseBean.NOT_LEGAL,"用户已锁定",null);
+        }
+        if(result.getMsg().equals("密码错误")){
+            return new ResponseBean(ResponseBean.NOT_LEGAL,"密码错误",null);
+        }
         if(result.getMsg().equals("登录成功")){
-                String token = JWTUtil.sign((User) result.getData(),password);
-                return new ResponseBean(ResponseBean.SUCCESS, "登陆成功", JWTUtil.sign((User) result.getData(), password));
+                String token = JWTUtil.sign((User) result.getData(),serct);
+                return new ResponseBean(ResponseBean.SUCCESS, "登陆成功", JWTUtil.sign((User) result.getData(), serct));
             }else {
                 return new ResponseBean(ResponseBean.FAILURE,"登录失败",null);
             }
@@ -83,6 +104,61 @@ public class WebController {
             }
         }else {
             return new ResponseBean(ResponseBean.ERROR,"你无权限进行此操作",null);
+        }
+    }
+
+    @PostMapping("/public/createUser")
+    public ResponseBean createUser(@RequestBody UsertableInfo usertableInfo){
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.hasRole("admin")){
+            System.out.println(usertableInfo+"-----------------------------------------------------------");
+            User user = new User();
+            user.setUserName(usertableInfo.getUserName());
+            user.setUserPassword(usertableInfo.getPassword());
+            user.setUserLock(0);
+            int departmentid = departmentService.getDepartmentIdByName(usertableInfo.getDepartment());
+            int roleId = userGroupService.getUserGroupIdByName(usertableInfo.getRole());
+            user.setGroupId(roleId);
+            user.setDepartmentId(departmentid);
+            int result = userService.insertUser(user);
+            if(result > 0 ){
+                return new ResponseBean(ResponseBean.SUCCESS,"创建成功",null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"创建失败",null);
+            }
+        }else {
+            return new ResponseBean(ResponseBean.ERROR,"你无权限进行此操作",null);
+        }
+    }
+
+
+    @PostMapping("/public/updateUserMessage")
+    public ResponseBean updateUserMessage(@RequestBody UsertableInfo usertableInfo){
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.hasRole("admin")){
+            System.out.println(usertableInfo);
+            User user = new User();
+            user.setUserId(usertableInfo.getUserId());
+            user.setUserName(usertableInfo.getUserName());
+            user.setUserPassword(usertableInfo.getPassword());
+            int departmentid = departmentService.getDepartmentIdByName(usertableInfo.getDepartment());
+            int roleid = userGroupService.getUserGroupIdByName(usertableInfo.getRole());
+            user.setGroupId(roleid);
+            user.setDepartmentId(departmentid);
+            System.out.println("---------------------====================="+usertableInfo.getIslocked());
+            if(usertableInfo.getIslocked().equals("false")){
+                user.setUserLock(0);
+            }else if(usertableInfo.getIslocked().equals("true")){
+                user.setUserLock(1);
+            }
+            int result = userService.update(user);
+            if(result > 0){
+                return new ResponseBean(ResponseBean.SUCCESS,"修改成功",null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"修改失败",null);
+            }
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
         }
 
     }

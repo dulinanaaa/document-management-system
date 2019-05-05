@@ -5,6 +5,8 @@ public class UsertableInfo {
 
     private String userName;
 
+    private String password;
+
     private String department;
 
     private String realname;
@@ -29,6 +31,14 @@ public class UsertableInfo {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getDepartment() {
@@ -74,8 +84,9 @@ public class UsertableInfo {
     @Override
     public String toString() {
         return "UsertableInfo{" +
-                "userid=" + userId +
+                "userId=" + userId +
                 ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 ", department='" + department + '\'' +
                 ", realname='" + realname + '\'' +
                 ", islocked='" + islocked + '\'' +

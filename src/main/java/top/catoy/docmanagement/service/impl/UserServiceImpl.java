@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
             UsertableInfo usertableInfo = new UsertableInfo();
             usertableInfo.setUserId(user.getUserId());
             usertableInfo.setUserName(user.getUserName());
+            usertableInfo.setPassword(user.getUserPassword());
             usertableInfo.setRealname("高副帅");
             String departmentName = departmentMapper.getDepartmentNameById(user.getDepartmentId());
             UserGroup userGroup = userGroupMapper.getUserGroupById(user.getGroupId());
@@ -83,33 +84,42 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseBean Login(String username, String password) {
-
         User user = userMapper.getUserByName(username);
-        System.out.println("==============================="+user);
-        System.out.println("-------------------"+user.getGroupId());
-
-        if(user != null){
-            if(user.getUserPassword().equals(password)){
-                UserGroup userGroup = userGroupMapper.getUserGroupById(user.getGroupId());
-                System.out.println(userGroupMapper+"-------------------------------");
-                User userInfo = new User();
-                userInfo.setUserName(user.getUserName());
-                userInfo.setUserPassword(user.getUserPassword());
-                userInfo.setUserLock(user.getUserLock());
-                userInfo.setRole(userGroup.getGroupName());
-                System.out.println(userGroup.getGroupName());
-                userInfo.setPermission(userGroup.getGroupPermission());
-                return new ResponseBean(ResponseBean.SUCCESS,"登录成功",userInfo);
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"密码错误",null);
-            }
+        if(user.getUserLock() == 1){
+            return new ResponseBean(ResponseBean.FAILURE,"用户已锁定",null);
         }else {
-            return new ResponseBean(ResponseBean.FAILURE,"用户不存在",null);
+            if(user != null){
+                if(user.getUserPassword().equals(password)){
+                    UserGroup userGroup = userGroupMapper.getUserGroupById(user.getGroupId());
+                    User userInfo = new User();
+                    userInfo.setUserName(user.getUserName());
+                    userInfo.setUserPassword(user.getUserPassword());
+                    userInfo.setUserLock(user.getUserLock());
+                    userInfo.setRole(userGroup.getGroupName());
+                    System.out.println(userGroup.getGroupName());
+                    userInfo.setPermission(userGroup.getGroupPermission());
+                    return new ResponseBean(ResponseBean.SUCCESS,"登录成功",userInfo);
+                }else {
+                    return new ResponseBean(ResponseBean.FAILURE,"密码错误",null);
+                }
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"用户不存在",null);
+            }
         }
     }
 
     @Override
     public int deleteUserById(int id) {
         return userMapper.deleteUserById(id);
+    }
+
+    @Override
+    public int insertUser(User user) {
+        return userMapper.insertUser(user);
+    }
+
+    @Override
+    public int update(User user) {
+        return userMapper.updateUser(user);
     }
 }
