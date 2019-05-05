@@ -18,8 +18,8 @@ public interface DepartmentMapper {
 
     List<Department> getAllDepartments();
 
-
     public String getDepartmentNameById(int id);
 
+    public int getDepartmentIdByName(String name);
 
 }

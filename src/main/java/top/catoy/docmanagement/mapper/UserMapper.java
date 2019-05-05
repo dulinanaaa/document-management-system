@@ -15,4 +15,11 @@ public interface UserMapper {
     int deleteUserById(int id);
 
     User selectUserById(@Param("userId") int userId);
+
+    int insertUser(User user);
+
+
+    int updateUser(User user);
+
+    int getIsLockedByUserName(@Param("name") String name);
 }

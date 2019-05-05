@@ -16,4 +16,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     public String getDepartmentNameById(int id) {
         return departmentMapper.getDepartmentNameById(id);
     }
+
+    public int getDepartmentIdByName(String name){
+        return departmentMapper.getDepartmentIdByName(name);
+    }
 }
