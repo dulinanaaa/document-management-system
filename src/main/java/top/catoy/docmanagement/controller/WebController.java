@@ -167,7 +167,6 @@ public class WebController {
     public ResponseBean getAllLogs(@RequestParam String currentPage,
                                    @RequestParam String pageSize){
         ResponseBean result = logService.getAllLogs(Integer.parseInt(currentPage),Integer.parseInt(pageSize));
-        System.out.println(result);
         return result;
     }
 //    @GetMapping("/admin/getLogsBySearchParam")

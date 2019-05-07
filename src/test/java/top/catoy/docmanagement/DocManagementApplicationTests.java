@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
+import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.DocLabelService;
 import top.catoy.docmanagement.service.LogService;
 
@@ -36,6 +37,9 @@ public class DocManagementApplicationTests {
 
     @Autowired
     private UserGroupMapper userGroupMapper;
+
+    @Autowired
+    private DepartmentService departmentService;
 
     @Test
     public void contextLoads() {
@@ -68,14 +72,14 @@ public class DocManagementApplicationTests {
 
     @Test
     public void testDepartmentMapper(){
-        Department department = new Department();
-        Department department1 = new Department();
-        department.setDepartmentName("丽水学院");
-        department1.setDepartmentName("工学院");
-        department1.setSuperId(1);
-        departmentMapper.insertDepartment(department);
-        departmentMapper.insertDepartment(department1);
-        System.out.println("得到所有部门信息"+departmentMapper.getAllDepartments().toString());
+//        Department department = new Department();
+//        Department department1 = new Department();
+//        department.setDepartmentName("丽水学院");
+//        department1.setDepartmentName("工学院");
+//        department1.setSuperId(1);
+//        departmentMapper.insertDepartment(department);
+//        departmentMapper.insertDepartment(department1);
+//        System.out.println("得到所有部门信息"+departmentMapper.getAllDepartments().toString());
     }
 
     @Test
@@ -145,6 +149,12 @@ public class DocManagementApplicationTests {
         user.setDepartmentId(1);
         System.out.print( userMapper.insertUser(user));
 
+    }
+
+    @Test
+    public void getDepartmentTree(){
+        System.out.println(departmentService.getDepartmentsTree());
+//        System.out.println(departmentService.getAllDepartments());
     }
 
 }

@@ -1,8 +1,17 @@
 package top.catoy.docmanagement.service;
 
+import top.catoy.docmanagement.domain.Department;
+import top.catoy.docmanagement.domain.ResponseBean;
+
+import java.util.List;
+
 public interface DepartmentService {
 
-    public String getDepartmentNameById(int id);
+     String getDepartmentNameById(int id);
 
-    public int getDepartmentIdByName(String name);
+     int getDepartmentIdByName(String name);
+
+     ResponseBean getAllDepartments();
+
+     ResponseBean getDepartmentsTree();
 }

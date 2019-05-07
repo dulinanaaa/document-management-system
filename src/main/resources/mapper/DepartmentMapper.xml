@@ -5,10 +5,10 @@
 <mapper namespace="top.catoy.docmanagement.mapper.DepartmentMapper">
 
     <resultMap id="DepartmentMap" type="Department">
-        <id column="departmentId" property="departmentId"></id>
-        <result column="department_id" property="departmentId"></result>
-        <result column="department_name" property="departmentName"></result>
-        <result column="super_id" property="superId"></result>
+        <id column="department_Id" property="id"></id>
+        <result column="department_description" property="instroduction"></result>
+        <result column="department_name" property="name"></result>
+        <result column="super_id" property="parent_id"></result>
     </resultMap>
     <delete id="deleteDepartmentById"></delete>
 

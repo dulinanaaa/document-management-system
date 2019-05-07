@@ -70,11 +70,18 @@ public class LogServiceImpl implements LogService {
     @Override
     public ResponseBean getLogsBySearchParam(LogSearchParams logSearchParams) {
         try {
-            User user = userMapper.getUserByName(logSearchParams.getUserName());
-            if(user != null){
-                int userId = user.getUserId();
-                logSearchParams.setUserId(userId);
+            if(logSearchParams.getUserName().length()>0){
+                User user = userMapper.getUserByName(logSearchParams.getUserName());
+                System.out.println("user-----"+user!=null);
+                if(user != null){
+                    int userId = user.getUserId();
+                    logSearchParams.setUserId(userId);
+                }else {
+                    logSearchParams.setUserId(-1);
+                    System.out.println("logSearchParams.setUserId(-1)");
+                }
             }
+            System.out.println("UserId----------"+logSearchParams.getUserId());
             List<Log> logs = logMapper.getLogsBySearchParams(logSearchParams);
             if(logs != null){
                 logs.forEach((log) -> {
