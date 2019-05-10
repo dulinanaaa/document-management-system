@@ -20,7 +20,7 @@
         INSERT INTO department(department_name,super_id) VALUES(#{departmentName},#{superId})
     </insert>
 
-    <select id="getDepartmentNameById" resultType="String">
+    <select id="getDepartmentNameById" resultType="java.lang.String">
         SELECT department_name FROM `department` WHERE department_id = #{id};
     </select>
 
