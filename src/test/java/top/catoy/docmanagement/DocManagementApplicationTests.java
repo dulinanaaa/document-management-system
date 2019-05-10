@@ -41,6 +41,8 @@ public class DocManagementApplicationTests {
     @Autowired
     private DepartmentService departmentService;
 
+
+
     @Test
     public void contextLoads() {
     }
@@ -156,5 +158,14 @@ public class DocManagementApplicationTests {
         System.out.println(departmentService.getDepartmentsTree());
 //        System.out.println(departmentService.getAllDepartments());
     }
+
+    public void insertManyToMany(){
+        DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
+        docInfoAndDocLabel.setDocId(5);
+        docInfoAndDocLabel.setdLabelId(19);
+
+    }
+
+
 
 }

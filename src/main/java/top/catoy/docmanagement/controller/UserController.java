@@ -10,17 +10,14 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import top.catoy.docmanagement.domain.LogSearchParams;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.domain.UsertableInfo;
-import top.catoy.docmanagement.mapper.DepartmentMapper;
 import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.LogService;
 import top.catoy.docmanagement.service.UserGroupService;
@@ -28,16 +25,12 @@ import top.catoy.docmanagement.service.UserService;
 import top.catoy.docmanagement.utils.FileDownLoadUtil;
 import top.catoy.docmanagement.utils.JWTUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.List;
 
 @RestController
-public class WebController {
+public class UserController {
 
-    private static final Logger LOGGER = LogManager.getLogger(WebController.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserController.class);
 
     private UserService userService;
 
