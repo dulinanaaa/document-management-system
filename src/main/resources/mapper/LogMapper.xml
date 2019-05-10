@@ -18,9 +18,8 @@
     </select>
 
     <select id="getAllLogs" resultMap="LogMap">
-        SELECT * FROM log ORDER BY log_id
+        SELECT * FROM log ORDER BY log_id DESC
     </select>
-
     <select id="getLogsBySearchParams" resultMap="LogMap" parameterType="LogSearchParams">
         SELECT * FROM log
         <where>
@@ -45,7 +44,7 @@
                         ]]>
                 </if>
         </where>
-        ORDER BY log_id
+        ORDER BY log_id DESC
     </select>
 
     <!--<select id="getLogsByUserOrLabel" parameterType="String" resultMap="LogMap">-->
