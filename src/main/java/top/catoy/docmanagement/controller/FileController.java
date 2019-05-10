@@ -43,6 +43,9 @@ public class FileController {
         } else if (System.getProperty("os.name").equals("Linux")) {
             upload = linuxuploadPath;
         }
+        else if (System.getProperty("os.name").equals("Windows 7")) {
+            upload = windowsuploadPath;
+        }
 //        return null;
         if (Objects.isNull(file) || file.isEmpty()) {
             return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
@@ -56,6 +59,7 @@ public class FileController {
             Files.write(path, bytes);
             return new ResponseBean(ResponseBean.SUCCESS, "上传成功", null);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseBean(ResponseBean.FAILURE, "上传失败", null);
         }
     }

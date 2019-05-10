@@ -11,6 +11,7 @@ import top.catoy.docmanagement.domain.UsertableInfo;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
 import top.catoy.docmanagement.mapper.UserGroupMapper;
 import top.catoy.docmanagement.mapper.UserMapper;
+import top.catoy.docmanagement.service.LogService;
 import top.catoy.docmanagement.service.UserGroupService;
 import top.catoy.docmanagement.service.UserService;
 
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private LogService logService;
 
 
     @Override
@@ -98,6 +102,7 @@ public class UserServiceImpl implements UserService {
                     userInfo.setRole(userGroup.getGroupName());
                     System.out.println(userGroup.getGroupName());
                     userInfo.setPermission(userGroup.getGroupPermission());
+                    logService.insertLog(user.getUserId(),"用户登入","用户管理");
                     return new ResponseBean(ResponseBean.SUCCESS,"登录成功",userInfo);
                 }else {
                     return new ResponseBean(ResponseBean.FAILURE,"密码错误",null);
