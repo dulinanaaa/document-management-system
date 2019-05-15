@@ -163,7 +163,15 @@ public class DocManagementApplicationTests {
         DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
         docInfoAndDocLabel.setDocId(5);
         docInfoAndDocLabel.setdLabelId(19);
+    }
 
+
+    @Test
+    public void getTopDepartment(){
+        List list = departmentService.getTopDepartment();
+        for(int i = 0;i < list.size();i++){
+            System.out.println(list.get(i));
+        }
     }
 
 

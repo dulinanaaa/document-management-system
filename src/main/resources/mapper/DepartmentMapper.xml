@@ -26,7 +26,10 @@
 
     <select id="getDepartmentIdByName" resultType="java.lang.Integer">
         select department_id FROM `department` WHERE department_name = #{name};
+    </select>
 
+    <select id="getTopDepartmemt" resultMap="DepartmentMap">
+        select * from department where super_id = 0
     </select>
 
 
