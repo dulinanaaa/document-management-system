@@ -40,6 +40,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
     }
 
+
+    
+
     @Override
     public ResponseBean getDepartmentsTree() {
         try {
@@ -63,6 +66,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         }catch (RuntimeException r){
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
+    }
+
+    @Override
+    public List<Department> getTopDepartment() {
+        return departmentMapper.getTopDepartmemt();
     }
 
     private List<Department> getChild(int id, List<Department> fatherList) {

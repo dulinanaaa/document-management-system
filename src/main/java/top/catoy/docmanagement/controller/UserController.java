@@ -88,7 +88,7 @@ public class UserController {
 //    @RequiresRoles("admin")
     public ResponseBean deleteUserById(@Param("userId") int userId) throws UnauthenticatedException {
         Subject subject = SecurityUtils.getSubject();
-        if(subject.hasRole("admin")){
+        if(subject.hasRole("管理员")){
             int result = userService.deleteUserById(userId);
             if(result > 0 ){
                 return new ResponseBean(ResponseBean.SUCCESS,"删除成功",null);
@@ -103,7 +103,7 @@ public class UserController {
     @PostMapping("/public/createUser")
     public ResponseBean createUser(@RequestBody UsertableInfo usertableInfo){
         Subject subject = SecurityUtils.getSubject();
-        if(subject.hasRole("admin")){
+        if(subject.hasRole("管理员")){
             System.out.println(usertableInfo+"-----------------------------------------------------------");
             User user = new User();
             user.setUserName(usertableInfo.getUserName());
@@ -128,7 +128,7 @@ public class UserController {
     @PostMapping("/public/updateUserMessage")
     public ResponseBean updateUserMessage(@RequestBody UsertableInfo usertableInfo){
         Subject subject = SecurityUtils.getSubject();
-        if(subject.hasRole("admin")){
+        if(subject.hasRole("管理员")){
             System.out.println(usertableInfo);
             User user = new User();
             user.setUserId(usertableInfo.getUserId());

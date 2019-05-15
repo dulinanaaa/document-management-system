@@ -22,4 +22,6 @@ public interface DepartmentMapper {
 
     public int getDepartmentIdByName(String name);
 
+    public List<Department> getTopDepartmemt();
+
 }
