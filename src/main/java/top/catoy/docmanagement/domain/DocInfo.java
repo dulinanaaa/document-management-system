@@ -14,6 +14,24 @@ public class DocInfo {
     private int userId;
     private String suffixName;
 
+    private String department;
+    private int departmentId;
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     private List<DocLabel> docLabels;
 
@@ -73,6 +91,8 @@ public class DocInfo {
                 ", docSavePath='" + docSavePath + '\'' +
                 ", userId=" + userId +
                 ", suffixName='" + suffixName + '\'' +
+                ", department='" + department + '\'' +
+                ", departmentId=" + departmentId +
                 ", docLabels=" + docLabels +
                 '}';
     }

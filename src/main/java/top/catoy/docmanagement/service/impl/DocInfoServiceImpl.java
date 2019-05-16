@@ -19,6 +19,10 @@ public class DocInfoServiceImpl implements DocInfoService {
         return docInfoMapper.insertDocInfo(docInfo);
     }
 
+    @Override
+    public int getDocId(DocInfo docInfo) {
+        return docInfoMapper.getDocId(docInfo);
+    }
 
 
 }
