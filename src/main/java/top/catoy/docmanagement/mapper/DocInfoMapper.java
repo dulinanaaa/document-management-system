@@ -9,6 +9,8 @@ public interface DocInfoMapper {
 
     public int insertDocInfo(DocInfo docInfo);
 
+    public int getDocId(DocInfo docInfo);
+
 
 
 }

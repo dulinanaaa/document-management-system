@@ -9,11 +9,17 @@
         <result column="doc_savepath" property="docSavePath"></result>
         <result column="user_id" property="userId"></result>
         <result column="suffix_name" property="suffixName"></result>
+        <result column="department_id" property="departmentId"></result>
     </resultMap>
 
     <insert id="insertDocInfo" parameterType="top.catoy.docmanagement.domain.DocInfo">
-        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name) VALUES(##{docName},#{docSavePath},#{userId},#{suffixName});
+        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id) VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId});
     </insert>
+
+
+    <select id="getDocId" resultType="java.lang.Integer">
+        select doc_id from docInfo where doc_name = #{docName}
+    </select>
 
 
 </mapper>
