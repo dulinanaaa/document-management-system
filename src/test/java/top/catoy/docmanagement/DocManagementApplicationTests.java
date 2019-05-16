@@ -175,5 +175,15 @@ public class DocManagementApplicationTests {
     }
 
 
+    @Test
+    public void getSuffixName(){
+        String str = "996.icx.xls";
+        int pos = str.lastIndexOf('.');
+        String news = str.substring(pos);
+        System.out.println(news);
+        System.out.println(pos);
+    }
+
+
 
 }

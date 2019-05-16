@@ -6,13 +6,20 @@ import jdk.nashorn.internal.ir.ReturnNode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.catoy.docmanagement.domain.DocTableInfo;
-import top.catoy.docmanagement.domain.ResponseBean;
+import top.catoy.docmanagement.domain.*;
+import top.catoy.docmanagement.service.DocInfoService;
+import top.catoy.docmanagement.service.TagService;
+import top.catoy.docmanagement.utils.JWTUtil;
 
+import javax.security.auth.Subject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +35,12 @@ public class FileController {
     @Value("${com.sxito.custom.linux-path}")
     private String linuxuploadPath;
 
+    @Autowired
+    private DocInfoService docInfoService;
+
+    @Autowired
+    private TagService tagService;
+
 
     /***
      * 单文件上传
@@ -35,9 +48,19 @@ public class FileController {
      * @return
      */
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public ResponseBean uploadFile(@Param("file") MultipartFile file) {
+    public ResponseBean uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("department")String department
+    , @RequestParam("region") String region, @RequestParam("type")String type, @RequestParam("date")String date, @RequestParam("number")String number,
+                                   @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
-        System.out.println(file.getOriginalFilename() + "------------00000---------");
+        System.out.println(department+","+region+","+type+","+date+","+number+","+tags);
+        org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
+        String token = (String) subject.getPrincipal();
+        System.out.println("token:"+token+"------------------------------------------------------------------------");
+        User user = JWTUtil.getUserInfo(token);
+        System.out.println(user.getUserId());
+        System.out.println(user.getDepartmentId());
+
+        System.out.println(file.getOriginalFilename());
         if (System.getProperty("os.name").equals("Windows 10")) {
             upload = windowsuploadPath;
         } else if (System.getProperty("os.name").equals("Linux")) {
@@ -46,7 +69,6 @@ public class FileController {
         else if (System.getProperty("os.name").equals("Windows 7")) {
             upload = windowsuploadPath;
         }
-//        return null;
         if (Objects.isNull(file) || file.isEmpty()) {
             return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
         }
@@ -57,7 +79,26 @@ public class FileController {
                 Files.createDirectories(Paths.get(upload));
             }
             Files.write(path, bytes);
-            return new ResponseBean(ResponseBean.SUCCESS, "上传成功", null);
+            DocInfo docInfo = new DocInfo();
+            docInfo.setDocSavePath(upload + file.getOriginalFilename());
+            docInfo.setDocName(file.getOriginalFilename());
+            String fileName = file.getOriginalFilename();
+            int pos = fileName.lastIndexOf('.');
+            String suffix = fileName.substring(pos);
+            docInfo.setSuffixName(suffix);
+            docInfo.setUserId(user.getUserId());
+            docInfo.setDepartmentId(user.getDepartmentId());
+            docInfoService.insertDocInfo(docInfo);
+
+            int docId = docInfoService.getDocId(docInfo);
+            String tag[] = tags.split(",");
+            for(int i = 0;i < tag.length;i++){
+                Tag tg = new Tag();
+                tg.setDocId(docId);
+                tg.setTagName(tag[i]);
+                tagService.insertTags(tg);
+            }
+            return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBean(ResponseBean.FAILURE, "上传失败", null);

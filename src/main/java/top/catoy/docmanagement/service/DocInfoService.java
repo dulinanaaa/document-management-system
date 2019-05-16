@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface DocInfoService {
 
+
+    int getDocId(DocInfo docInfo);
     int insertDocInfo(DocInfo docInfo);
 
     ResponseBean getAllDocInfo(int currentPage, int pageSize);

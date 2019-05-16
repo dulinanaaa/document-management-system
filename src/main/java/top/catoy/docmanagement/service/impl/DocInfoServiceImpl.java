@@ -41,6 +41,10 @@ public class DocInfoServiceImpl implements DocInfoService {
     }
 
     @Override
+    public int getDocId(DocInfo docInfo) {
+        return docInfoMapper.getDocId(docInfo);
+    }
+    @Override
     public ResponseBean getAllDocInfo(int currentPage, int pageSize) {
         try {
             List<DocInfo> docInfos = new ArrayList<>();

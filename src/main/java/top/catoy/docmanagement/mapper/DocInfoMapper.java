@@ -16,6 +16,8 @@ public interface DocInfoMapper {
 
     List<DocInfo> getDocByDepartmentId(@Param("departmentId") int departmentId);
 
+    public int getDocId(DocInfo docInfo);
+
 
 
 }

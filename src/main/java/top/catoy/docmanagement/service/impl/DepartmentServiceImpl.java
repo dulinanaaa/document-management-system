@@ -42,7 +42,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
 
-    
 
     @Override
     public ResponseBean getDepartmentsTree() {
