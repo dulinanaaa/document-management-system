@@ -5,6 +5,7 @@ package top.catoy.docmanagement.controller;
 import jdk.nashorn.internal.ir.ReturnNode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.catoy.docmanagement.domain.*;
+import top.catoy.docmanagement.service.AnnexService;
 import top.catoy.docmanagement.service.DocInfoService;
 import top.catoy.docmanagement.service.TagService;
 import top.catoy.docmanagement.utils.JWTUtil;
@@ -41,6 +43,9 @@ public class FileController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private AnnexService annexService;
+
 
     /***
      * 单文件上传
@@ -52,15 +57,9 @@ public class FileController {
     , @RequestParam("region") String region, @RequestParam("type")String type, @RequestParam("date")String date, @RequestParam("number")String number,
                                    @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
-        System.out.println(department+","+region+","+type+","+date+","+number+","+tags);
         org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
         String token = (String) subject.getPrincipal();
-        System.out.println("token:"+token+"------------------------------------------------------------------------");
         User user = JWTUtil.getUserInfo(token);
-        System.out.println(user.getUserId());
-        System.out.println(user.getDepartmentId());
-
-        System.out.println(file.getOriginalFilename());
         if (System.getProperty("os.name").equals("Windows 10")) {
             upload = windowsuploadPath;
         } else if (System.getProperty("os.name").equals("Linux")) {
@@ -89,7 +88,6 @@ public class FileController {
             docInfo.setUserId(user.getUserId());
             docInfo.setDepartmentId(user.getDepartmentId());
             docInfoService.insertDocInfo(docInfo);
-
             int docId = docInfoService.getDocId(docInfo);
             String tag[] = tags.split(",");
             for(int i = 0;i < tag.length;i++){
@@ -102,6 +100,26 @@ public class FileController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBean(ResponseBean.FAILURE, "上传失败", null);
+        }
+    }
+
+
+
+    @RequestMapping(value = "/uploadannex",method = RequestMethod.POST)
+    public ResponseBean uploadannex(@RequestParam("file")MultipartFile file,@RequestParam("filename")String name){
+        DocInfo docInfo = new DocInfo();
+        docInfo.setDocName(name);
+        int docId = docInfoService.getDocId(docInfo);
+        Annex annex = new Annex();
+        annex.setAnnexName(file.getOriginalFilename());
+        annex.setAnnexPath("");
+        annex.setDocId(docId);
+        int result = annexService.insertAnnex(annex);
+//        System.out.println("徐立杰傻逼");
+        if(result > 0){
+            return new ResponseBean(ResponseBean.SUCCESS,"添加成功",null);
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"添加失败",null);
         }
     }
 
