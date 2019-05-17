@@ -1,5 +1,7 @@
 package top.catoy.docmanagement.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class Department {
     private String name;
     private int parent_id;
     private String instroduction;
+    private String label;
+    private String value;
 
     private int sort;
     private List<Department> children;
@@ -23,6 +27,7 @@ public class Department {
 
     public void setId(int id) {
         this.id = id;
+        this.name = Integer.toString(id);
     }
 
     public String getName() {
@@ -31,6 +36,7 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+        this.label = name;
     }
 
     public int getParent_id() {
@@ -63,6 +69,14 @@ public class Department {
 
     public void setChildren(List<Department> children) {
         this.children = children;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override
