@@ -10,6 +10,9 @@
         <result column="annex_path" property="annexPath"></result>
         <result column="doc_id" property="docId"></result>
     </resultMap>
+    <insert id="insertAnnex">
+        insert into annex(annex_name,annex_path,doc_id) values(#{annexName},#{annexPath},#{docId})
+    </insert>
 
     <select id="getAnnexsByDocId" resultMap="AnnexMap">
         SELECT * FROM  annex WHERE doc_id = #{docId}

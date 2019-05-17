@@ -14,4 +14,7 @@ import java.util.List;
 @Mapper
 public interface AnnexMapper {
     List<Annex> getAnnexsByDocId(@Param("docId") int docId);
+
+
+    public int insertAnnex(Annex annex);
 }
