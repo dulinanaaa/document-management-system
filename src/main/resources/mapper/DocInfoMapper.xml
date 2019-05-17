@@ -30,5 +30,9 @@
         select doc_id from docInfo where doc_name = #{docName}
     </select>
 
+    <select id="getDocIdByName" resultType="java.lang.Integer">
+
+    </select>
+
 
 </mapper>
