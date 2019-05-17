@@ -1,9 +1,6 @@
 package top.catoy.docmanagement.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.*;
@@ -14,7 +11,6 @@ import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.DocInfoService;
 import top.catoy.docmanagement.utils.JWTUtil;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,22 +44,12 @@ public class DocInfoServiceImpl implements DocInfoService {
     public ResponseBean getAllDocInfo(int currentPage, int pageSize) {
         try {
             List<DocInfo> docInfos = new ArrayList<>();
-            int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
             List<Department> departmentList = departmentMapper.getAllDepartments();
-            getChildDocInfo(2,departmentList,docInfos);
+            int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
+            getChildDocInfo(departmentId,departmentList,docInfos);
             System.out.println("++++++++++++++++++++"+departmentId);
             System.out.println(docInfos.toString());
-//            for(int i=0;i<childList.size();i++){
-//                System.out.println(childList.get(i).getName());
-//            }
-//            for(Department department:childList){
-//                int id = department.getId();
-//                List<DocInfo> list = docInfoMapper.getDocByDepartmentId(id);
-//                if(list != null && list.size()>0){
-//                    docInfos.addAll(list);
-//                }
-//            }
-            PageHelper.startPage(currentPage, pageSize);
+
 
             if(docInfos!=null){
                 docInfos.forEach((docInfo) -> {
@@ -76,7 +62,7 @@ public class DocInfoServiceImpl implements DocInfoService {
                         docInfo.setDepartmentName(departmentName);
                     }
                 });
-                PageInfo<DocInfo> pageInfo = new PageInfo<>(docInfos);
+                PageInfo pageInfo = pageData(docInfos,pageSize,currentPage);
                 return new ResponseBean(ResponseBean.SUCCESS,"查询成功",pageInfo);
             }else {
                 return new ResponseBean(ResponseBean.FAILURE,"查询失败",null);
@@ -110,5 +96,46 @@ public class DocInfoServiceImpl implements DocInfoService {
         }
         System.out.println(childList.toString());
         return childList;
+    }
+
+    public PageInfo pageData(List<DocInfo> list, Integer pagesize, Integer pageno){
+
+        int totalcount=list.size();
+
+        int pagecount=0;
+
+        int m=totalcount%pagesize;
+
+        List<DocInfo> subList;
+
+        if  (m>0)
+        {
+            pagecount=totalcount/pagesize+1;
+        }
+        else
+        {
+            pagecount=totalcount/pagesize;
+        }
+        if (m==0)
+        {
+           subList= list.subList((pageno-1)*pagesize,pagesize*(pageno));
+        }
+        else
+        {
+            if (pageno==pagecount)
+            {
+                subList= list.subList((pageno-1)*pagesize,totalcount);
+            }
+            else
+            {
+                subList= list.subList((pageno-1)*pagesize,pagesize*(pageno));
+            }
+        }
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setTotal(totalcount);
+        pageInfo.setCurrentPage(pageno);
+        pageInfo.setPageSize(pagesize);
+        pageInfo.setList(subList);
+        return pageInfo;
     }
 }
