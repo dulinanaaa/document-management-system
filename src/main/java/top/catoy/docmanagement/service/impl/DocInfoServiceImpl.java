@@ -44,67 +44,62 @@ public class DocInfoServiceImpl implements DocInfoService {
     public int getDocId(DocInfo docInfo) {
         return docInfoMapper.getDocId(docInfo);
     }
-    @Override
-    public ResponseBean getAllDocInfo(int currentPage, int pageSize) {
-        try {
-            List<DocInfo> docInfos = new ArrayList<>();
-            List<Department> departmentList = departmentMapper.getAllDepartments();
-            int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
-//            getChildDocInfo(departmentId,departmentList,docInfos);
-            System.out.println("++++++++++++++++++++"+departmentId);
-            System.out.println(docInfos.toString());
-
-
-            if(docInfos!=null){
-                docInfos.forEach((docInfo) -> {
-                    List<Annex> annexes = annexMapper.getAnnexsByDocId(docInfo.getDocId());
-                    String departmentName = departmentMapper.getDepartmentNameById(docInfo.getDepartmentId());
-                    if(annexes !=null && annexes.size()>0){
-                        docInfo.setAnnexes(annexes);
-                    }
-                    if(departmentName !=null && departmentName.length()>0){
-                        docInfo.setDepartmentName(departmentName);
-                    }
-                });
-                PageInfo pageInfo = pageData(docInfos,pageSize,currentPage);
-                return new ResponseBean(ResponseBean.SUCCESS,"查询成功",pageInfo);
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"查询失败",null);
-            }
-        }catch (RuntimeException r){
-            r.printStackTrace();
-            return new ResponseBean(ResponseBean.ERROR,"错误",null);
-        }
-    }
+//    @Override
+//    public ResponseBean getAllDocInfo(int currentPage, int pageSize) {
+//        try {
+//            List<DocInfo> docInfos = new ArrayList<>();
+//            List<Department> departmentList = departmentMapper.getAllDepartments();
+//            int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
+//
+//
+//            if(docInfos!=null){
+//                docInfos.forEach((docInfo) -> {
+//                    List<Annex> annexes = annexMapper.getAnnexsByDocId(docInfo.getDocId());
+//                    String departmentName = departmentMapper.getDepartmentNameById(docInfo.getDepartmentId());
+//                    if(annexes !=null && annexes.size()>0){
+//                        docInfo.setAnnexes(annexes);
+//                    }
+//                    if(departmentName !=null && departmentName.length()>0){
+//                        docInfo.setDepartmentName(departmentName);
+//                    }
+//                });
+//                PageInfo pageInfo = pageData(docInfos,pageSize,currentPage);
+//                return new ResponseBean(ResponseBean.SUCCESS,"查询成功",pageInfo);
+//            }else {
+//                return new ResponseBean(ResponseBean.FAILURE,"查询失败",null);
+//            }
+//        }catch (RuntimeException r){
+//            r.printStackTrace();
+//            return new ResponseBean(ResponseBean.ERROR,"错误",null);
+//        }
+//    }
 
     @Override
     public ResponseBean getDocsBySearchParam(DocInfoSearchParams docInfoSearchParams) {
         try {
             List<DocInfo> docInfos = new ArrayList<>();
+            List<DocInfo> docs;
             List<Department> departmentList = departmentMapper.getAllDepartments();
             int pageSize = docInfoSearchParams.getPageInfo().getPageSize();
             int currentPage = docInfoSearchParams.getPageInfo().getCurrentPage();
             int departmentId = -1;
             List<Integer> docLabels = docInfoAndDocLabelMapper.getDocInfoIdByLabelId(docInfoSearchParams.getDocLabels());
             List<Integer> tags = docInfoAndTagMapper.getDocIdByTagId(docInfoSearchParams.getTags());
-            System.out.println(docInfoSearchParams.getTags().toString());
-            System.out.println("tags++++++++++++");
+
             String docPostTime;
-            System.out.println("Invalid date".equals(docInfoSearchParams.getSelectYear()));
             if("Invalid date".equals(docInfoSearchParams.getSelectYear())){
                 docPostTime = "";
             }else{
                 docPostTime = docInfoSearchParams.getSelectYear();
             }
-            System.out.println(docPostTime+"++++++++++++++++++");
             if(docInfoSearchParams.getDepartmentId() != -1){
                 departmentId = docInfoSearchParams.getDepartmentId();
             }else if(docInfoSearchParams.getDepartmentId() == -1) {
                 departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
             }
+            docs = docInfoMapper.getDocByDepartmentIdAndSearchParam(departmentId,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+            docInfos.addAll(docs);//加入父部门所拥有的文档
             getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
-            System.out.println("++++++++++++++++++++"+departmentId);
-            System.out.println(docInfos.toString());
 
 
             if(docInfos!=null){
@@ -144,8 +139,6 @@ public class DocInfoServiceImpl implements DocInfoService {
                 List<DocInfo> list = docInfoMapper.getDocByDepartmentIdAndSearchParam(department.getId(),docName,docPostTime,docLabels,tags);
                 if(list != null && list.size()>0){
                     docInfos.addAll(list);
-                    System.out.println();
-                    System.out.println(list.toString());
                 }
                 childList.add(department);
             }
@@ -156,7 +149,6 @@ public class DocInfoServiceImpl implements DocInfoService {
         if (childList.size() == 0) {
             return null;
         }
-        System.out.println(childList.toString());
         return childList;
     }
 

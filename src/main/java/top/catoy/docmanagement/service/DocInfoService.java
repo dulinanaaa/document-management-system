@@ -11,7 +11,7 @@ public interface DocInfoService {
     int getDocId(DocInfo docInfo);
     int insertDocInfo(DocInfo docInfo);
 
-    ResponseBean getAllDocInfo(int currentPage, int pageSize);
+//    ResponseBean getAllDocInfo(int currentPage, int pageSize);
 
     ResponseBean getDocsBySearchParam(DocInfoSearchParams docInfoSearchParams);
 

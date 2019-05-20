@@ -19,12 +19,12 @@ public class DocInfoController {
     private DocInfoService docInfoService;
 
 
-    @GetMapping("/public/getAllDocInfo")
-    public ResponseBean getAllDocInfo(@RequestParam String currentPage,
-                                   @RequestParam String pageSize){
-        ResponseBean result = docInfoService.getAllDocInfo(Integer.parseInt(currentPage),Integer.parseInt(pageSize));
-        return result;
-    }
+//    @GetMapping("/public/getAllDocInfo")
+//    public ResponseBean getAllDocInfo(@RequestParam String currentPage,
+//                                   @RequestParam String pageSize){
+//        ResponseBean result = docInfoService.getAllDocInfo(Integer.parseInt(currentPage),Integer.parseInt(pageSize));
+//        return result;
+//    }
 
     @PostMapping("/public/getDocsBySearchParam")
     public ResponseBean getDocsBySearchParam(@RequestBody DocInfoSearchParams docInfoSearchParams){
