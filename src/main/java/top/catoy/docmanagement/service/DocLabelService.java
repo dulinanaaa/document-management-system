@@ -19,11 +19,13 @@ public interface DocLabelService {
 
     ResponseBean getAllDocLabels();
 
+    ResponseBean getDocLabelsTree();
+
     ResponseBean getSonDocLabels(int superId);
 
     ResponseBean getDocLabelById(int id);
 
     public List<DocLabel> getLabelByName(String []labels);
 
-
+    List<DocLabel> getChild(int id, List<DocLabel> fatherList);
 }

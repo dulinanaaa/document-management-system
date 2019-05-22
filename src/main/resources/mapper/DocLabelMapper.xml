@@ -23,6 +23,10 @@
         SELECT * FROM docLabel WHERE docLabel_id=#{id}
     </select>
 
+    <select id="getAllDocLabels" resultMap="DocLabelMap">
+        SELECT * FROM docLabel
+    </select>
+
     <select id="getDocLabelBySuperId" parameterType="int" resultMap="DocLabelMap">
         SELECT * FROM docLabel WHERE super_id=#{superId}
     </select>

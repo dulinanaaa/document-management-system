@@ -27,7 +27,7 @@ public class Department {
 
     public void setId(int id) {
         this.id = id;
-        this.name = Integer.toString(id);
+        this.value = Integer.toString(id);
     }
 
     public String getName() {

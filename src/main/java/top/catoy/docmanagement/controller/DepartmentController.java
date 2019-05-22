@@ -12,6 +12,7 @@ import top.catoy.docmanagement.mapper.DepartmentMapper;
 import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.utils.JWTUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,10 +48,15 @@ public class DepartmentController {
     @GetMapping(value = "/admin/getMyChildDepartments")
     public ResponseBean getMyChildDepartments(){
         List<Department> departments = departmentMapper.getAllDepartments();
+        Department rootDepartment;
         int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
         List list = departmentService.getChild(departmentId,departments);
+        rootDepartment = departmentMapper.getDepartmentById(departmentId);
+        rootDepartment.setChildren(list);
+        List<Department> rootList = new ArrayList<>();
+        rootList.add(rootDepartment);
         if(list != null){
-            return new ResponseBean(ResponseBean.SUCCESS,"查找成功!",list);
+            return new ResponseBean(ResponseBean.SUCCESS,"查找成功!",rootList);
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"查找失败",null);
         }
