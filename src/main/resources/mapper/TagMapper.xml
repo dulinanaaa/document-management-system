@@ -4,11 +4,31 @@
     <resultMap id="TagMap" type="top.catoy.docmanagement.domain.Tag">
         <id column="tag_id" property="tagId"></id>
         <result column="tag_name" property="tagName"></result>
-        <result column="doc_id" property="docId"></result>
+        <result column="isuse" property="isuse"></result>
     </resultMap>
 
     <insert id="insertTag">
-        insert into tag(tag_id,tag_name,doc_id) values (#{tagId},#{tagName},#{docId})
+        insert into tag(tag_name,isuse) values (#{tagName},#{isuse})
     </insert>
+
+    <update id="updateTag">
+        update tag set isuse = #{isuse} where tag_id = #{tagId}
+    </update>
+
+    <select id="getAllTag" resultMap="TagMap">
+        select * from tag
+    </select>
+
+    <select id="getTagIdByName" resultType="java.lang.Integer">
+        select tag_id from tag where tag_name = #{name}
+    </select>
+    
+    <select id="getTagByName" resultMap="TagMap">
+        select * from tag where tag_name = #{name};
+    </select>
+
+    <select id="getTagById" resultMap="TagMap">
+        select * from tag where tag_id = #{id}
+    </select>
 
 </mapper>
