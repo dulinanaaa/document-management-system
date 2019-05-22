@@ -9,7 +9,7 @@
     </resultMap>
 
     <insert id="insertDocInfoAndDocLabel">
-       insert into docInfo_docLabel(label_id,docId) values (#{labelId},#{docId})
+       insert into docInfo_docLabel(label_id,doc_id) values (#{labelId},#{docId})
     </insert>
 
     <select id="getAllTagsOfFile" resultType="top.catoy.docmanagement.domain.DocLabel">

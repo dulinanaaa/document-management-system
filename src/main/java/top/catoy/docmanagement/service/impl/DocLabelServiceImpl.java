@@ -186,4 +186,10 @@ public class DocLabelServiceImpl implements DocLabelService {
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
     }
+
+    @Override
+    public List<DocLabel> getLabelByName(String[] labels) {
+        List<DocLabel> docLabels = docLabelMapper.getLabelsByName(labels);
+        return docLabels;
+    }
 }

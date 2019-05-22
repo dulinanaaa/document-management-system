@@ -11,8 +11,12 @@
         <result column="super_id" property="superId"></result>
     </resultMap>
 
-    <select id="getAllDocLabels" resultMap="DocLabelMap">
-        SELECT * FROM docLabel
+    <select id="getLabelsByName" resultMap="DocLabelMap" parameterType="String" >
+        SELECT * FROM docLabel where
+        docLabel_name in
+        <foreach collection="labels" item="label" open="(" close=")" separator=",">
+            #{label}
+        </foreach>
     </select>
 
     <select id="getDocLabelById" parameterType="int" resultMap="DocLabelMap">
@@ -21,6 +25,11 @@
 
     <select id="getDocLabelBySuperId" parameterType="int" resultMap="DocLabelMap">
         SELECT * FROM docLabel WHERE super_id=#{superId}
+    </select>
+
+    <select id="getLabelByName" resultMap="DocLabelMap">
+
+
     </select>
 
     <insert id="insertLabel" parameterType="DocLabel" useGeneratedKeys="true" keyProperty="docLabelId">

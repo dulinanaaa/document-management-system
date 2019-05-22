@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
 import top.catoy.docmanagement.service.DepartmentService;
-import top.catoy.docmanagement.service.DocInfoService;
 import top.catoy.docmanagement.service.DocLabelService;
 import top.catoy.docmanagement.service.LogService;
 
@@ -38,7 +37,6 @@ public class DocManagementApplicationTests {
     @Autowired
     private DocInfoMapper docInfoMapper;
 
-
     @Autowired
     private UserMapper userMapper;
 
@@ -47,6 +45,15 @@ public class DocManagementApplicationTests {
 
     @Autowired
     private DepartmentService departmentService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private DocInfoAndTagService docInfoAndTagService;
+
+    @Autowired
+    private DocInfoAndDocLabelService docInfoAndDocLabelService;
 
     @Autowired
     private DocInfoService docInfoService;
