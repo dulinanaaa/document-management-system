@@ -15,6 +15,7 @@ import java.util.List;
 public interface AnnexMapper {
     List<Annex> getAnnexsByDocId(@Param("docId") int docId);
 
+    int delAnnexById(@Param("annexId") int annexId);
 
-    public int insertAnnex(Annex annex);
+    int insertAnnex(Annex annex);
 }

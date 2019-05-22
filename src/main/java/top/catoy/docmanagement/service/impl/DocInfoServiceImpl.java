@@ -80,13 +80,14 @@ public class DocInfoServiceImpl implements DocInfoService {
             List<DocInfo> docInfos = new ArrayList<>();
             List<DocInfo> docs;
             List<Department> departmentList = departmentMapper.getAllDepartments();
-            int pageSize = docInfoSearchParams.getPageInfo().getPageSize();
-            int currentPage = docInfoSearchParams.getPageInfo().getCurrentPage();
-            int departmentId = -1;
             List<Integer> docLabels = docInfoAndDocLabelMapper.getDocInfoIdByLabelId(docInfoSearchParams.getDocLabels());
             List<Integer> tags = docInfoAndTagMapper.getDocIdByTagId(docInfoSearchParams.getTags());
 
+            int pageSize = docInfoSearchParams.getPageInfo().getPageSize();
+            int currentPage = docInfoSearchParams.getPageInfo().getCurrentPage();
+            int departmentId = -1;
             String docPostTime;
+
             if("Invalid date".equals(docInfoSearchParams.getSelectYear())){
                 docPostTime = "";
             }else{
@@ -97,11 +98,12 @@ public class DocInfoServiceImpl implements DocInfoService {
             }else if(docInfoSearchParams.getDepartmentId() == -1) {
                 departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
             }
+
             docs = docInfoMapper.getDocByDepartmentIdAndSearchParam(departmentId,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
             docInfos.addAll(docs);//加入父部门所拥有的文档
             getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
 
-
+            //获得文件的附件信息和部门信息
             if(docInfos!=null){
                 docInfos.forEach((docInfo) -> {
                     List<Annex> annexes = annexMapper.getAnnexsByDocId(docInfo.getDocId());
