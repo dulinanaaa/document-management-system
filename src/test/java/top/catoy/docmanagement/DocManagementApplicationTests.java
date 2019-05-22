@@ -7,9 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
-import top.catoy.docmanagement.service.DepartmentService;
-import top.catoy.docmanagement.service.DocLabelService;
-import top.catoy.docmanagement.service.LogService;
+import top.catoy.docmanagement.service.*;
 
 import java.util.List;
 
@@ -40,6 +38,15 @@ public class DocManagementApplicationTests {
 
     @Autowired
     private DepartmentService departmentService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private DocInfoAndTagService docInfoAndTagService;
+
+    @Autowired
+    private DocInfoAndDocLabelService docInfoAndDocLabelService;
 
 
 
@@ -182,6 +189,41 @@ public class DocManagementApplicationTests {
         String news = str.substring(pos);
         System.out.println(news);
         System.out.println(pos);
+    }
+
+
+    @Test
+    public void insertTag(){
+        Tag tag = new Tag();
+        tag.setTagName("鼠标");
+        tag.setIsuse(1);
+        tagService.insertTags(tag);
+    }
+
+
+    @Test
+    public void getAllTags(){
+        List<Tag> tags = tagService.getAllTags();
+        for(int i = 0;i < tags.size();i++){
+            System.out.println(tags.get(i));
+        }
+    }
+
+    @Test
+    public void insertTagandcod(){
+        DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+        docInfoAndTag.setDocInfo_id(1);
+        docInfoAndTag.setTag_id(1);
+        docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+    }
+
+    @Test
+    public void getLabelsByName(){
+        String name[] = {"背景图","风景图"};
+        DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
+        docInfoAndDocLabel.setDocId(100);
+        docInfoAndDocLabel.setLabelId(1000);
+        int result = docInfoAndDocLabelService.insertDocInfoAndDocLabel(docInfoAndDocLabel);
     }
 
 

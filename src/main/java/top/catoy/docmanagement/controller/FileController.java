@@ -13,12 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.catoy.docmanagement.domain.*;
-import top.catoy.docmanagement.service.AnnexService;
-import top.catoy.docmanagement.service.DocInfoService;
-import top.catoy.docmanagement.service.TagService;
+import top.catoy.docmanagement.service.*;
 import top.catoy.docmanagement.utils.JWTUtil;
 
-import javax.security.auth.Subject;
+import org.apache.shiro.subject.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -46,6 +44,14 @@ public class FileController {
     @Autowired
     private AnnexService annexService;
 
+    @Autowired
+    private DocInfoAndTagService docInfoAndTagService;
+
+    @Autowired
+    private DocLabelService docLabelService;
+
+    @Autowired
+    private DocInfoAndDocLabelService docInfoAndDocLabelService;
 
     /***
      * 单文件上传
@@ -57,7 +63,7 @@ public class FileController {
     , @RequestParam("region") String region, @RequestParam("type")String type, @RequestParam("date")String date, @RequestParam("number")String number,
                                    @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
-        org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
+        Subject subject = SecurityUtils.getSubject();
         String token = (String) subject.getPrincipal();
         User user = JWTUtil.getUserInfo(token);
         if (System.getProperty("os.name").equals("Windows 10")) {
@@ -91,10 +97,34 @@ public class FileController {
             int docId = docInfoService.getDocId(docInfo);
             String tag[] = tags.split(",");
             for(int i = 0;i < tag.length;i++){
-                Tag tg = new Tag();
-                tg.setDocId(docId);
-                tg.setTagName(tag[i]);
-                tagService.insertTags(tg);
+                Tag t = tagService.getTagByName(tag[i]);
+                if(t == null){
+                    Tag tg = new Tag();
+                    tg.setTagName(tag[i]);
+                    tg.setIsuse(1);
+                    tagService.insertTags(tg);
+                    DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                    docInfoAndTag.setDocInfo_id(docId);
+                    int tagId = tagService.getIdByTagName(tag[i]);
+                    docInfoAndTag.setTag_id(tagId);
+                    docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                }else {
+                    DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                    docInfoAndTag.setDocInfo_id(docId);
+                    int tagId = tagService.getIdByTagName(tag[i]);
+                    docInfoAndTag.setTag_id(tagId);
+                    docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                }
+            }
+            String types[] = type.split(",");
+            List<DocLabel> docLabels = docLabelService.getLabelByName(types);
+            for(int i = 0;i < docLabels.size();i++){
+                System.out.println("type"+types[i]);
+                DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
+                System.out.println("id:"+docLabels.get(i).getDocLabelId());
+                docInfoAndDocLabel.setLabelId(docLabels.get(i).getDocLabelId());
+                docInfoAndDocLabel.setDocId(docId);
+                docInfoAndDocLabelService.insertDocInfoAndDocLabel(docInfoAndDocLabel);
             }
             return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
         } catch (Exception e) {
@@ -104,9 +134,34 @@ public class FileController {
     }
 
 
+    @RequestMapping(value = "/public/getTagById",method = RequestMethod.POST)
+    public ResponseBean getTagByFileId(@RequestParam("fileId") int id){
+        List<DocInfoAndTag> list = docInfoAndTagService.getTagsByFileId(id);
+        List<Tag> tags = new ArrayList<>();
+        for(int i = 0;i < list.size();i++){
+            Tag tag = tagService.getTagById(list.get(i).getTag_id());
+            tags.add(tag);
+        }
+        if(tags != null){
+            return new ResponseBean(ResponseBean.SUCCESS,"查找成功",tags);
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"查找失败",null);
+        }
+    }
+
+
 
     @RequestMapping(value = "/uploadannex",method = RequestMethod.POST)
     public ResponseBean uploadannex(@RequestParam("file")MultipartFile file,@RequestParam("filename")String name){
+        String upload = null;
+        if (System.getProperty("os.name").equals("Windows 10")) {
+            upload = windowsuploadPath;
+        } else if (System.getProperty("os.name").equals("Linux")) {
+            upload = linuxuploadPath;
+        }
+        else if (System.getProperty("os.name").equals("Windows 7")) {
+            upload = windowsuploadPath;
+        }
         DocInfo docInfo = new DocInfo();
         docInfo.setDocName(name);
         int docId = docInfoService.getDocId(docInfo);
@@ -115,7 +170,6 @@ public class FileController {
         annex.setAnnexPath("");
         annex.setDocId(docId);
         int result = annexService.insertAnnex(annex);
-//        System.out.println("徐立杰傻逼");
         if(result > 0){
             return new ResponseBean(ResponseBean.SUCCESS,"添加成功",null);
         }else {

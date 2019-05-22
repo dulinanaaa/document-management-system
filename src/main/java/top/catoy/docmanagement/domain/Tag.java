@@ -6,7 +6,15 @@ public class Tag {
 
     private String tagName;
 
-    private int docId;
+    private int isuse;
+
+    public int getIsuse() {
+        return isuse;
+    }
+
+    public void setIsuse(int isuse) {
+        this.isuse = isuse;
+    }
 
     public int getTagId() {
         return tagId;
@@ -24,11 +32,13 @@ public class Tag {
         this.tagName = tagName;
     }
 
-    public int getDocId() {
-        return docId;
-    }
 
-    public void setDocId(int docId) {
-        this.docId = docId;
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "tagId=" + tagId +
+                ", tagName='" + tagName + '\'' +
+                ", isuser=" + isuse +
+                '}';
     }
 }
