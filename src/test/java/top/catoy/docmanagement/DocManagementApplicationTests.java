@@ -9,9 +9,7 @@ import org.springframework.test.annotation.Timed;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
-import top.catoy.docmanagement.service.DepartmentService;
-import top.catoy.docmanagement.service.DocLabelService;
-import top.catoy.docmanagement.service.LogService;
+import top.catoy.docmanagement.service.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,16 +21,17 @@ public class AnnexServiceImpl implements AnnexService {
 
     @Override
     public ResponseBean delAnnexById(int annexId) {
-        try {
-            int sum  = annexMapper.delAnnexById(annexId);
-            if(sum>0){
-                return new ResponseBean(ResponseBean.SUCCESS,"查询成功",null);
-            }else{
-                return new ResponseBean(ResponseBean.FAILURE,"查询失败",null);
-            }
-        }catch (RuntimeException r){
-            r.printStackTrace();
-            return new ResponseBean(ResponseBean.ERROR,"错误",null);
-        }
+//        try {
+//            int sum  = annexMapper.delAnnexById(annexId);
+//            if(sum>0){
+//                return new ResponseBean(ResponseBean.SUCCESS,"查询成功",null);
+//            }else{
+//                return new ResponseBean(ResponseBean.FAILURE,"查询失败",null);
+//            }
+//        }catch (RuntimeException r){
+//            r.printStackTrace();
+//            return new ResponseBean(ResponseBean.ERROR,"错误",null);
+//        }
+        return null;
     }
 }

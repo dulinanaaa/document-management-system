@@ -14,9 +14,9 @@
         insert into annex(annex_name,annex_path,doc_id) values(#{annexName},#{annexPath},#{docId})
     </insert>
 
-    <delete id="delAnnexById" parameterType="int ">
-        DELETE FROM annex WHERE annex_id = #{annexId}
-    </delete>
+    <!--<delete id="delAnnexById" parameterType="int ">-->
+        <!--DELETE FROM annex WHERE annex_id = #{annexId}-->
+    <!--</delete>-->
 
     <select id="getAnnexsByDocId" resultMap="AnnexMap">
         SELECT * FROM  annex WHERE doc_id = #{docId}

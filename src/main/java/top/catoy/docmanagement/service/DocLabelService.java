@@ -4,6 +4,7 @@ import top.catoy.docmanagement.domain.DocLabel;
 import top.catoy.docmanagement.domain.ResponseBean;
 
 import javax.print.Doc;
+import java.util.List;
 
 public interface DocLabelService {
     ResponseBean insertDocLabel(DocLabel docLabel);

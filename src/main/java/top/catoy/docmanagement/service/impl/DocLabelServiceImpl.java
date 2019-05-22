@@ -124,6 +124,7 @@ public class DocLabelServiceImpl implements DocLabelService {
             }
 
         }catch (RuntimeException r){
+            r.printStackTrace();
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
     }
