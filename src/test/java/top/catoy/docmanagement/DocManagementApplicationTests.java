@@ -11,8 +11,7 @@ import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
 import top.catoy.docmanagement.service.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -223,8 +222,125 @@ public class DocManagementApplicationTests {
 //        docLabels.add(doclabel2);
 //        docLabels.add(19);
 //        docLabels.add(20);
-//        docInfoMapper.getDocByDepartmentIdAndSearchParam(17,"","2019",docLabels,tags);
+       List<DocInfo> docInfos =  docInfoMapper.getDocByDepartmentIdAndSearchParam(17, "", "2019", docLabels, new List<Integer>() {
+           @Override
+           public int size() {
+               return 0;
+           }
+
+           @Override
+           public boolean isEmpty() {
+               return false;
+           }
+
+           @Override
+           public boolean contains(Object o) {
+               return false;
+           }
+
+           @Override
+           public Iterator<Integer> iterator() {
+               return null;
+           }
+
+           @Override
+           public Object[] toArray() {
+               return new Object[0];
+           }
+
+           @Override
+           public <T> T[] toArray(T[] a) {
+               return null;
+           }
+
+           @Override
+           public boolean add(Integer integer) {
+               return false;
+           }
+
+           @Override
+           public boolean remove(Object o) {
+               return false;
+           }
+
+           @Override
+           public boolean containsAll(Collection<?> c) {
+               return false;
+           }
+
+           @Override
+           public boolean addAll(Collection<? extends Integer> c) {
+               return false;
+           }
+
+           @Override
+           public boolean addAll(int index, Collection<? extends Integer> c) {
+               return false;
+           }
+
+           @Override
+           public boolean removeAll(Collection<?> c) {
+               return false;
+           }
+
+           @Override
+           public boolean retainAll(Collection<?> c) {
+               return false;
+           }
+
+           @Override
+           public void clear() {
+
+           }
+
+           @Override
+           public Integer get(int index) {
+               return null;
+           }
+
+           @Override
+           public Integer set(int index, Integer element) {
+               return null;
+           }
+
+           @Override
+           public void add(int index, Integer element) {
+
+           }
+
+           @Override
+           public Integer remove(int index) {
+               return null;
+           }
+
+           @Override
+           public int indexOf(Object o) {
+               return 0;
+           }
+
+           @Override
+           public int lastIndexOf(Object o) {
+               return 0;
+           }
+
+           @Override
+           public ListIterator<Integer> listIterator() {
+               return null;
+           }
+
+           @Override
+           public ListIterator<Integer> listIterator(int index) {
+               return null;
+           }
+
+           @Override
+           public List<Integer> subList(int fromIndex, int toIndex) {
+               return null;
+           }
+       });
+       System.out.println(docInfos.toString());
     }
+
 
     @Test
     public void DocInfoService(){
@@ -234,10 +350,10 @@ public class DocManagementApplicationTests {
         List<Tag> tags = new ArrayList<>();
         Tag tag = new Tag();
         Tag tag1 = new Tag();
-        tag.setTagId(1);
-        tag1.setTagId(2);
-        tags.add(tag);
-        tags.add(tag1);
+//        tag.setTagId(1);
+//        tag1.setTagId(2);
+//        tags.add(tag);
+//        tags.add(tag1);
         DocLabel docLabel = new DocLabel();
         DocLabel docLabel2 = new DocLabel();
         docLabel.setDocLabelId(19);

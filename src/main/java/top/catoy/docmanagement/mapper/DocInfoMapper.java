@@ -7,6 +7,7 @@ import top.catoy.docmanagement.domain.DocInfo;
 import top.catoy.docmanagement.domain.DocLabel;
 import top.catoy.docmanagement.domain.Tag;
 
+import javax.print.Doc;
 import java.util.List;
 
 @Mapper
@@ -24,7 +25,8 @@ public interface DocInfoMapper {
                                                      @Param("docLabels") List<Integer> docLabels,
                                                      @Param("tags") List<Integer> tags);
 
-    public int getDocId(DocInfo docInfo);
 
-    public int getDocIdByName(@Param("name") String name);
+    int getDocId(DocInfo docInfo);
+
+    int getDocIdByName(@Param("name") String name);
 }
