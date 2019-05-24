@@ -111,7 +111,8 @@ public class UserController {
             user.setUserName(usertableInfo.getUserName());
             user.setUserPassword(usertableInfo.getPassword());
             user.setUserLock(0);
-            int departmentid = departmentService.getDepartmentIdByName(usertableInfo.getDepartment());
+//            int departmentid = departmentService.getDepartmentIdByName(usertableInfo.getDepartment());
+            int departmentid = usertableInfo.getDepartmentId();
             int roleId = userGroupService.getUserGroupIdByName(usertableInfo.getRole());
             user.setGroupId(roleId);
             user.setDepartmentId(departmentid);
@@ -136,7 +137,8 @@ public class UserController {
             user.setUserId(usertableInfo.getUserId());
             user.setUserName(usertableInfo.getUserName());
             user.setUserPassword(usertableInfo.getPassword());
-            int departmentid = departmentService.getDepartmentIdByName(usertableInfo.getDepartment());
+//          int departmentid = departmentService.getDepartmentIdByName(usertableInfo.getDepartment());
+            int departmentid = usertableInfo.getDepartmentId();
             int roleid = userGroupService.getUserGroupIdByName(usertableInfo.getRole());
             user.setGroupId(roleid);
             user.setDepartmentId(departmentid);

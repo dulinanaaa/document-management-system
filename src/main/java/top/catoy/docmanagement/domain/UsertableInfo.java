@@ -9,6 +9,8 @@ public class UsertableInfo {
 
     private String department;
 
+    private int departmentId;
+
     private String realname;
 
     private String islocked;
@@ -47,6 +49,14 @@ public class UsertableInfo {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
     }
 
     public String getRealname() {
@@ -88,6 +98,7 @@ public class UsertableInfo {
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", department='" + department + '\'' +
+                ", departmentId=" + departmentId +
                 ", realname='" + realname + '\'' +
                 ", islocked='" + islocked + '\'' +
                 ", role='" + role + '\'' +
