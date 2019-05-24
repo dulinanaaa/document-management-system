@@ -45,12 +45,24 @@
                     #{docLabelId}
                 </foreach>
             </if>
-            <if test="tags != null and  tags.size!=0">
+            <if test="docLabels != null and docLabels.size==0">
+                AND FALSE
+            </if>
+            <if test="docLabels == null">
+                AND TRUE
+            </if>
+            <if test="tags != null and tags.size>0">
                 AND docInfo.doc_id IN
                 <foreach collection="tags" item="tagId" open="(" close=")" separator=",">
                     <!--SELECT docInfo_id FROM docInfo_tag WHERE tag_id = #{tag.tagId}-->
                     #{tagId}
                 </foreach>
+            </if>
+            <if test="tags != null and tags.size==0">
+               AND FALSE
+            </if>
+            <if test="tags == null">
+               AND TRUE
             </if>
         </where>
         ORDER BY doc_postTime DESC
