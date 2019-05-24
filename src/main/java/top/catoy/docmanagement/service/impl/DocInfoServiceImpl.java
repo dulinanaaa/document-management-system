@@ -80,7 +80,7 @@ public class DocInfoServiceImpl implements DocInfoService {
             List<DocInfo> docInfos = new ArrayList<>();
             List<DocInfo> docs;
             List<Department> departmentList = departmentMapper.getAllDepartments();
-            List<Integer> docLabels = docInfoAndDocLabelMapper.getDocInfoIdByLabelId(docInfoSearchParams.getDocLabels());
+            List<Integer> docLabels;
             List<Integer> tags;
 
             int pageSize = docInfoSearchParams.getPageInfo().getPageSize();
@@ -88,11 +88,19 @@ public class DocInfoServiceImpl implements DocInfoService {
             int departmentId = -1;
             String docPostTime;
 
+            if(docInfoSearchParams.getDocLabels()!=null && docInfoSearchParams.getDocLabels().size()  > 0){
+                docLabels = docInfoAndDocLabelMapper.getDocInfoIdByLabelId(docInfoSearchParams.getDocLabels());
+            }else {
+                docLabels = null;
+            }
+
             if(docInfoSearchParams.getTags()!=null && docInfoSearchParams.getTags().size()  > 0){
                 tags = docInfoAndTagMapper.getDocIdByTagId(docInfoSearchParams.getTags());
             }else {
                 tags = null;
             }
+
+            System.out.println(tags+"------------------------------tags");
 
             if("Invalid date".equals(docInfoSearchParams.getSelectYear())){
                 docPostTime = "";
@@ -109,6 +117,7 @@ public class DocInfoServiceImpl implements DocInfoService {
             }else if(docInfoSearchParams.getDepartmentId() == -1) {
                 departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
                 docs = docInfoMapper.getDocByDepartmentIdAndSearchParam(departmentId,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+                System.out.println(docs+"---------------------docs");
                 docInfos.addAll(docs);//加入父部门所拥有的文档
                 getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
             }
