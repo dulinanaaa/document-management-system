@@ -2,6 +2,10 @@ package top.catoy.docmanagement.controller;
 
 
 
+import com.artofsolving.jodconverter.DocumentConverter;
+import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 import jdk.nashorn.internal.ir.ReturnNode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -21,9 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.net.ConnectException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -162,12 +169,22 @@ public class FileController {
         else if (System.getProperty("os.name").equals("Windows 7")) {
             upload = windowsuploadPath;
         }
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(upload + file.getOriginalFilename());
+            if(Files.isWritable(path)){
+                Files.createDirectories(Paths.get(upload));
+            }
+            Files.write(path, bytes);
+        }catch (Exception e){
+
+        }
         DocInfo docInfo = new DocInfo();
         docInfo.setDocName(name);
         int docId = docInfoService.getDocId(docInfo);
         Annex annex = new Annex();
         annex.setAnnexName(file.getOriginalFilename());
-        annex.setAnnexPath("");
+        annex.setAnnexPath(upload+file.getOriginalFilename());
         annex.setDocId(docId);
         int result = annexService.insertAnnex(annex);
         if(result > 0){
@@ -175,6 +192,141 @@ public class FileController {
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"添加失败",null);
         }
+    }
+
+    @RequestMapping(value = "/getName",method = RequestMethod.GET)
+    public void getDocName(@RequestParam("name") String name,@RequestParam("token")String token,HttpServletResponse response){
+        System.out.println(name+"----------------------"+token);
+        String download = null;
+        if (System.getProperty("os.name").equals("Windows 7")) {
+            download = windowsuploadPath;
+        } else if (System.getProperty("os.name").equals("Linux")) {
+            download = linuxuploadPath;
+        }else if(System.getProperty("os.name").equals("Windows 10")){
+            download = windowsuploadPath;
+        }
+        String fileName = null;
+        try {
+            fileName = new String(name.getBytes("utf-8"),"ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String file = name;
+        response.setHeader("content-type","application/octet-stream");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        byte[] bytes = new byte[1024];
+        BufferedInputStream bufferedInputStream = null;
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            bufferedInputStream = new BufferedInputStream(new FileInputStream(new File(download
+                    + file)));
+            int k = bufferedInputStream.read(bytes);
+            while (k != -1){
+                os.write(bytes, 0, bytes.length);
+                os.flush();
+                k = bufferedInputStream.read(bytes);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if (bufferedInputStream != null) {
+                try {
+                    bufferedInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
+    public void PreViewFile(@RequestParam("FileName") String filename){
+
+
+
+    }
+
+    public boolean officeToPDF(String sourceFile,String destFile){
+        try {
+
+            File inputFile = new File(sourceFile);
+            if (!inputFile.exists()) {
+                // 找不到源文件, 则返回false
+                return false;
+            }
+            // 如果目标路径不存在, 则新建该路径
+            File outputFile = new File(destFile);
+            if (!outputFile.getParentFile().exists()) {
+                outputFile.getParentFile().mkdirs();
+            }
+            //如果目标文件存在，则删除
+            if (outputFile.exists()) {
+                outputFile.delete();
+            }
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection("127.0.0.1", 8100);
+            connection.connect();
+            //用于测试openOffice连接时间
+            System.out.println("连接时间:" + df.format(new Date()));
+            DocumentConverter converter = new StreamOpenOfficeDocumentConverter(
+                    connection);
+            converter.convert(inputFile, outputFile);
+            //测试word转PDF的转换时间
+            System.out.println("转换时间:" + df.format(new Date()));
+            connection.disconnect();
+            return true;
+        } catch (ConnectException e) {
+            e.printStackTrace();
+            System.err.println("openOffice连接失败！请检查IP,端口");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    @RequestMapping(value = "/public/downloadFileAndAnnex",method = RequestMethod.POST)
+    public void DownloadFileAndAnnex(@RequestBody DocInfo docInfo,HttpServletResponse response){
+        System.out.println(docInfo);
+        String download = null;
+        if (System.getProperty("os.name").equals("Windows 7")) {
+            download = windowsuploadPath;
+        } else if (System.getProperty("os.name").equals("Linux")) {
+            download = linuxuploadPath;
+        }else if(System.getProperty("os.name").equals("Windows 10")){
+            download = windowsuploadPath;
+        }
+        String fileName = docInfo.getDocName();
+        response.setHeader("content-type","application/octet-stream");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        byte[] bytes = new byte[1024];
+        BufferedInputStream bufferedInputStream = null;
+        OutputStream os = null;
+//        try {
+//            os = response.getOutputStream();
+//            bufferedInputStream = new BufferedInputStream(new FileInputStream(new File(download
+//                    + fileName)));
+//            int k = bufferedInputStream.read(bytes);
+//            while (k != -1){
+//                os.write(bytes, 0, bytes.length);
+//                os.flush();
+//                k = bufferedInputStream.read(bytes);
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        } finally {
+//            if (bufferedInputStream != null) {
+//                try {
+//                    bufferedInputStream.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
 
