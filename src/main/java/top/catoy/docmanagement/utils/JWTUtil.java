@@ -61,6 +61,7 @@ public class JWTUtil {
             String role = jwt.getClaim("role").asString();
             String permissions = jwt.getClaim("permission").asString();
             int isLock = jwt.getClaim("isLock").asInt();
+            int groupId = jwt.getClaim("groupId").asInt();
 
             User user = new User();
             user.setUserId(id);
@@ -70,6 +71,7 @@ public class JWTUtil {
             user.setRole(role);
             user.setPermission(permissions);
             user.setUserLock(isLock);
+            user.setGroupId(groupId);
             return user;
         }catch (Exception e){
             return null;
@@ -93,6 +95,7 @@ public class JWTUtil {
                     .withClaim("password",user.getUserPassword())
                     .withClaim("DepartmentId",user.getDepartmentId())
                     .withClaim("role",user.getRole())
+                    .withClaim("groupId",user.getGroupId())
                     .withClaim("permission",user.getPermission())
                     .withClaim("isLock",user.getUserLock())
                     .withExpiresAt(date)

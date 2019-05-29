@@ -149,6 +149,21 @@ public class DocLabelServiceImpl implements DocLabelService {
         return childList;
     }
 
+    @Override
+    public int getSuperIdByName(String name) {
+        return docLabelMapper.getSuperIdByName(name);
+    }
+
+    @Override
+    public DocLabel getDocLabelByName(String name) {
+        return docLabelMapper.getDocLabelByName(name);
+    }
+
+    @Override
+    public int getIdByName(String name) {
+        return docLabelMapper.getIdByName(name);
+    }
+
     /**
      * 得到所有子标签
      * @param superId

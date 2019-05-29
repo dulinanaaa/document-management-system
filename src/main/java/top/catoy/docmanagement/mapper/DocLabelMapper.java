@@ -31,5 +31,11 @@ public interface DocLabelMapper {
 
     public DocLabel getLabelByName(@Param("label") String label);
 
+    public int getSuperIdByName(@Param("name") String name);
+
+    public DocLabel getDocLabelByName(@Param("name") String name);
+
+    public int getIdByName(@Param("name") String name);
+
 
 }

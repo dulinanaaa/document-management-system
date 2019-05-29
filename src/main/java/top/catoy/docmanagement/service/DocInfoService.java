@@ -24,4 +24,6 @@ public interface DocInfoService {
                                      List<Integer> tags);
 
     PageInfo pageData(List<DocInfo> list, Integer pagesize, Integer pageno);
+
+    DocInfo getDocInfoByName(String name);
 }

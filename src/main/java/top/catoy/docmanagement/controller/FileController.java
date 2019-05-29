@@ -6,6 +6,16 @@ import com.artofsolving.jodconverter.DocumentConverter;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
+//import com.spire.pdf.PdfDocument;
+//import com.spire.pdf.PdfPageBase;
+//import com.spire.pdf.graphics.PdfImage;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfImage;
+import com.itextpdf.text.pdf.PdfWriter;
 import jdk.nashorn.internal.ir.ReturnNode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -24,6 +34,7 @@ import org.apache.shiro.subject.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.ConnectException;
 import java.nio.file.Files;
@@ -32,6 +43,8 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 public class FileController {
@@ -241,14 +254,99 @@ public class FileController {
         }
     }
 
-    @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
-    public void PreViewFile(@RequestParam("FileName") String filename){
+    public boolean imgToPdf(String imgFilePath, String pdfFilePath)throws IOException {
+        File file=new File(imgFilePath);
+        if(file.exists()){
+            Document document = new Document();
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(pdfFilePath);
+                PdfWriter.getInstance(document, fos);
 
+// 添加PDF文档的某些信息，比如作者，主题等等
+                document.addAuthor("arui");
+                document.addSubject("test pdf.");
+// 设置文档的大小
+                document.setPageSize(PageSize.A4);
+// 打开文档
+                document.open();
+// 写入一段文字
+//document.add(new Paragraph("JUST TEST ..."));
+// 读取一个图片
+                Image image = Image.getInstance(imgFilePath);
+                float imageHeight=image.getScaledHeight();
+                float imageWidth=image.getScaledWidth();
+                int i=0;
+                while(imageHeight>500||imageWidth>500){
+                    image.scalePercent(100-i);
+                    i++;
+                    imageHeight=image.getScaledHeight();
+                    imageWidth=image.getScaledWidth();
+                    System.out.println("imageHeight->"+imageHeight);
+                    System.out.println("imageWidth->"+imageWidth);
+                }
 
-
+                image.setAlignment(Image.ALIGN_CENTER);
+//     //设置图片的绝对位置
+// image.setAbsolutePosition(0, 0);
+// image.scaleAbsolute(500, 400);
+// 插入一个图片
+                document.add(image);
+            } catch (DocumentException de) {
+                System.out.println(de.getMessage());
+            } catch (IOException ioe) {
+                System.out.println(ioe.getMessage());
+            }
+            document.close();
+            fos.flush();
+            fos.close();
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    public boolean officeToPDF(String sourceFile,String destFile){
+
+
+    @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
+    public ResponseBean PreViewFile(@RequestParam("FilePath") String filePath){
+        try {
+            System.out.println(filePath);
+            int last = filePath.lastIndexOf('/');
+            int lastpot = filePath.lastIndexOf('.');
+            String suffix = filePath.substring(filePath.lastIndexOf('.')+1);
+            if(suffix.equals("jpg") || suffix.equals("png")){
+                String name = filePath.substring(last+1,lastpot);
+                try {
+                    String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
+                    boolean flag = imgToPdf(filePath,destFile);
+                    if(flag == true){
+                        return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
+                    }else {
+                        return new ResponseBean(ResponseBean.FAILURE,"",null);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            String name = filePath.substring(last+1,lastpot);
+            System.out.println(name);
+            String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
+            boolean flag = officeToPDF(filePath,destFile);
+            if(flag == true){
+                return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"",null);
+            }
+        }catch (Exception e){
+            return new ResponseBean(ResponseBean.FAILURE,"该文件无法预览",null);
+        }
+    }
+
+
+
+
+    public boolean officeToPDF(String sourceFile,String destFile) throws Exception{
         try {
 
             File inputFile = new File(sourceFile);
@@ -278,10 +376,11 @@ public class FileController {
             connection.disconnect();
             return true;
         } catch (ConnectException e) {
-            e.printStackTrace();
+            System.out.println(444);
             System.err.println("openOffice连接失败！请检查IP,端口");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(444);
+
         }
         return false;
     }
@@ -330,6 +429,126 @@ public class FileController {
     }
 
 
+    @RequestMapping(value = "/public/downloadZip",method = RequestMethod.GET)
+    public void downLoadZips(@RequestParam("name") String fileName,HttpServletResponse response) throws Exception{
+        System.out.println(fileName);
+
+        DocInfo docInfo = docInfoService.getDocInfoByName(fileName);
+        List<Annex> docInfos = annexService.getAnnexListByDocId(docInfo.getDocId());
+        List files = new ArrayList();
+        File f = new File(docInfo.getDocSavePath());
+        files.add(f);
+        for(int i = 0;i < docInfos.size();i++){
+            File file = new File(docInfos.get(i).getAnnexPath());
+            files.add(file);
+        }
+        downLoadFiles(files,response);
+
+//        return "成功";
+    }
+
+
+    public HttpServletResponse downLoadFiles(List<File> files,HttpServletResponse response){
+        try {
+            String zipFilename = "D:/tempFile.zip";
+            File file = new File(zipFilename);
+            file.createNewFile();
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            response.reset();
+            FileOutputStream fous = new FileOutputStream(file);
+            ZipOutputStream zipOut = new ZipOutputStream(fous);
+            zipFile(files, zipOut);
+            zipOut.close();
+            fous.close();
+            return downloadZip(file, response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public void zipFile(List files,ZipOutputStream outputStream){
+        int size = files.size();
+        for(int i = 0;i < size;i++){
+            File file = (File) files.get(i);
+            zipFile(file,outputStream);
+        }
+    }
+
+
+    public static void zipFile(File inputFile, ZipOutputStream ouputStream) {
+        try {
+            if (inputFile.exists()) {
+                if (inputFile.isFile()) {
+                    FileInputStream IN = new FileInputStream(inputFile);
+                    BufferedInputStream bins = new BufferedInputStream(IN, 512);
+                    ZipEntry entry = new ZipEntry(inputFile.getName());
+                    ouputStream.putNextEntry(entry);
+                    // 向压缩文件中输出数据
+                    int nNumber;
+                    byte[] buffer = new byte[512];
+                    while ((nNumber = bins.read(buffer)) != -1) {
+                        ouputStream.write(buffer, 0, nNumber);
+                    }
+                    // 关闭创建的流对象
+                    bins.close();
+                    IN.close();
+                } else {
+                    try {
+                        File[] files = inputFile.listFiles();
+                        for (int i = 0; i < files.length; i++) {
+                            zipFile(files[i], ouputStream);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static HttpServletResponse downloadZip(File file, HttpServletResponse response) {
+        if (file.exists() == false) {
+            System.out.println("待压缩的文件目录：" + file + "不存在.");
+        } else {
+            try {
+                // 以流的形式下载文件。
+                InputStream fis = new BufferedInputStream(new FileInputStream(file.getPath()));
+                byte[] buffer = new byte[fis.available()];
+                fis.read(buffer);
+                fis.close();
+                // 清空response
+                response.reset();
+
+                OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+                response.setContentType("application/octet-stream");
+
+                // 如果输出的是中文名的文件，在此处就要用URLEncoder.encode方法进行处理
+                response.setHeader("Content-Disposition",
+                        "attachment;filename=" + new String(file.getName().getBytes("GB2312"), "ISO8859-1"));
+                toClient.write(buffer);
+                toClient.flush();
+                toClient.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    File f = new File(file.getPath());
+                    f.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return response;
+    }
+
+
+
     /***
      *
      * @return
@@ -376,11 +595,6 @@ public class FileController {
                     }
                 }
             }
-
-
-
         }
-
-
     }
 }
