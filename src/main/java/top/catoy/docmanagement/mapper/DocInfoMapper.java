@@ -29,4 +29,6 @@ public interface DocInfoMapper {
     int getDocId(DocInfo docInfo);
 
     int getDocIdByName(@Param("name") String name);
+
+    DocInfo getDocInfoByName(@Param("name") String name);
 }

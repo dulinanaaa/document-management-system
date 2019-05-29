@@ -400,6 +400,35 @@ public class DocManagementApplicationTests {
     }
 
 
+    @Test
+    public void addLabels(){
+        DocLabel docLabel = new DocLabel();
+        docLabel.setDocLabelName("图片");
+        docLabel.setSuperId(0);
+        docLabelService.insertDocLabel(docLabel);
+
+    }
+
+    @Test
+    public void getSuperID(){
+        String name = "数据结构";
+        int superid =  docLabelMapper.getSuperIdByName(name);
+        System.out.println(superid);
+    }
+
+    @Test
+    public void subString(){
+        String name ="d://sxito/S1521版.docx";
+        int last = name.lastIndexOf('/');
+        int lastpot = name.lastIndexOf('.');
+        String fileName = name.substring(last+1,lastpot);
+        System.out.println(fileName);
+
+        String n = name.substring(name.lastIndexOf('.')+1);
+        System.out.println(n);
+    }
+
+
 
 
 

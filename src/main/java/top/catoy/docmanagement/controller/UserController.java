@@ -157,7 +157,6 @@ public class UserController {
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
         }
-
     }
 
     @GetMapping("/admin/getAllLogs")
@@ -166,14 +165,7 @@ public class UserController {
         ResponseBean result = logService.getAllLogs(Integer.parseInt(currentPage),Integer.parseInt(pageSize));
         return result;
     }
-//    @GetMapping("/admin/getLogsBySearchParam")
-//    public ResponseBean getAllLogs(@RequestParam String currentPage,
-//                                   @RequestParam String pageSize,
-//                                   @RequestParam String searchParam){
-//        ResponseBean result = logService.getLogsBySearchParam(searchParam,Integer.parseInt(currentPage),Integer.parseInt(pageSize));
-//        System.out.println(result);
-//        return result;
-//    }
+
 
     @PostMapping("/admin/getLogsBySearchParam")
     public ResponseBean getLogsBySearchParam(@RequestBody LogSearchParams logSearchParams){

@@ -7,13 +7,14 @@
         <id column="group_id" property="groupId"></id>
         <result column="group_name" property="groupName"></result>
         <result column="group_permission" property="groupPermission"></result>
+        <result column="page_permission" property="pagePermission"></result>
     </resultMap>
     <insert id="addUserGroup">
-        insert into userGroup(group_name,group_permission) values (#{groupName},#{groupPermission})
+        insert into userGroup(group_name,group_permission,page_permission) values (#{groupName},#{groupPermission},#{pagePermission})
     </insert>
 
     <update id="updateUserGroup">
-        update userGroup set group_permission = #{groupPermission} where group_name = #{groupName}
+        update userGroup set page_permission = #{pagePermission},group_permission = #{groupPermission} where group_name = #{groupName}
     </update>
 
     <delete id="deleteUserGroup">
@@ -29,5 +30,8 @@
     </select>
     <select id="getAllUserGroup" resultMap="UserGroupMap">
         select * from userGroup
+    </select>
+    <select id="getPagePermission" resultType="java.lang.String">
+
     </select>
 </mapper>
