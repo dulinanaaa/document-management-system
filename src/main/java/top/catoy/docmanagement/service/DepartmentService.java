@@ -18,4 +18,10 @@ public interface DepartmentService {
      public List<Department> getTopDepartment();
 
      List<Department> getChild(int id, List<Department> fatherList);
+
+     ResponseBean delDepartmentById(int id);
+
+     ResponseBean addDepartment(Department department);
+
+     ResponseBean editDepartment(Department department);
 }

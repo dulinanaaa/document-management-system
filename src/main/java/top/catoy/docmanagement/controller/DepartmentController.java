@@ -2,10 +2,7 @@ package top.catoy.docmanagement.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.catoy.docmanagement.domain.Department;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
@@ -62,7 +59,12 @@ public class DepartmentController {
         }
     }
 
-
+    @RequestMapping(value = "/admin/addDepartment",method =RequestMethod.POST)
+    public ResponseBean addDepartment(@RequestBody Department department ){
+        System.out.println(department.toString());
+        ResponseBean result = departmentService.addDepartment(department);
+        return result;
+    }
 
 
 
@@ -70,4 +72,17 @@ public class DepartmentController {
     public ResponseBean getDepartmentList(){
         return null;
     }
+
+    @RequestMapping(value = "/admin/delDepartmentById",method =RequestMethod.GET)
+    public ResponseBean delDepartmentById(@RequestParam int departmentId){
+        ResponseBean result = departmentService.delDepartmentById(departmentId);
+        return result;
+    }
+
+    @RequestMapping(value = "/admin/editDepartment",method =RequestMethod.POST)
+    public ResponseBean editDepartment(@RequestBody Department department){
+        ResponseBean result = departmentService.editDepartment(department);
+        return result;
+    }
+
 }

@@ -22,4 +22,6 @@ public interface UserMapper {
     int updateUser(User user);
 
     int getIsLockedByUserName(@Param("name") String name);
+
+    List<User> getUsersByDepartmentId(@Param("departmentId") int departmentId);
 }

@@ -89,11 +89,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseBean Login(String username, String password) {
         User user = userMapper.getUserByName(username);
-        if(user.getUserLock() == 1){
-            return new ResponseBean(ResponseBean.FAILURE,"用户已锁定",null);
-        }else {
-            if(user != null){
-                if(user.getUserPassword().equals(password)){
+        if(user!=null){
+            if(user.getUserLock() == 1){
+                return new ResponseBean(ResponseBean.FAILURE,"用户已锁定",null);
+            }else {
+                if (user.getUserPassword().equals(password)) {
                     UserGroup userGroup = userGroupMapper.getUserGroupById(user.getGroupId());
                     User userInfo = new User();
                     userInfo.setUserId(user.getUserId());
@@ -105,15 +105,16 @@ public class UserServiceImpl implements UserService {
                     userInfo.setRole(userGroup.getGroupName());
                     System.out.println(userGroup.getGroupName());
                     userInfo.setPermission(userGroup.getGroupPermission());
-                    logService.insertLog(user.getUserId(),"用户登入","用户管理");
-                    return new ResponseBean(ResponseBean.SUCCESS,"登录成功",userInfo);
-                }else {
-                    return new ResponseBean(ResponseBean.FAILURE,"密码错误",null);
+                    logService.insertLog(user.getUserId(), "用户登入", "用户管理");
+                    return new ResponseBean(ResponseBean.SUCCESS, "登录成功", userInfo);
+                } else {
+                    return new ResponseBean(ResponseBean.FAILURE, "密码错误", null);
                 }
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"用户不存在",null);
             }
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"用户不存在",null);
         }
+
     }
 
     @Override

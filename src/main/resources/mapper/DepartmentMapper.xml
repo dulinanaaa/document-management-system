@@ -10,15 +10,42 @@
         <result column="department_name" property="name"></result>
         <result column="super_id" property="parent_id"></result>
     </resultMap>
-    <delete id="deleteDepartmentById"></delete>
+    <delete id="deleteDepartmentById">
+        DELETE FROM department WHERE department_id = #{departmentId}
+    </delete>
 
     <select id="getAllDepartments" resultMap="DepartmentMap">
         SELECT * FROM department
     </select>
 
-    <insert id="insertDepartment" parameterType="Department" keyProperty="departmentId" useGeneratedKeys="true">
-        INSERT INTO department(department_name,super_id) VALUES(#{departmentName},#{superId})
+    <!--<insert id="insertDepartment" parameterType="Department" keyProperty="id" useGeneratedKeys="true">-->
+        <!--INSERT INTO department(department_description,department_name,super_id) VALUES(#{instroduction},#{name},#{parent_id})-->
+    <!--</insert>-->
+
+    <insert id="insertDepartment" parameterType="Department" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO department(department_name,super_id
+        <include refid="Field" />
+        )
+        values(#{name},#{parent_id}
+        <include refid="Value" />
+        )
     </insert>
+
+    <sql id="Field">
+        <trim prefix="," suffixOverrides=",">
+            <if test="instroduction!=null and instroduction!='null' and instroduction!=''">
+                department_description,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="Value">
+        <trim prefix="," suffixOverrides=",">
+            <if test="instroduction!=null and instroduction!='null' and instroduction!=''">
+                #{instroduction},
+            </if>
+        </trim>
+    </sql>
 
     <select id="getDepartmentNameById" resultType="java.lang.String">
         SELECT department_name FROM `department` WHERE department_id = #{id};
@@ -29,12 +56,25 @@
     </select>
 
     <select id="getDepartmentIdByName" resultType="java.lang.Integer">
-        select department_id FROM `department` WHERE department_name = #{name};
+        SELECT department_id FROM `department` WHERE department_name = #{name};
     </select>
 
     <select id="getTopDepartmemt" resultMap="DepartmentMap">
-        select * from department where super_id = 0
+        SELECT * FROM department WHERE super_id = 0
     </select>
+
+    <select id="getDepartmentByName" resultMap="DepartmentMap">
+        SELECT * FROM department WHERE department_name = #{departmentName}
+    </select>
+
+    <update id="updateDepartment" parameterType="Department">
+        UPDATE department
+        SET department_description = #{instroduction},
+            department_name = #{name},
+            super_id = #{parent_id}
+        WHERE
+            department_id = #{id}
+    </update>
 
 
 </mapper>

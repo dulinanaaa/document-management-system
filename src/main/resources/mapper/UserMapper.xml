@@ -43,4 +43,8 @@
         select user_lock from user where user_name= #{name}
     </select>
 
+    <select id="getUsersByDepartmentId" parameterType="int" resultMap="UserMap">
+        SELECT * FROM user WHERE department_id = #{departmentId}
+    </select>
+
 </mapper>

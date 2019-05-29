@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.Department;
 import top.catoy.docmanagement.domain.DocInfo;
 import top.catoy.docmanagement.domain.ResponseBean;
+import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
+import top.catoy.docmanagement.mapper.UserMapper;
 import top.catoy.docmanagement.service.DepartmentService;
 
 import java.util.ArrayList;
@@ -17,6 +19,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public String getDepartmentNameById(int id) {
@@ -96,5 +101,69 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         System.out.println(childList.toString());
         return childList;
+    }
+
+    @Override
+    public ResponseBean delDepartmentById(int id) {
+        try{
+            int sum = departmentMapper.deleteDepartmentById(id);
+            List<User> users = userMapper.getUsersByDepartmentId(id);
+            for(User user:users){
+                if(user != null){
+                    user.setDepartmentId(0);
+                    userMapper.updateUser(user);
+                }
+            }
+            if(sum > 0){
+                return new ResponseBean(ResponseBean.SUCCESS,"删除部门成功",null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"删除部门失败",null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseBean(ResponseBean.FAILURE,"错误",null);
+        }
+    }
+
+    @Override
+    public ResponseBean addDepartment(Department department) {
+       try {
+           String departName = department.getName();
+           Department dep = departmentMapper.getDepartmentByName(departName);
+           if(dep == null){
+               int sum = departmentMapper.insertDepartment(department);
+               if("null".equals(department.getInstroduction())){
+                   department.setInstroduction("");
+               }
+               if(sum > 0){
+                   return new ResponseBean(ResponseBean.SUCCESS,"部门添加成功",null);
+               }else {
+                   return new ResponseBean(ResponseBean.FAILURE,"部门添加失败",null);
+               }
+
+           }else{
+               return new ResponseBean(ResponseBean.FAILURE,"部门已存在",null);
+           }
+       }catch (Exception e){
+           e.printStackTrace();
+           return new ResponseBean(ResponseBean.ERROR,"错误",null);
+       }
+
+    }
+
+    @Override
+    public ResponseBean editDepartment(Department department) {
+       try{
+           int sum = departmentMapper.updateDepartment(department);
+           System.out.println(sum);
+           if(sum > 0){
+               return new ResponseBean(ResponseBean.SUCCESS,"部门修改成功",null);
+           }else{
+               return new ResponseBean(ResponseBean.FAILURE,"部门修改失败",null);
+           }
+       }catch (Exception e){
+           e.printStackTrace();
+           return new ResponseBean(ResponseBean.ERROR,"失败",null);
+       }
     }
 }

@@ -1,6 +1,7 @@
 package top.catoy.docmanagement.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import top.catoy.docmanagement.domain.Department;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface DepartmentMapper {
     int insertDepartment(Department department);
 
-    int deleteDepartmentById(int id);
+    int deleteDepartmentById(@Param("departmentId") int id);
 
     List<Department> getAllDepartments();
 
@@ -25,5 +26,10 @@ public interface DepartmentMapper {
     public List<Department> getTopDepartmemt();
 
     Department getDepartmentById(int id);
+
+    Department getDepartmentByName(@Param("departmentName") String name);
+
+    int updateDepartment(Department department);
+
 
 }
