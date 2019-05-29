@@ -63,7 +63,10 @@ public class UserController {
             return new ResponseBean(ResponseBean.NOT_LEGAL,"用户已锁定",null);
         }
         if(result.getMsg().equals("密码错误")){
-            return new ResponseBean(ResponseBean.NOT_LEGAL,"密码错误",null);
+            return new ResponseBean(ResponseBean.FAILURE,"密码错误",null);
+        }
+        if(result.getMsg().equals("用户不存在")){
+            return new ResponseBean(ResponseBean.FAILURE,"用户不存在",null);
         }
         if(result.getMsg().equals("登录成功")){
                 String token = JWTUtil.sign((User) result.getData(),serct);
