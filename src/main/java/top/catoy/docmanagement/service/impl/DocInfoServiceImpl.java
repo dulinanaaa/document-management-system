@@ -35,6 +35,9 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Autowired
     private DocInfoAndTagMapper docInfoAndTagMapper;
 
+    @Autowired
+    private UserGroupMapper userGroupMapper;
+
     @Override
     public int insertDocInfo(DocInfo docInfo) {
         return docInfoMapper.insertDocInfo(docInfo);
@@ -82,7 +85,8 @@ public class DocInfoServiceImpl implements DocInfoService {
             List<Department> departmentList = departmentMapper.getAllDepartments();
             List<Integer> docLabels;
             List<Integer> tags;
-
+            int userGroupId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getGroupId();
+            String userRole = userGroupMapper.getUserGroupById(userGroupId).getGroupName();
             int pageSize = docInfoSearchParams.getPageInfo().getPageSize();
             int currentPage = docInfoSearchParams.getPageInfo().getCurrentPage();
             int departmentId = -1;
@@ -120,6 +124,14 @@ public class DocInfoServiceImpl implements DocInfoService {
                 System.out.println(docs+"---------------------docs");
                 docInfos.addAll(docs);//加入父部门所拥有的文档
                 getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+            }
+
+            //获得为分配部门的文件
+            if("管理员".equals(userRole)){
+                List<DocInfo> notTrackedDoc = docInfoMapper.getDocByDepartmentId(-1);
+                if (notTrackedDoc !=null && notTrackedDoc.size()>0){
+                    docInfos.addAll(notTrackedDoc);
+                }
             }
 
             //获得文件的附件信息和部门信息
