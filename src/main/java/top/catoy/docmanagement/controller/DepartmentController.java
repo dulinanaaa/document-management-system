@@ -49,7 +49,9 @@ public class DepartmentController {
         int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
         List list = departmentService.getChild(departmentId,departments);
         rootDepartment = departmentMapper.getDepartmentById(departmentId);
-        rootDepartment.setChildren(list);
+        if(list != null){
+            rootDepartment.setChildren(list);
+        }
         List<Department> rootList = new ArrayList<>();
         rootList.add(rootDepartment);
         if(list != null){

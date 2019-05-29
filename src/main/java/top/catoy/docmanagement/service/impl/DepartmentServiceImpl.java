@@ -7,6 +7,7 @@ import top.catoy.docmanagement.domain.DocInfo;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
+import top.catoy.docmanagement.mapper.DocInfoMapper;
 import top.catoy.docmanagement.mapper.UserMapper;
 import top.catoy.docmanagement.service.DepartmentService;
 
@@ -22,6 +23,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private DocInfoMapper docInfoMapper;
 
     @Override
     public String getDepartmentNameById(int id) {
@@ -106,19 +110,31 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public ResponseBean delDepartmentById(int id) {
         try{
-            int sum = departmentMapper.deleteDepartmentById(id);
-            List<User> users = userMapper.getUsersByDepartmentId(id);
-            for(User user:users){
-                if(user != null){
-                    user.setDepartmentId(0);
-                    userMapper.updateUser(user);
+            List<Department> allList = departmentMapper.getAllDepartments();
+            List<Department> childList = new ArrayList<>();
+            getAllChildList(id,allList,childList);
+            childList.add(departmentMapper.getDepartmentById(id));//当前部门和下级部门集合
+
+            for(Department department:childList){
+                if(department != null){
+                    departmentMapper.deleteDepartmentById(department.getId());
+                    List<User> users = userMapper.getUsersByDepartmentId(department.getId());
+                    List<DocInfo> docInfos = docInfoMapper.getDocByDepartmentId(department.getId());
+                    for(User user:users){
+                        if(user != null){
+                            user.setDepartmentId(-1);
+                            userMapper.updateUser(user);
+                        }
+                    }
+                    for(DocInfo docInfo:docInfos){
+                        if(docInfo != null){
+                            docInfo.setDepartmentId(-1);
+                            docInfoMapper.updateDocInfo(docInfo);
+                        }
+                    }
                 }
             }
-            if(sum > 0){
-                return new ResponseBean(ResponseBean.SUCCESS,"删除部门成功",null);
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"删除部门失败",null);
-            }
+            return new ResponseBean(ResponseBean.SUCCESS,"删除部门成功",null);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseBean(ResponseBean.FAILURE,"错误",null);
@@ -165,5 +181,18 @@ public class DepartmentServiceImpl implements DepartmentService {
            e.printStackTrace();
            return new ResponseBean(ResponseBean.ERROR,"失败",null);
        }
+    }
+
+    public void getAllChildList(int id,List<Department> allList,List<Department> childList){
+        List<Department> list;
+        list = getChild(id,allList);
+        if(list != null){
+            for(Department department:list){
+                childList.add(department);
+                if(department.getChildren() != null){
+                    getAllChildList(department.getId(),allList,childList);
+                }
+            }
+        }
     }
 }
