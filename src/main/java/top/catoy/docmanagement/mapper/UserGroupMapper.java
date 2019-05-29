@@ -25,5 +25,9 @@ public interface UserGroupMapper {
 
     public String getPagePermission(int groupId);
 
+    public String getPagePermissions(@Param("name") String name);
+
+    public String getUserPermissions(@Param("name") String name);
+
 
 }

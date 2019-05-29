@@ -66,8 +66,15 @@ public class UserServiceImpl implements UserService {
             String departmentName = departmentMapper.getDepartmentNameById(user.getDepartmentId());
             UserGroup userGroup = userGroupMapper.getUserGroupById(user.getGroupId());
             usertableInfo.setDepartment(departmentName);
-            usertableInfo.setRole(userGroup.getGroupName());
-            usertableInfo.setPermission(userGroup.getGroupPermission());
+            if(userGroup!= null){
+                usertableInfo.setRole(userGroup.getGroupName());
+                usertableInfo.setPermission(userGroup.getGroupPermission());
+            }else {
+                usertableInfo.setRole("用户");
+                String pagePermissions = userGroupMapper.getPagePermissions("用户");
+                String userpermissions =  userGroupMapper.getUserPermissions("用户");
+                usertableInfo.setPermission(userpermissions);
+            }
             if(user.getUserLock() == 0){
                 usertableInfo.setIslocked("未锁定");
             }else {
