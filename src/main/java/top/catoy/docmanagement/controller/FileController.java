@@ -115,27 +115,30 @@ public class FileController {
             docInfo.setDepartmentId(user.getDepartmentId());
             docInfoService.insertDocInfo(docInfo);
             int docId = docInfoService.getDocId(docInfo);
-            String tag[] = tags.split(",");
-            for(int i = 0;i < tag.length;i++){
-                Tag t = tagService.getTagByName(tag[i]);
-                if(t == null){
-                    Tag tg = new Tag();
-                    tg.setTagName(tag[i]);
-                    tg.setIsuse(1);
-                    tagService.insertTags(tg);
-                    DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
-                    docInfoAndTag.setDocInfo_id(docId);
-                    int tagId = tagService.getIdByTagName(tag[i]);
-                    docInfoAndTag.setTag_id(tagId);
-                    docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
-                }else {
-                    DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
-                    docInfoAndTag.setDocInfo_id(docId);
-                    int tagId = tagService.getIdByTagName(tag[i]);
-                    docInfoAndTag.setTag_id(tagId);
-                    docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+            if(tags != null){
+                String tag[] = tags.split(",");
+                for(int i = 0;i < tag.length;i++){
+                    Tag t = tagService.getTagByName(tag[i]);
+                    if(t == null){
+                        Tag tg = new Tag();
+                        tg.setTagName(tag[i]);
+                        tg.setIsuse(1);
+                        tagService.insertTags(tg);
+                        DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                        docInfoAndTag.setDocInfo_id(docId);
+                        int tagId = tagService.getIdByTagName(tag[i]);
+                        docInfoAndTag.setTag_id(tagId);
+                        docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                    }else {
+                        DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                        docInfoAndTag.setDocInfo_id(docId);
+                        int tagId = tagService.getIdByTagName(tag[i]);
+                        docInfoAndTag.setTag_id(tagId);
+                        docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                    }
                 }
             }
+
             String types[] = type.split(",");
             List<DocLabel> docLabels = docLabelService.getLabelByName(types);
             for(int i = 0;i < docLabels.size();i++){

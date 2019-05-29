@@ -34,4 +34,12 @@
     <select id="getPagePermission" resultType="java.lang.String">
 
     </select>
+    <select id="getPagePermissions" resultType="java.lang.String">
+        select page_permission from userGroup where group_name = #{name}
+    </select>
+    <select id="getUserPermissions" resultType="java.lang.String">
+        select group_permission from userGroup where group_name = #{name}
+    </select>
+
+
 </mapper>
