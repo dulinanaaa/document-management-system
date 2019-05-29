@@ -28,4 +28,10 @@ public interface DocLabelService {
     public List<DocLabel> getLabelByName(String []labels);
 
     List<DocLabel> getChild(int id, List<DocLabel> fatherList);
+
+    public int getSuperIdByName(String name);
+
+    public DocLabel getDocLabelByName(String name);
+
+    public int getIdByName(String name);
 }

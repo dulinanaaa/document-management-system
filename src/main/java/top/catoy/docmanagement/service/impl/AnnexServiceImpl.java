@@ -7,6 +7,8 @@ import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.mapper.AnnexMapper;
 import top.catoy.docmanagement.service.AnnexService;
 
+import java.util.List;
+
 
 @Service
 public class AnnexServiceImpl implements AnnexService {
@@ -33,5 +35,10 @@ public class AnnexServiceImpl implements AnnexService {
 //            return new ResponseBean(ResponseBean.ERROR,"错误",null);
 //        }
         return null;
+    }
+
+    @Override
+    public List<Annex> getAnnexListByDocId(int docId) {
+        return annexMapper.getAnnexsByDocId(docId);
     }
 }

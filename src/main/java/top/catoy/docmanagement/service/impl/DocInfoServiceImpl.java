@@ -224,4 +224,9 @@ public class DocInfoServiceImpl implements DocInfoService {
         pageInfo.setList(subList);
         return pageInfo;
     }
+
+    @Override
+    public DocInfo getDocInfoByName(String name) {
+        return docInfoMapper.getDocInfoByName(name);
+    }
 }

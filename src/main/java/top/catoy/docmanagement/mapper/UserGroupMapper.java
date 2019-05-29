@@ -23,5 +23,7 @@ public interface UserGroupMapper {
 
     public int updateUserGroup(UserGroup userGroup);
 
+    public String getPagePermission(int groupId);
+
 
 }

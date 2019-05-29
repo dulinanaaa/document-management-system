@@ -8,7 +8,17 @@ package top.catoy.docmanagement.domain;
 public class UserGroup {
     private int groupId;
     private String groupName;
+    private String pagePermission;
     private String groupPermission;
+
+
+    public String getPagePermission() {
+        return pagePermission;
+    }
+
+    public void setPagePermission(String pagePermission) {
+        this.pagePermission = pagePermission;
+    }
 
     public int getGroupId() {
         return groupId;
@@ -39,6 +49,7 @@ public class UserGroup {
         return "UserGroup{" +
                 "groupId=" + groupId +
                 ", groupName='" + groupName + '\'' +
+                ", pagePermission='" + pagePermission + '\'' +
                 ", groupPermission='" + groupPermission + '\'' +
                 '}';
     }

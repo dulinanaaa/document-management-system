@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserService {
                     userInfo.setDepartmentId(user.getDepartmentId());
                     userInfo.setUserName(user.getUserName());
                     userInfo.setUserPassword(user.getUserPassword());
+                    userInfo.setGroupId(userGroup.getGroupId());
                     userInfo.setUserLock(user.getUserLock());
                     userInfo.setRole(userGroup.getGroupName());
                     System.out.println(userGroup.getGroupName());

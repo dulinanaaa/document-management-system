@@ -50,8 +50,8 @@ public class PDFDemo {
 //        }
 //        return false;
 //    }
-
+//
 //    public static void main(String[] args){
-//        officeToPDF("D:\\pdf\\sun.xls","D:\\pdf\\haha.pdf");
+//        officeToPDF("D:\\img\\imooc.jpg","D:\\img\\haha.pdf");
 //    }
 }

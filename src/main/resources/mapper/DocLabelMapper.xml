@@ -35,6 +35,15 @@
 
 
     </select>
+    <select id="getSuperIdByName" resultType="java.lang.Integer">
+        select super_id from docLabel where  docLabel_name = #{name}
+    </select>
+    <select id="getDocLabelByName" resultMap="DocLabelMap">
+        select * from docLabel where docLabel_name = #{name}
+    </select>
+    <select id="getIdByName" resultType="java.lang.Integer">
+        select docLabel_id from docLabel where docLabel_name = #{name}
+    </select>
 
     <insert id="insertLabel" parameterType="DocLabel" useGeneratedKeys="true" keyProperty="docLabelId">
         INSERT INTO docLabel(docLabel_name,super_id) VALUES(#{docLabelName},#{superId})
