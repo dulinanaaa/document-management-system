@@ -7,6 +7,7 @@ import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
 import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.DocInfoService;
+import top.catoy.docmanagement.service.LogService;
 import top.catoy.docmanagement.utils.JWTUtil;
 
 import java.util.ArrayList;
@@ -35,8 +36,16 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Autowired
     private DocInfoAndTagMapper docInfoAndTagMapper;
 
+    @Autowired
+    private UserGroupMapper userGroupMapper;
+
+    @Autowired
+    private LogService logService;
+
     @Override
     public int insertDocInfo(DocInfo docInfo) {
+        User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+        logService.insertLog(u.getUserId(), "上传文件-"+docInfo.getDocName(), "文件管理");
         return docInfoMapper.insertDocInfo(docInfo);
     }
 
@@ -82,7 +91,8 @@ public class DocInfoServiceImpl implements DocInfoService {
             List<Department> departmentList = departmentMapper.getAllDepartments();
             List<Integer> docLabels;
             List<Integer> tags;
-
+            int userGroupId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getGroupId();
+            String userRole = userGroupMapper.getUserGroupById(userGroupId).getGroupName();
             int pageSize = docInfoSearchParams.getPageInfo().getPageSize();
             int currentPage = docInfoSearchParams.getPageInfo().getCurrentPage();
             int departmentId = -1;
@@ -120,6 +130,14 @@ public class DocInfoServiceImpl implements DocInfoService {
                 System.out.println(docs+"---------------------docs");
                 docInfos.addAll(docs);//加入父部门所拥有的文档
                 getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+            }
+
+            //获得未分配部门的文件
+            if("管理员".equals(userRole)){
+                List<DocInfo> notTrackedDoc = docInfoMapper.getDocByDepartmentIdAndSearchParam(-1,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+                if (notTrackedDoc !=null && notTrackedDoc.size()>0){
+                    docInfos.addAll(notTrackedDoc);
+                }
             }
 
             //获得文件的附件信息和部门信息
