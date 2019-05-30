@@ -1,11 +1,15 @@
 package top.catoy.docmanagement.service.impl;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.DocLabel;
 import top.catoy.docmanagement.domain.ResponseBean;
+import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.mapper.DocLabelMapper;
 import top.catoy.docmanagement.service.DocLabelService;
+import top.catoy.docmanagement.service.LogService;
+import top.catoy.docmanagement.utils.JWTUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +24,11 @@ public class DocLabelServiceImpl implements DocLabelService {
     @Autowired
     private DocLabelMapper docLabelMapper;
 
+    @Autowired
+    private LogService logService;
+
     /**
-     * 插入标签
+     * 插入类别
      * @param docLabel
      * @return
      */
@@ -30,10 +37,12 @@ public class DocLabelServiceImpl implements DocLabelService {
         try {
             int sum = docLabelMapper.insertLabel(docLabel);
             if(sum > 0){
-                return new ResponseBean(ResponseBean.SUCCESS,"标签插入成功",null);
+                User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                logService.insertLog(u.getUserId(), "增加类别-"+docLabel.getDocLabelName(), "类别管理");
+                return new ResponseBean(ResponseBean.SUCCESS,"类别插入成功",null);
             }
             else {
-                return new ResponseBean(ResponseBean.FAILURE,"标签插入失败",null);
+                return new ResponseBean(ResponseBean.FAILURE,"类别插入失败",null);
             }
         }catch (RuntimeException r){
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
@@ -41,7 +50,7 @@ public class DocLabelServiceImpl implements DocLabelService {
     }
 
     /**
-     * 删除根据Id标签
+     * 删除根据Id类别
      * @param docLabel
      * @return
      */
@@ -50,10 +59,12 @@ public class DocLabelServiceImpl implements DocLabelService {
         try {
             int sum = docLabelMapper.delDocLabel(docLabel);
             if(sum > 0){
-                return new ResponseBean(ResponseBean.SUCCESS,"标签删除成功",null);
+                User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                logService.insertLog(u.getUserId(), "删除类别-"+docLabel.getDocLabelName(), "类别管理");
+                return new ResponseBean(ResponseBean.SUCCESS,"类别删除成功",null);
             }
             else {
-                return new ResponseBean(ResponseBean.FAILURE,"标签删除失败",null);
+                return new ResponseBean(ResponseBean.FAILURE,"类别删除失败",null);
             }
         }catch (RuntimeException r){
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
@@ -61,7 +72,7 @@ public class DocLabelServiceImpl implements DocLabelService {
     }
 
     /**
-     * 根据id更新标签
+     * 根据id更新类别
      * @param docLabel
      * @return
      */
@@ -70,10 +81,12 @@ public class DocLabelServiceImpl implements DocLabelService {
         try {
             int sum = docLabelMapper.editDocLabel(docLabel);
             if(sum > 0){
-                return new ResponseBean(ResponseBean.SUCCESS,"标签修改成功",null);
+                User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                logService.insertLog(u.getUserId(), "修改类别-"+docLabel.getDocLabelName(), "类别管理");
+                return new ResponseBean(ResponseBean.SUCCESS,"类别修改成功",null);
             }
             else {
-                return new ResponseBean(ResponseBean.FAILURE,"标签修改失败",null);
+                return new ResponseBean(ResponseBean.FAILURE,"类别修改失败",null);
             }
         }catch (RuntimeException r){
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
@@ -81,7 +94,7 @@ public class DocLabelServiceImpl implements DocLabelService {
     }
 
     /**
-     * 得到所有标签
+     * 得到所有类别
      * @return
      */
     @Override
@@ -165,7 +178,7 @@ public class DocLabelServiceImpl implements DocLabelService {
     }
 
     /**
-     * 得到所有子标签
+     * 得到所有子类别
      * @param superId
      * @return
      */
@@ -184,7 +197,7 @@ public class DocLabelServiceImpl implements DocLabelService {
     }
 
     /**
-     * 通过Id查询标签
+     * 通过Id查询类别
      * @param id
      * @return
      */

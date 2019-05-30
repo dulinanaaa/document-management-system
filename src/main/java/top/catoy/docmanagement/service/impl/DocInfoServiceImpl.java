@@ -7,6 +7,7 @@ import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
 import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.DocInfoService;
+import top.catoy.docmanagement.service.LogService;
 import top.catoy.docmanagement.utils.JWTUtil;
 
 import java.util.ArrayList;
@@ -38,8 +39,13 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Autowired
     private UserGroupMapper userGroupMapper;
 
+    @Autowired
+    private LogService logService;
+
     @Override
     public int insertDocInfo(DocInfo docInfo) {
+        User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+        logService.insertLog(u.getUserId(), "上传文件-"+docInfo.getDocName(), "文件管理");
         return docInfoMapper.insertDocInfo(docInfo);
     }
 
