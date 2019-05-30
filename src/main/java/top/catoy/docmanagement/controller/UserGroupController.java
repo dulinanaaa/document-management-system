@@ -96,6 +96,7 @@ public class UserGroupController {
         User user = JWTUtil.getUserInfo(token);
         User userInfo = userService.getUserByName(user.getUserName());
         List<UserGroup> list = userGroupService.getAllUserGroup();
+        System.out.println(user+"----------------------------========================================================"+list);
         List grouplist = new ArrayList();
         for(int i = 0;i < list.size();i++){
             if(userInfo.getGroupId() == list.get(i).getGroupId()){

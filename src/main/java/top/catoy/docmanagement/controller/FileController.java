@@ -313,37 +313,43 @@ public class FileController {
 
     @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
     public ResponseBean PreViewFile(@RequestParam("FilePath") String filePath){
-        try {
-            System.out.println(filePath);
-            int last = filePath.lastIndexOf('/');
-            int lastpot = filePath.lastIndexOf('.');
-            String suffix = filePath.substring(filePath.lastIndexOf('.')+1);
-            if(suffix.equals("jpg") || suffix.equals("png")){
-                String name = filePath.substring(last+1,lastpot);
-                try {
-                    String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
-                    boolean flag = imgToPdf(filePath,destFile);
-                    if(flag == true){
-                        return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
-                    }else {
-                        return new ResponseBean(ResponseBean.FAILURE,"",null);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("预览")){
+            try {
+                System.out.println(filePath);
+                int last = filePath.lastIndexOf('/');
+                int lastpot = filePath.lastIndexOf('.');
+                String suffix = filePath.substring(filePath.lastIndexOf('.')+1);
+                if(suffix.equals("jpg") || suffix.equals("png")){
+                    String name = filePath.substring(last+1,lastpot);
+                    try {
+                        String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
+                        boolean flag = imgToPdf(filePath,destFile);
+                        if(flag == true){
+                            return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
+                        }else {
+                            return new ResponseBean(ResponseBean.FAILURE,"",null);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+                String name = filePath.substring(last+1,lastpot);
+                System.out.println(name);
+                String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
+                boolean flag = officeToPDF(filePath,destFile);
+                if(flag == true){
+                    return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
+                }else {
+                    return new ResponseBean(ResponseBean.FAILURE,"",null);
+                }
+            }catch (Exception e){
+                return new ResponseBean(ResponseBean.FAILURE,"该文件无法预览",null);
             }
-            String name = filePath.substring(last+1,lastpot);
-            System.out.println(name);
-            String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
-            boolean flag = officeToPDF(filePath,destFile);
-            if(flag == true){
-                return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"",null);
-            }
-        }catch (Exception e){
-            return new ResponseBean(ResponseBean.FAILURE,"该文件无法预览",null);
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"你没有该权限!",null);
         }
+
     }
 
 
