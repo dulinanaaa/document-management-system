@@ -132,9 +132,9 @@ public class DocInfoServiceImpl implements DocInfoService {
                 getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
             }
 
-            //获得为分配部门的文件
+            //获得未分配部门的文件
             if("管理员".equals(userRole)){
-                List<DocInfo> notTrackedDoc = docInfoMapper.getDocByDepartmentId(-1);
+                List<DocInfo> notTrackedDoc = docInfoMapper.getDocByDepartmentIdAndSearchParam(-1,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
                 if (notTrackedDoc !=null && notTrackedDoc.size()>0){
                     docInfos.addAll(notTrackedDoc);
                 }
