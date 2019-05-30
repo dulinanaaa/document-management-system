@@ -1,5 +1,6 @@
 package top.catoy.docmanagement.service.impl;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.Department;
@@ -7,8 +8,12 @@ import top.catoy.docmanagement.domain.DocInfo;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
+import top.catoy.docmanagement.mapper.DocInfoMapper;
+import top.catoy.docmanagement.mapper.LogMapper;
 import top.catoy.docmanagement.mapper.UserMapper;
 import top.catoy.docmanagement.service.DepartmentService;
+import top.catoy.docmanagement.service.LogService;
+import top.catoy.docmanagement.utils.JWTUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private DocInfoMapper docInfoMapper;
+
+    @Autowired
+    private LogService logService;
 
     @Override
     public String getDepartmentNameById(int id) {
@@ -106,19 +117,34 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public ResponseBean delDepartmentById(int id) {
         try{
-            int sum = departmentMapper.deleteDepartmentById(id);
-            List<User> users = userMapper.getUsersByDepartmentId(id);
-            for(User user:users){
-                if(user != null){
-                    user.setDepartmentId(0);
-                    userMapper.updateUser(user);
+            User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+            List<Department> allList = departmentMapper.getAllDepartments();
+            List<Department> childList = new ArrayList<>();
+            getAllChildList(id,allList,childList);
+            Department delDepartment = departmentMapper.getDepartmentById(id);
+            childList.add(delDepartment);//当前部门和下级部门集合
+
+            for(Department department:childList){
+                if(department != null){
+                    departmentMapper.deleteDepartmentById(department.getId());
+                    logService.insertLog(u.getUserId(), "删除部门-"+department.getName(), "部门管理");
+                    List<User> users = userMapper.getUsersByDepartmentId(department.getId());
+                    List<DocInfo> docInfos = docInfoMapper.getDocByDepartmentId(department.getId());
+                    for(User user:users){
+                        if(user != null){
+                            user.setDepartmentId(-1);
+                            userMapper.updateUser(user);
+                        }
+                    }
+                    for(DocInfo docInfo:docInfos){
+                        if(docInfo != null){
+                            docInfo.setDepartmentId(-1);
+                            docInfoMapper.updateDocInfo(docInfo);
+                        }
+                    }
                 }
             }
-            if(sum > 0){
-                return new ResponseBean(ResponseBean.SUCCESS,"删除部门成功",null);
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"删除部门失败",null);
-            }
+            return new ResponseBean(ResponseBean.SUCCESS,"删除部门成功",null);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseBean(ResponseBean.FAILURE,"错误",null);
@@ -128,6 +154,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public ResponseBean addDepartment(Department department) {
        try {
+           User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
            String departName = department.getName();
            Department dep = departmentMapper.getDepartmentByName(departName);
            if(dep == null){
@@ -136,6 +163,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                    department.setInstroduction("");
                }
                if(sum > 0){
+                   logService.insertLog(u.getUserId(), "增加部门-"+department.getName(), "部门管理");
                    return new ResponseBean(ResponseBean.SUCCESS,"部门添加成功",null);
                }else {
                    return new ResponseBean(ResponseBean.FAILURE,"部门添加失败",null);
@@ -154,9 +182,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public ResponseBean editDepartment(Department department) {
        try{
+           User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
            int sum = departmentMapper.updateDepartment(department);
            System.out.println(sum);
            if(sum > 0){
+               logService.insertLog(u.getUserId(), "修改部门-"+department.getName(), "部门管理");
                return new ResponseBean(ResponseBean.SUCCESS,"部门修改成功",null);
            }else{
                return new ResponseBean(ResponseBean.FAILURE,"部门修改失败",null);
@@ -165,5 +195,18 @@ public class DepartmentServiceImpl implements DepartmentService {
            e.printStackTrace();
            return new ResponseBean(ResponseBean.ERROR,"失败",null);
        }
+    }
+
+    public void getAllChildList(int id,List<Department> allList,List<Department> childList){
+        List<Department> list;
+        list = getChild(id,allList);
+        if(list != null){
+            for(Department department:list){
+                childList.add(department);
+                if(department.getChildren() != null){
+                    getAllChildList(department.getId(),allList,childList);
+                }
+            }
+        }
     }
 }

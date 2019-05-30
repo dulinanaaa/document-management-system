@@ -81,5 +81,14 @@
         select * from docInfo where doc_name = #{name}
     </select>
 
+    <update id="updateDocInfo" parameterType="DocInfo">
+        UPDATE docInfo
+        SET doc_name=#{docName},
+            doc_savepath=#{docSavePath},
+            user_id=#{userId},
+            suffix_name=#{suffixName},
+            department_id=#{departmentId}
+        WHERE doc_id=#{docId}
+    </update>
 
 </mapper>
