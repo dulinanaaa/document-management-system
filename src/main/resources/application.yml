@@ -42,7 +42,7 @@ com:
   sxito:
     custom:
       windows-path: d://sxito/
-      linux-path: /sxito
+      linux-path: /sxito/
       keys: fourzeroeight
 #jwt:
 #  secret: xljSecret
