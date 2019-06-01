@@ -33,4 +33,6 @@ public interface DocInfoMapper {
     DocInfo getDocInfoByName(@Param("name") String name);
 
     int updateDocInfo(DocInfo docInfo);
+
+    int delDocInfo(DocInfo docInfo);
 }

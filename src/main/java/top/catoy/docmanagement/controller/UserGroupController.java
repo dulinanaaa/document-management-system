@@ -109,4 +109,10 @@ public class UserGroupController {
             return new ResponseBean(ResponseBean.FAILURE,"查找失败",null);
         }
     }
+
+//    @RequestMapping("/public/getPermission")
+//    public ResponseBean getPermission(){
+//
+//
+//    }
 }
