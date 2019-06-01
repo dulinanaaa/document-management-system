@@ -40,6 +40,9 @@
     <select id="getUserPermissions" resultType="java.lang.String">
         select group_permission from userGroup where group_name = #{name}
     </select>
+    <select id="getUserGroupIdByName" resultType="java.lang.Integer">
+        select group_id from userGroup where group_name = #{name}
+    </select>
 
 
 </mapper>

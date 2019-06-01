@@ -41,4 +41,9 @@ public class AnnexServiceImpl implements AnnexService {
     public List<Annex> getAnnexListByDocId(int docId) {
         return annexMapper.getAnnexsByDocId(docId);
     }
+
+    @Override
+    public int deleteAnnex(Annex annex) {
+        return annexMapper.deleteAnnex(annex);
+    }
 }

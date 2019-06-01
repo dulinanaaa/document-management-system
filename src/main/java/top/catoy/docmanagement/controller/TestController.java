@@ -25,5 +25,11 @@ public class TestController {
         System.out.println(subject.hasRole("管理员"));
 
     }
+
+    @RequestMapping("/getdemo")
+    public void getdemo(){
+        System.out.println(111111);
+
+    }
 }
 

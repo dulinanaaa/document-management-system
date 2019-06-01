@@ -283,4 +283,9 @@ public class DocInfoServiceImpl implements DocInfoService {
     public DocInfo getDocInfoByName(String name) {
         return docInfoMapper.getDocInfoByName(name);
     }
+
+    @Override
+    public int deleteDocInfo(DocInfo docInfo) {
+        return docInfoMapper.delDocInfo(docInfo);
+    }
 }
