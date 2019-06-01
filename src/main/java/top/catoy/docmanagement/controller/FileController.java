@@ -73,6 +73,9 @@ public class FileController {
     @Autowired
     private DocInfoAndDocLabelService docInfoAndDocLabelService;
 
+    @Autowired
+    private LogService logService;
+
     /***
      * 单文件上传
      * @param file
@@ -83,8 +86,6 @@ public class FileController {
     , @RequestParam("region") String region, @RequestParam("type")String type, @RequestParam("date")String date, @RequestParam("number")String number,
                                    @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
-
-        System.out.println(tags+"((((((((((((((((&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("上传")){
             String token = (String) subject.getPrincipal();
@@ -160,7 +161,6 @@ public class FileController {
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
         }
-
     }
 
 
@@ -220,7 +220,6 @@ public class FileController {
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
         }
-
     }
 
     @RequestMapping(value = "/getName",method = RequestMethod.GET)
@@ -368,7 +367,6 @@ public class FileController {
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"你没有该权限!",null);
         }
-
     }
 
     @RequestMapping("/public/deleteAnnex")
@@ -605,6 +603,8 @@ public class FileController {
 //            int res =
             if(file.exists() && file.isFile()){
                 if(result > 0 && file.delete()){
+                    User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                    logService.insertLog(u.getUserId(), "删除文件-"+docInfo.getDocName(), "文件管理");
                     return new ResponseBean(ResponseBean.SUCCESS,"删除成功!",null);
                 }else {
                     return new ResponseBean(ResponseBean.FAILURE,"删除失败!",null);

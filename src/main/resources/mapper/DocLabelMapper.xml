@@ -11,12 +11,22 @@
         <result column="super_id" property="superId"></result>
     </resultMap>
 
-    <select id="getLabelsByName" resultMap="DocLabelMap" parameterType="String" >
-        SELECT * FROM docLabel where
-        docLabel_name in
-        <foreach collection="labels" item="label" open="(" close=")" separator=",">
-            #{label}
-        </foreach>
+    <!--<select id="getLabelsByName" resultMap="DocLabelMap" parameterType="String" >-->
+        <!--SELECT * FROM docLabel where-->
+        <!--docLabel_name in-->
+        <!--<foreach collection="labels" item="label" open="(" close=")" separator=",">-->
+            <!--#{label}-->
+        <!--</foreach>-->
+    <!--</select>-->
+
+    <select id="getLabelsByName" resultMap="DocLabelMap">
+        SELECT * FROM
+            docLabel
+        WHERE
+            docLabel_name IN
+            <foreach collection="labels" item="label" open="(" close=")" separator=",">
+                #{label}
+            </foreach>
     </select>
 
     <select id="getDocLabelById" parameterType="int" resultMap="DocLabelMap">

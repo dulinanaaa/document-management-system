@@ -1,437 +1,472 @@
-//package top.catoy.docmanagement;
-//
-//import javafx.concurrent.Task;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.annotation.Timed;
-//import org.springframework.test.context.junit4.SpringRunner;
-//import top.catoy.docmanagement.domain.*;
-//import top.catoy.docmanagement.mapper.*;
-//import top.catoy.docmanagement.service.*;
-//
-//import java.util.*;
-//
-//@RunWith(SpringRunner.class)
-//@SpringBootTest()
-//public class DocManagementApplicationTests {
-//    @Autowired
-//    private LogMapper logMapper;
-//
-//    @Autowired
-//    private DepartmentMapper departmentMapper;
-//
-//    @Autowired
-//    private LogService logService;
-//
-//    @Autowired
-//    private DocLabelMapper docLabelMapper;
-//
-//    @Autowired
-//    private DocLabelService docLabelService;
-//
-//    @Autowired
-//    private DocInfoMapper docInfoMapper;
-//
-//    @Autowired
-//    private UserMapper userMapper;
-//
-//    @Autowired
-//    private UserGroupMapper userGroupMapper;
-//
-//    @Autowired
-//    private DepartmentService departmentService;
-//
-//    @Autowired
-//    private TagService tagService;
-//
-//    @Autowired
-//    private DocInfoAndTagService docInfoAndTagService;
-//
-//    @Autowired
-//    private DocInfoAndDocLabelService docInfoAndDocLabelService;
-//
-//    @Autowired
-//    private DocInfoService docInfoService;
-//
-//    @Autowired
-//    private DocInfoAndDocLabelMapper docInfoAndDocLabelMapper;
-//
-//    @Autowired
-//    private  DocInfoAndTagMapper docInfoAndTagMapper;
-//
-//    @Test
-//    public void contextLoads() {
-//    }
-//
-//    @Test
-//    public void testLogMapper(){
-//        Log log = new Log();
-//        log.setOpLabel("用户操作");
-//        log.setOpName("用户登入");
-//        log.setUserId(1);
-//        List<Log> logs = logMapper.getAllLogs();
-//        System.out.println("查询Id为1的日志:"+logMapper.selectLogById(1).toString());
-//        System.out.println("查询所有日志:"+logs.toString());
-//    }
-//
-//    @Test
-//    public void testLogService(){
-////        int sun = 0;
-////        ResponseBean responseBean = logService.insertLog(1,"删除用户","用户管理");
-////        if(sun > 0){
-////            System.out.println("日志插入成功");
-////        }else {
-////            System.out.println("日志插入失败");
-////        }
-////        ResponseBean responseBean = logService.getLogsBySearchParam("1",1,10);
-////        System.out.println(responseBean);
-////        System.out.println(responseBean.getData().toString());
-//    }
-//
-//    @Test
-//    public void testDepartmentMapper(){
-////        Department department = new Department();
-////        Department department1 = new Department();
-////        department.setDepartmentName("丽水学院");
-////        department1.setDepartmentName("工学院");
-////        department1.setSuperId(1);
-////        departmentMapper.insertDepartment(department);
-////        departmentMapper.insertDepartment(department1);
-////        System.out.println("得到所有部门信息"+departmentMapper.getAllDepartments().toString());
-//    }
-//
-//    @Test
-//    public void testDocLabelMapper(){
+package top.catoy.docmanagement;
+
+import javafx.concurrent.Task;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Timed;
+import org.springframework.test.context.junit4.SpringRunner;
+import top.catoy.docmanagement.domain.*;
+import top.catoy.docmanagement.mapper.*;
+import top.catoy.docmanagement.service.*;
+
+import java.util.*;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest()
+public class DocManagementApplicationTests {
+    @Autowired
+    private LogMapper logMapper;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private LogService logService;
+
+    @Autowired
+    private DocLabelMapper docLabelMapper;
+
+    @Autowired
+    private DocLabelService docLabelService;
+
+    @Autowired
+    private DocInfoMapper docInfoMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private UserGroupMapper userGroupMapper;
+
+    @Autowired
+    private DepartmentService departmentService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private DocInfoAndTagService docInfoAndTagService;
+
+    @Autowired
+    private DocInfoAndDocLabelService docInfoAndDocLabelService;
+
+    @Autowired
+    private DocInfoService docInfoService;
+
+    @Autowired
+    private DocInfoAndDocLabelMapper docInfoAndDocLabelMapper;
+
+    @Autowired
+    private  DocInfoAndTagMapper docInfoAndTagMapper;
+
+
+
+    @Test
+    public void contextLoads() {
+    }
+
+    @Test
+    public void testLogMapper(){
+        Log log = new Log();
+        log.setOpLabel("用户操作");
+        log.setOpName("用户登入");
+        log.setUserId(1);
+        List<Log> logs = logMapper.getAllLogs();
+        System.out.println("查询Id为1的日志:"+logMapper.selectLogById(1).toString());
+        System.out.println("查询所有日志:"+logs.toString());
+    }
+
+    @Test
+    public void testLogService(){
+//        int sun = 0;
+//        ResponseBean responseBean = logService.insertLog(1,"删除用户","用户管理");
+//        if(sun > 0){
+//            System.out.println("日志插入成功");
+//        }else {
+//            System.out.println("日志插入失败");
+//        }
+//        ResponseBean responseBean = logService.getLogsBySearchParam("1",1,10);
+//        System.out.println(responseBean);
+//        System.out.println(responseBean.getData().toString());
+    }
+
+    @Test
+    public void testDepartmentMapper(){
+//        Department department = new Department();
+//        Department department1 = new Department();
+//        department.setDepartmentName("丽水学院");
+//        department1.setDepartmentName("工学院");
+//        department1.setSuperId(1);
+//        departmentMapper.insertDepartment(department);
+//        departmentMapper.insertDepartment(department1);
+//        System.out.println("得到所有部门信息"+departmentMapper.getAllDepartments().toString());
+    }
+
+    @Test
+    public void testDocLabelMapper(){
+        DocLabel docLabel = new DocLabel();
+        DocLabel docLabelNew = new DocLabel();
+        docLabel.setDocLabelName("图片");
+        docLabelNew.setDocLabelName("视频");
+
+        int sum = docLabelMapper.insertLabel(docLabel);
+        System.out.println(docLabel.toString());
+        if(sum > 0){
+            System.out.println("----------标签插入成功");
+        }else{
+            System.out.println("----------标签插入失败");
+        }
+
+    }
+
+    @Test
+    public void testDocLabelService(){
 //        DocLabel docLabel = new DocLabel();
 //        DocLabel docLabelNew = new DocLabel();
 //        docLabel.setDocLabelName("图片");
 //        docLabelNew.setDocLabelName("视频");
-//
-//        int sum = docLabelMapper.insertLabel(docLabel);
-//        System.out.println(docLabel.toString());
-//        if(sum > 0){
-//            System.out.println("----------标签插入成功");
-//        }else{
-//            System.out.println("----------标签插入失败");
-//        }
-//
-//    }
-//
-//    @Test
-//    public void testDocLabelService(){
-////        DocLabel docLabel = new DocLabel();
-////        DocLabel docLabelNew = new DocLabel();
-////        docLabel.setDocLabelName("图片");
-////        docLabelNew.setDocLabelName("视频");
-////        System.out.println(docLabelService.insertDocLabel(docLabel).toString());
-////        System.out.println(docLabelService.editDocLabel(docLabelNew).toString());
-////        docLabel = docLabelNew;
-////        System.out.println(docLabelService.getAllDocLabels().toString());
-////        System.out.println(docLabelService.delDocLabel(docLabel).toString());
-////        System.out.println(docLabelService.getSonDocLabels(19));
-//        ResponseBean responseBean = docLabelService.getDocLabelsTree();
-//        System.out.println(responseBean.toString());
-//    }
-//
-//    @Test
-//    public void getDepartmentNameById(){
-//        int num = 1;
-//        System.out.println(departmentMapper.getDepartmentNameById(num));
-//    }
-//
-//    @Test
-//    public void getdepartmentID(){
-//        String name = "工学院";
-//       System.out.print(departmentMapper.getDepartmentIdByName(name)); ;
-//    }
-//
-//    @Test
-//    public void getUserGroupId(){
-//        String name = "admin";
-//        System.out.println(userGroupMapper.getUserGroupName(name));
-//    }
-//
-//
-//    @Test
-//    public void testdeleteuser(){
-//        int id = 5;
-//        System.out.println(userMapper.deleteUserById(5));
-//    }
-//
-//
-//    @Test
-//    public void insertUser(){
-//        User user = new User();
-//        user.setUserName("sda");
-//        user.setUserPassword("123");
-//        user.setUserLock(0);
-//        user.setGroupId(1);
-//        user.setDepartmentId(1);
-//        System.out.print( userMapper.insertUser(user));
-//
-//    }
-//
-//    @Test
-//    public void getDepartmentTree(){
-//        System.out.println(departmentService.getDepartmentsTree());
-////        System.out.println(departmentService.getAllDepartments());
-//    }
-//
-//    public void insertManyToMany(){
-//        DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
-//        docInfoAndDocLabel.setDocId(5);
-//        docInfoAndDocLabel.setdLabelId(19);
-//    }
-//
-//
-//    @Test
-//    public void getTopDepartment(){
-//        List list = departmentService.getTopDepartment();
-//        for(int i = 0;i < list.size();i++){
-//            System.out.println(list.get(i));
-//        }
-//    }
-//
-//
-//    @Test
-//    public void getSuffixName(){
-//        String str = "996.icx.xls";
-//        int pos = str.lastIndexOf('.');
-//        String news = str.substring(pos);
-//        System.out.println(news);
-//        System.out.println(pos);
-//    }
-//
-//    @Test
-//    public void TestDocInfoMapper(){
-//        List<Integer> docLabels = new ArrayList<>();
-//        List<Tag> tags = new ArrayList<>();
-////        Tag tag = new Tag();
-////        Tag tag2 = new Tag();
-////        tag.setTagId(1);
-////        tag2.setTagId(2);
-////        tags.add(tag);
-////        tags.add(tag2);
-////        DocLabel docLabel = new DocLabel();
-////        DocLabel doclabel2 = new DocLabel();
-////        docLabel.setDocLabelId(19);
-////        doclabel2.setDocLabelId(20);
-////        docLabels.add(docLabel);
-////        docLabels.add(doclabel2);
-////        docLabels.add(19);
-////        docLabels.add(20);
-//       List<DocInfo> docInfos =  docInfoMapper.getDocByDepartmentIdAndSearchParam(17, "", "2019", docLabels, new List<Integer>() {
-//           @Override
-//           public int size() {
-//               return 0;
-//           }
-//
-//           @Override
-//           public boolean isEmpty() {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean contains(Object o) {
-//               return false;
-//           }
-//
-//           @Override
-//           public Iterator<Integer> iterator() {
-//               return null;
-//           }
-//
-//           @Override
-//           public Object[] toArray() {
-//               return new Object[0];
-//           }
-//
-//           @Override
-//           public <T> T[] toArray(T[] a) {
-//               return null;
-//           }
-//
-//           @Override
-//           public boolean add(Integer integer) {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean remove(Object o) {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean containsAll(Collection<?> c) {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean addAll(Collection<? extends Integer> c) {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean addAll(int index, Collection<? extends Integer> c) {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean removeAll(Collection<?> c) {
-//               return false;
-//           }
-//
-//           @Override
-//           public boolean retainAll(Collection<?> c) {
-//               return false;
-//           }
-//
-//           @Override
-//           public void clear() {
-//
-//           }
-//
-//           @Override
-//           public Integer get(int index) {
-//               return null;
-//           }
-//
-//           @Override
-//           public Integer set(int index, Integer element) {
-//               return null;
-//           }
-//
-//           @Override
-//           public void add(int index, Integer element) {
-//
-//           }
-//
-//           @Override
-//           public Integer remove(int index) {
-//               return null;
-//           }
-//
-//           @Override
-//           public int indexOf(Object o) {
-//               return 0;
-//           }
-//
-//           @Override
-//           public int lastIndexOf(Object o) {
-//               return 0;
-//           }
-//
-//           @Override
-//           public ListIterator<Integer> listIterator() {
-//               return null;
-//           }
-//
-//           @Override
-//           public ListIterator<Integer> listIterator(int index) {
-//               return null;
-//           }
-//
-//           @Override
-//           public List<Integer> subList(int fromIndex, int toIndex) {
-//               return null;
-//           }
-//       });
-//       System.out.println(docInfos.toString());
-//    }
-//
-//
-//    @Test
-//    public void DocInfoService(){
-////        String param = "{docLabels=[], tags=[], departmentId=-1, DocName='123', selectYear='2010', pageInfo=PageInfo{currentPage=1, pageSize=6, total=0, list=null}";
-//        DocInfoSearchParams docInfoSearchParams = new DocInfoSearchParams();
-//        List<DocLabel> docLabels = new ArrayList<>();
-//        List<Tag> tags = new ArrayList<>();
+//        System.out.println(docLabelService.insertDocLabel(docLabel).toString());
+//        System.out.println(docLabelService.editDocLabel(docLabelNew).toString());
+//        docLabel = docLabelNew;
+//        System.out.println(docLabelService.getAllDocLabels().toString());
+//        System.out.println(docLabelService.delDocLabel(docLabel).toString());
+//        System.out.println(docLabelService.getSonDocLabels(19));
+        ResponseBean responseBean = docLabelService.getDocLabelsTree();
+        System.out.println(responseBean.toString());
+    }
+
+    @Test
+    public void getDepartmentNameById(){
+        int num = 1;
+        System.out.println(departmentMapper.getDepartmentNameById(num));
+    }
+
+    @Test
+    public void getdepartmentID(){
+        String name = "工学院";
+       System.out.print(departmentMapper.getDepartmentIdByName(name)); ;
+    }
+
+    @Test
+    public void getUserGroupId(){
+        String name = "admin";
+        System.out.println(userGroupMapper.getUserGroupName(name));
+    }
+
+
+    @Test
+    public void testdeleteuser(){
+        int id = 5;
+        System.out.println(userMapper.deleteUserById(5));
+    }
+
+
+    @Test
+    public void insertUser(){
+        User user = new User();
+        user.setUserName("sda");
+        user.setUserPassword("123");
+        user.setUserLock(0);
+        user.setGroupId(1);
+        user.setDepartmentId(1);
+        System.out.print( userMapper.insertUser(user));
+
+    }
+
+    @Test
+    public void getDepartmentTree(){
+        System.out.println(departmentService.getDepartmentsTree());
+//        System.out.println(departmentService.getAllDepartments());
+    }
+
+    public void insertManyToMany(){
+        DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
+        docInfoAndDocLabel.setDocId(5);
+        docInfoAndDocLabel.setdLabelId(19);
+    }
+
+
+    @Test
+    public void getTopDepartment(){
+        List list = departmentService.getTopDepartment();
+        for(int i = 0;i < list.size();i++){
+            System.out.println(list.get(i));
+        }
+    }
+
+
+    @Test
+    public void getSuffixName(){
+        String str = "996.icx.xls";
+        int pos = str.lastIndexOf('.');
+        String news = str.substring(pos);
+        System.out.println(news);
+        System.out.println(pos);
+    }
+
+    @Test
+    public void TestDocInfoMapper(){
+        List<Integer> docLabels = new ArrayList<>();
+        List<Tag> tags = new ArrayList<>();
 //        Tag tag = new Tag();
-//        Tag tag1 = new Tag();
-////        tag.setTagId(1);
-////        tag1.setTagId(2);
-////        tags.add(tag);
-////        tags.add(tag1);
+//        Tag tag2 = new Tag();
+//        tag.setTagId(1);
+//        tag2.setTagId(2);
+//        tags.add(tag);
+//        tags.add(tag2);
 //        DocLabel docLabel = new DocLabel();
-//        DocLabel docLabel2 = new DocLabel();
+//        DocLabel doclabel2 = new DocLabel();
 //        docLabel.setDocLabelId(19);
-//        docLabel2.setDocLabelId(20);
+//        doclabel2.setDocLabelId(20);
 //        docLabels.add(docLabel);
-//        docLabels.add(docLabel2);
-//        docInfoSearchParams.setDepartmentId(2);
-//        PageInfo pageInfo = new PageInfo();
-//        pageInfo.setPageSize(7);
-//        pageInfo.setCurrentPage(1);
-//        docInfoSearchParams.setDocLabels(docLabels);
-//        docInfoSearchParams.setPageInfo(pageInfo);
-//        docInfoSearchParams.setTags(tags);
-//        docInfoSearchParams.setSelectYear("Invalid date");
-//
-////        docInfoSearchParams.setSelectYear("3000");
-//        ResponseBean responseBean = docInfoService.getDocsBySearchParam(docInfoSearchParams);
-//        System.out.println(responseBean.toString());
-//    }
-//
-//    @Test
-//    public void testDocInfoDocLabelmapper(){
-//        List<DocLabel> docLabels = new ArrayList<>();
-//        DocLabel docLabel = new DocLabel();
-//        DocLabel docLabel2 = new DocLabel();
-//        docLabel.setDocLabelId(1);
-//        docLabel2.setDocLabelId(2);
-////        docLabels.add(docLabel);
-////        docLabels.add(docLabel2);
-//        List<Integer> integers = docInfoAndDocLabelMapper.getDocInfoIdByLabelId(docLabels);
-//        System.out.println(integers.toString());
-//    }
-//
-//    @Test
-//    public void testTagAndDocLabelMapper(){
-//        List<Tag> tags = new ArrayList<>();
-//        Tag tag = new Tag();
-//        Tag tag1 = new Tag();
+//        docLabels.add(doclabel2);
+//        docLabels.add(19);
+//        docLabels.add(20);
+       List<DocInfo> docInfos =  docInfoMapper.getDocByDepartmentIdAndSearchParam(17, "", "2019", docLabels, new List<Integer>() {
+           @Override
+           public int size() {
+               return 0;
+           }
+
+           @Override
+           public boolean isEmpty() {
+               return false;
+           }
+
+           @Override
+           public boolean contains(Object o) {
+               return false;
+           }
+
+           @Override
+           public Iterator<Integer> iterator() {
+               return null;
+           }
+
+           @Override
+           public Object[] toArray() {
+               return new Object[0];
+           }
+
+           @Override
+           public <T> T[] toArray(T[] a) {
+               return null;
+           }
+
+           @Override
+           public boolean add(Integer integer) {
+               return false;
+           }
+
+           @Override
+           public boolean remove(Object o) {
+               return false;
+           }
+
+           @Override
+           public boolean containsAll(Collection<?> c) {
+               return false;
+           }
+
+           @Override
+           public boolean addAll(Collection<? extends Integer> c) {
+               return false;
+           }
+
+           @Override
+           public boolean addAll(int index, Collection<? extends Integer> c) {
+               return false;
+           }
+
+           @Override
+           public boolean removeAll(Collection<?> c) {
+               return false;
+           }
+
+           @Override
+           public boolean retainAll(Collection<?> c) {
+               return false;
+           }
+
+           @Override
+           public void clear() {
+
+           }
+
+           @Override
+           public Integer get(int index) {
+               return null;
+           }
+
+           @Override
+           public Integer set(int index, Integer element) {
+               return null;
+           }
+
+           @Override
+           public void add(int index, Integer element) {
+
+           }
+
+           @Override
+           public Integer remove(int index) {
+               return null;
+           }
+
+           @Override
+           public int indexOf(Object o) {
+               return 0;
+           }
+
+           @Override
+           public int lastIndexOf(Object o) {
+               return 0;
+           }
+
+           @Override
+           public ListIterator<Integer> listIterator() {
+               return null;
+           }
+
+           @Override
+           public ListIterator<Integer> listIterator(int index) {
+               return null;
+           }
+
+           @Override
+           public List<Integer> subList(int fromIndex, int toIndex) {
+               return null;
+           }
+       });
+       System.out.println(docInfos.toString());
+    }
+
+
+    @Test
+    public void DocInfoService(){
+//        String param = "{docLabels=[], tags=[], departmentId=-1, DocName='123', selectYear='2010', pageInfo=PageInfo{currentPage=1, pageSize=6, total=0, list=null}";
+        DocInfoSearchParams docInfoSearchParams = new DocInfoSearchParams();
+        List<DocLabel> docLabels = new ArrayList<>();
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag();
+        Tag tag1 = new Tag();
 //        tag.setTagId(1);
 //        tag1.setTagId(2);
 //        tags.add(tag);
 //        tags.add(tag1);
-//        System.out.println(docInfoAndTagMapper.getDocIdByTagId(tags).toString());
-//    }
-//
-//
-//    @Test
-//    public void addLabels(){
-//        DocLabel docLabel = new DocLabel();
-//        docLabel.setDocLabelName("图片");
-//        docLabel.setSuperId(0);
-//        docLabelService.insertDocLabel(docLabel);
-//
-//    }
-//
-//    @Test
-//    public void getSuperID(){
-//        String name = "数据结构";
-//        int superid =  docLabelMapper.getSuperIdByName(name);
-//        System.out.println(superid);
-//    }
-//
-//    @Test
-//    public void subString(){
-//        String name ="d://sxito/S1521版.docx";
-//        int last = name.lastIndexOf('/');
-//        int lastpot = name.lastIndexOf('.');
-//        String fileName = name.substring(last+1,lastpot);
-//        System.out.println(fileName);
-//
-//        String n = name.substring(name.lastIndexOf('.')+1);
-//        System.out.println(n);
-//    }
-//
-//
-//
-//
-//
-//
-//
-//}
+        DocLabel docLabel = new DocLabel();
+        DocLabel docLabel2 = new DocLabel();
+        docLabel.setDocLabelId(19);
+        docLabel2.setDocLabelId(20);
+        docLabels.add(docLabel);
+        docLabels.add(docLabel2);
+        docInfoSearchParams.setDepartmentId(2);
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setPageSize(7);
+        pageInfo.setCurrentPage(1);
+        docInfoSearchParams.setDocLabels(docLabels);
+        docInfoSearchParams.setPageInfo(pageInfo);
+        docInfoSearchParams.setTags(tags);
+        docInfoSearchParams.setSelectYear("Invalid date");
+
+//        docInfoSearchParams.setSelectYear("3000");
+        ResponseBean responseBean = docInfoService.getDocsBySearchParam(docInfoSearchParams);
+        System.out.println(responseBean.toString());
+    }
+
+    @Test
+    public void testDocInfoDocLabelmapper(){
+        List<DocLabel> docLabels = new ArrayList<>();
+        DocLabel docLabel = new DocLabel();
+        DocLabel docLabel2 = new DocLabel();
+        docLabel.setDocLabelId(1);
+        docLabel2.setDocLabelId(2);
+//        docLabels.add(docLabel);
+//        docLabels.add(docLabel2);
+        List<Integer> integers = docInfoAndDocLabelMapper.getDocInfoIdByLabelId(docLabels);
+        System.out.println(integers.toString());
+    }
+
+    @Test
+    public void testTagAndDocLabelMapper(){
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag();
+        Tag tag1 = new Tag();
+        tag.setTagId(1);
+        tag1.setTagId(2);
+        tags.add(tag);
+        tags.add(tag1);
+        System.out.println(docInfoAndTagMapper.getDocIdByTagId(tags).toString());
+    }
+
+
+    @Test
+    public void addLabels(){
+        DocLabel docLabel = new DocLabel();
+        docLabel.setDocLabelName("图片");
+        docLabel.setSuperId(0);
+        docLabelService.insertDocLabel(docLabel);
+
+    }
+
+    @Test
+    public void getSuperID(){
+        String name = "数据结构";
+        int superid =  docLabelMapper.getSuperIdByName(name);
+        System.out.println(superid);
+    }
+
+    @Test
+    public void subString(){
+        String name ="d://sxito/S1521版.docx";
+        int last = name.lastIndexOf('/');
+        int lastpot = name.lastIndexOf('.');
+        String fileName = name.substring(last+1,lastpot);
+        System.out.println(fileName);
+
+        String n = name.substring(name.lastIndexOf('.')+1);
+        System.out.println(n);
+    }
+
+
+    @Test
+    public void testdocLabelMapper(){
+        String[] s = new String[]{"图片1","次要文件"};
+        List<DocLabel> docInfos = docLabelMapper.getLabelsByName(s);
+        System.out.println(docInfos.toString());
+    }
+
+    @Test
+    public void testDocLabelAndDocInfo(){
+        DocLabel docLabel = new DocLabel();
+        DocLabel docLabel1 = new DocLabel();
+        docLabel.setDocLabelId(21);
+        docLabel1.setDocLabelId(31);
+        List<DocLabel> docLabels = new ArrayList<>();
+        docLabels.add(docLabel);
+        docLabels.add(docLabel1);
+//        docInfoAndDocLabelMapper.delByDocIdAndLabelId(docLabels,34);
+//        docInfoAndDocLabelMapper.delByDocId(142);
+        docInfoAndDocLabelMapper.insertDocInfoAndDocLabels(docLabels,5);
+    }
+
+    @Test
+    public void testTagAndDocInfo(){
+       Tag tag = new Tag();
+       Tag tag1 = new Tag();
+        tag.setTagId(1);
+        tag1.setTagId(2);
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        tags.add(tag1);
+//        docInfoAndDocLabelMapper.delByDocIdAndLabelId(docLabels,142);
+//        docInfoAndDocLabelMapper.delByDocId(142);
+        docInfoAndTagMapper.insertDocInfoAndTags(tags,142);
+    }
+
+
+
+
+}

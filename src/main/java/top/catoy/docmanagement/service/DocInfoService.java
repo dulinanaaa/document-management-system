@@ -10,6 +10,7 @@ public interface DocInfoService {
 
     int getDocId(DocInfo docInfo);
     int insertDocInfo(DocInfo docInfo);
+    ResponseBean  editDoc(DocInfo docInfo);
 
 //    ResponseBean getAllDocInfo(int currentPage, int pageSize);
 

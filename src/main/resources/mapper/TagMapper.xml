@@ -31,4 +31,13 @@
         select * from tag where tag_id = #{id}
     </select>
 
+    <select id="getTagsByName" resultMap="TagMap">
+        SELECT * FROM
+        tag
+        WHERE
+        table_name IN
+        <foreach collection="tags" item="tag" open="(" close=")" separator=",">
+            #{tag}
+        </foreach>
+    </select>
 </mapper>

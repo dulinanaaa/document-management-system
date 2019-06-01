@@ -26,5 +26,7 @@ public interface TagMapper {
 
     public Tag getTagById(@Param("id") int id);
 
+    List<Tag> getTagsByName(@Param("tags") String[] name);
+
 
 }

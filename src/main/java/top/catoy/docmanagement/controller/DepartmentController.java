@@ -45,6 +45,7 @@ public class DepartmentController {
     @GetMapping(value = "/admin/getMyChildDepartments")
     public ResponseBean getMyChildDepartments(){
         List<Department> departments = departmentMapper.getAllDepartments();
+        String userRole = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getRole();
         Department rootDepartment;
         int departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
         List list = departmentService.getChild(departmentId,departments);
@@ -54,6 +55,13 @@ public class DepartmentController {
         }
         List<Department> rootList = new ArrayList<>();
         rootList.add(rootDepartment);
+        //若是管理员，显示未被管理的文件所在的默认部门
+        if("管理员".equals(userRole)){
+            Department deftDepartment = new Department();
+            deftDepartment.setId(-2);
+            deftDepartment.setName("未被管理文件");
+            rootList.add(deftDepartment);
+        }
         if(list != null){
             return new ResponseBean(ResponseBean.SUCCESS,"查找成功!",rootList);
         }else {

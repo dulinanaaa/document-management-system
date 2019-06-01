@@ -8,11 +8,22 @@
     <result column="docInfo_id" property="docInfo_id"></result>
     <result column="tag_id" property="tag_id"></result>
 </resultMap>
+    <resultMap id="TagMap" type="top.catoy.docmanagement.domain.Tag">
+        <id column="tag_id" property="tagId"></id>
+        <result column="tag_name" property="tagName"></result>
+        <result column="isuse" property="isuse"></result>
+    </resultMap>
+
 
 <insert id="insertDocInfoAndTag">
     insert into docInfo_tag(docInfo_id,tag_id) values (#{docInfo_id},#{tag_id})
 </insert>
-
+    <insert id="insertDocInfoAndTags">
+        INSERT INTO docInfo_tag(tag_id,docInfo_id) value
+        <foreach collection="tagList" item="tag" separator="," close=";">
+            (#{tag.tagId},#{docId})
+        </foreach>
+    </insert>
 <select id="getTagsByFileId" resultMap="DocInfoAndTagMap">
     select tag_id from docInfo_tag where docInfo_id = #{fileId}
 </select>
@@ -32,5 +43,15 @@
             </choose>
         </where>
     </select>
-
+    <delete id="delByDocId">
+        DELETE FROM
+        docInfo_tag
+        WHERE
+        doc_id = #{docId}
+    </delete>
+    <select id="getTagsByDocId" resultMap="TagMap">
+        SELECT * FROM tag,docInfo_tag
+        WHERE tag.tag_id = docInfo_tag.tag_id
+        AND docInfo_tag.docInfo_id = #{docId}
+    </select>
 </mapper>
