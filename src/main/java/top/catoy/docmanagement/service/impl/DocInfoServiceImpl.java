@@ -176,18 +176,26 @@ public class DocInfoServiceImpl implements DocInfoService {
                 getChildDocInfo(departmentId,departmentList,docInfos,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
             }
 
-            //获得文件的附件信息和部门信息
+            //获得文件的附件信息、标签、分类和部门信息
             if(docInfos!=null){
                 PageInfo pageInfo = pageData(docInfos,pageSize,currentPage);
                 pageInfo.getList().forEach((docInfo) -> {
                     DocInfo doc = (DocInfo) docInfo;
                     List<Annex> annexes = annexMapper.getAnnexsByDocId(doc.getDocId());
                     String departmentName = departmentMapper.getDepartmentNameById(doc.getDepartmentId());
+                    List<Tag> tagList = docInfoAndTagMapper.getTagsByDocId(((DocInfo) docInfo).getDocId());
+                    List<DocLabel> docLabelList = docInfoAndDocLabelMapper.getDocLabelByDocId(((DocInfo) docInfo).getDocId());
                     if(annexes !=null && annexes.size()>0){
                         doc.setAnnexes(annexes);
                     }
                     if(departmentName !=null && departmentName.length()>0){
                         doc.setDepartmentName(departmentName);
+                    }
+                    if(tagList != null && tagList.size()>0){
+                        doc.setTagArrayList(tagList);
+                    }
+                    if(docLabelList !=null && docLabelList.size()>0){
+                        doc.setDocLabelArrayList(docLabelList);
                     }
                 });
 

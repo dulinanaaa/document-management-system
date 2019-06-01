@@ -21,6 +21,8 @@ public class DocInfo {
     private Date docPostTime;
     private String docLabelList;
     private String tagList;
+    private List<Tag> tagArrayList;
+    private List<DocLabel> docLabelArrayList;
 
 
     private List<DocLabel> docLabels;
@@ -121,6 +123,22 @@ public class DocInfo {
         this.tagList = tagList;
     }
 
+    public List<Tag> getTagArrayList() {
+        return tagArrayList;
+    }
+
+    public void setTagArrayList(List<Tag> tagArrayList) {
+        this.tagArrayList = tagArrayList;
+    }
+
+    public List<DocLabel> getDocLabelArrayList() {
+        return docLabelArrayList;
+    }
+
+    public void setDocLabelArrayList(List<DocLabel> docLabelArrayList) {
+        this.docLabelArrayList = docLabelArrayList;
+    }
+
     @Override
     public String toString() {
         return "DocInfo{" +
@@ -135,6 +153,8 @@ public class DocInfo {
                 ", docPostTime=" + docPostTime +
                 ", docLabelList='" + docLabelList + '\'' +
                 ", tagList='" + tagList + '\'' +
+                ", tagArrayList=" + tagArrayList +
+                ", docLabelArrayList=" + docLabelArrayList +
                 ", docLabels=" + docLabels +
                 '}';
     }

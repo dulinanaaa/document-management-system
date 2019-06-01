@@ -8,6 +8,13 @@
 
     </resultMap>
 
+    <resultMap id="DocLabelMap" type="DocLabel">
+        <id column="docLabel_id" property="docLabelId"></id>
+        <!--<result column="docLabel_id" property="docLabelId"></result>-->
+        <result column="docLabel_name" property="docLabelName"></result>
+        <result column="super_id" property="superId"></result>
+    </resultMap>
+
     <insert id="insertDocInfoAndDocLabel">
        insert into docInfo_docLabel(label_id,doc_id) values (#{labelId},#{docId})
     </insert>
@@ -18,6 +25,12 @@
             (#{docLabel.docLabelId},#{docId})
         </foreach>
     </insert>
+
+    <select id="getDocLabelByDocId" resultMap="DocLabelMap">
+        SELECT * FROM docLabel,docInfo_docLabel
+        WHERE docLabel.docLabel_id = docInfo_docLabel.label_id
+        AND docInfo_docLabel.doc_id = #{docId}
+    </select>
 
     <select id="getAllTagsOfFile" resultType="top.catoy.docmanagement.domain.DocLabel">
         select * from docInfo_docLabel where doc_id = #{docId}

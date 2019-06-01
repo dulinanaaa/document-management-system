@@ -603,6 +603,8 @@ public class FileController {
 //            int res =
             if(file.exists() && file.isFile()){
                 if(result > 0 && file.delete()){
+                    User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                    logService.insertLog(u.getUserId(), "删除文件-"+docInfo.getDocName(), "文件管理");
                     return new ResponseBean(ResponseBean.SUCCESS,"删除成功!",null);
                 }else {
                     return new ResponseBean(ResponseBean.FAILURE,"删除失败!",null);

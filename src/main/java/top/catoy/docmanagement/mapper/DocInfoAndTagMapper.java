@@ -25,4 +25,6 @@ public interface DocInfoAndTagMapper {
     int insertDocInfoAndTags(@Param("tagList") List<Tag> docLabels,@Param("docId") int docInfoId);
 
     List<Integer> getDocIdByTagId(@Param("tags") List<Tag> tags);
+
+    List<Tag> getTagsByDocId(@Param("docId") int docId);
 }

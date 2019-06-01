@@ -23,6 +23,8 @@ public interface DocInfoAndDocLabelMapper {
 
     List<Integer> getDocInfoIdByLabelId(@Param("docLabels") List<DocLabel> docLabels);
 
+    List<DocLabel> getDocLabelByDocId(@Param("docId") int docId);
+
     int delByDocIdAndLabelId(@Param("docLabelList") List<DocLabel> docLabels,@Param("docId") int docInfoId);
 
     int delByDocId(@Param("docId") int docId);
