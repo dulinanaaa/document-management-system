@@ -12,7 +12,12 @@
 <insert id="insertDocInfoAndTag">
     insert into docInfo_tag(docInfo_id,tag_id) values (#{docInfo_id},#{tag_id})
 </insert>
-
+    <insert id="insertDocInfoAndTags">
+        INSERT INTO docInfo_tag(tag_id,docInfo_id) value
+        <foreach collection="tagList" item="tag" separator="," close=";">
+            (#{tag.tagId},#{docId})
+        </foreach>
+    </insert>
 <select id="getTagsByFileId" resultMap="DocInfoAndTagMap">
     select tag_id from docInfo_tag where docInfo_id = #{fileId}
 </select>
@@ -32,5 +37,10 @@
             </choose>
         </where>
     </select>
-
+    <delete id="delByDocId">
+        DELETE FROM
+        docInfo_tag
+        WHERE
+        doc_id = #{docId}
+    </delete>
 </mapper>

@@ -12,6 +12,13 @@
        insert into docInfo_docLabel(label_id,doc_id) values (#{labelId},#{docId})
     </insert>
 
+    <insert id="insertDocInfoAndDocLabels">
+        INSERT INTO docInfo_docLabel(label_id,doc_id) value
+        <foreach collection="docLabelList" item="docLabel" separator="," close=";">
+            (#{docLabel.docLabelId},#{docId})
+        </foreach>
+    </insert>
+
     <select id="getAllTagsOfFile" resultType="top.catoy.docmanagement.domain.DocLabel">
         select * from docInfo_docLabel where doc_id = #{docId}
     </select>
@@ -36,4 +43,22 @@
             </choose>
         </where>
     </select>
+
+    <delete id="delByDocIdAndLabelId">
+        DELETE FROM
+          docInfo_docLabel
+        WHERE
+          doc_id = #{docId}
+        AND label_id IN
+        <foreach collection="docLabelList" item="docLabel"  open="(" separator="," close=")">
+            #{docLabel.docLabelId}
+        </foreach>
+    </delete>
+
+    <delete id="delByDocId">
+         DELETE FROM
+          docInfo_docLabel
+        WHERE
+          doc_id = #{docId}
+    </delete>
 </mapper>

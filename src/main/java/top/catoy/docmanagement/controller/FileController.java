@@ -73,6 +73,9 @@ public class FileController {
     @Autowired
     private DocInfoAndDocLabelService docInfoAndDocLabelService;
 
+    @Autowired
+    private LogService logService;
+
     /***
      * 单文件上传
      * @param file
@@ -124,6 +127,8 @@ public class FileController {
                         tg.setTagName(tag[i]);
                         tg.setIsuse(1);
                         tagService.insertTags(tg);
+                        User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                        logService.insertLog(u.getUserId(), "新增标签-"+tg.getTagName(), "标签管理");
                         DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
                         docInfoAndTag.setDocInfo_id(docId);
                         int tagId = tagService.getIdByTagName(tag[i]);

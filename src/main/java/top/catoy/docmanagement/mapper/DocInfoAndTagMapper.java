@@ -20,7 +20,9 @@ public interface DocInfoAndTagMapper {
 
     int insertDocInfoAndTag(@Param("doclabels") List<DocInfoAndDocLabel> docInfoAndDocLabels);
 
+    int delByDocId(@Param("docId") int docId);
 
+    int insertDocInfoAndTags(@Param("tagList") List<Tag> docLabels,@Param("docId") int docInfoId);
 
     List<Integer> getDocIdByTagId(@Param("tags") List<Tag> tags);
 }

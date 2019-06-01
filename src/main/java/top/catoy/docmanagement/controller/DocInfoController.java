@@ -2,8 +2,10 @@ package top.catoy.docmanagement.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.catoy.docmanagement.domain.DocInfo;
 import top.catoy.docmanagement.domain.DocInfoSearchParams;
 import top.catoy.docmanagement.domain.ResponseBean;
+import top.catoy.docmanagement.mapper.DocInfoMapper;
 import top.catoy.docmanagement.service.DocInfoService;
 import top.catoy.docmanagement.service.DocLabelService;
 
@@ -32,4 +34,12 @@ public class DocInfoController {
         ResponseBean responseBean = docInfoService.getDocsBySearchParam(docInfoSearchParams);
         return responseBean;
     }
+
+    @PostMapping("/public/editDoc")
+    public ResponseBean editDoc(@RequestBody DocInfo docInfo){
+        ResponseBean responseBean = docInfoService.editDoc(docInfo);
+        return responseBean;
+    }
+
+
 }

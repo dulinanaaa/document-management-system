@@ -19,6 +19,8 @@ public class DocInfo {
     private int departmentId;
     private String departmentName;
     private Date docPostTime;
+    private String docLabelList;
+    private String tagList;
 
 
     private List<DocLabel> docLabels;
@@ -103,6 +105,22 @@ public class DocInfo {
         this.docPostTime = docPostTime;
     }
 
+    public String getDocLabelList() {
+        return docLabelList;
+    }
+
+    public void setDocLabelList(String docLabelList) {
+        this.docLabelList = docLabelList;
+    }
+
+    public String getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(String tagList) {
+        this.tagList = tagList;
+    }
+
     @Override
     public String toString() {
         return "DocInfo{" +
@@ -115,6 +133,8 @@ public class DocInfo {
                 ", departmentId=" + departmentId +
                 ", departmentName='" + departmentName + '\'' +
                 ", docPostTime=" + docPostTime +
+                ", docLabelList='" + docLabelList + '\'' +
+                ", tagList='" + tagList + '\'' +
                 ", docLabels=" + docLabels +
                 '}';
     }
