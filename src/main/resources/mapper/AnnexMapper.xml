@@ -13,6 +13,16 @@
     <insert id="insertAnnex">
         insert into annex(annex_name,annex_path,doc_id) values(#{annexName},#{annexPath},#{docId})
     </insert>
+    <delete id="deleteAnnexList" parameterType="java.util.List">
+        delete from annex where
+        1 = 1 or annex_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.annexId}
+        </foreach>
+    </delete>
+    <delete id="deleteAnnex">
+        delete from annex where annex_id = #{annexId}
+    </delete>
 
     <!--<delete id="delAnnexById" parameterType="int ">-->
         <!--DELETE FROM annex WHERE annex_id = #{annexId}-->

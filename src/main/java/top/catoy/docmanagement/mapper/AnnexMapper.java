@@ -18,4 +18,11 @@ public interface AnnexMapper {
 //    int delAnnexById(@Param("annexId") int annexId);
 
     int insertAnnex(Annex annex);
+
+    public int deleteAnnexList(List list);
+
+
+    public int deleteAnnex(Annex annex);
+
+
 }

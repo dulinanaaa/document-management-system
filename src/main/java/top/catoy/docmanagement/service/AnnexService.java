@@ -12,4 +12,6 @@ public interface AnnexService {
     ResponseBean delAnnexById(int annexId);
 
     List<Annex> getAnnexListByDocId(int docId);
+
+    public int deleteAnnex(Annex annex);
 }

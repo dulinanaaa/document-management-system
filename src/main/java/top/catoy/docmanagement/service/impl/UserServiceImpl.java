@@ -107,11 +107,23 @@ public class UserServiceImpl implements UserService {
                     userInfo.setDepartmentId(user.getDepartmentId());
                     userInfo.setUserName(user.getUserName());
                     userInfo.setUserPassword(user.getUserPassword());
-                    userInfo.setGroupId(userGroup.getGroupId());
+                    if(userGroup == null){
+                        int groupid = userGroupMapper.getUserGroupIdByName("用户");
+                        userInfo.setRole("用户");
+                        userInfo.setGroupId(groupid);
+
+                        String pagePermissions = userGroupMapper.getPagePermissions("用户");
+                        String userpermissions =  userGroupMapper.getUserPermissions("用户");
+                        userInfo.setPermission(userpermissions);
+                        userMapper.updateUser(userInfo);
+
+                    }else {
+                        userInfo.setGroupId(userGroup.getGroupId());
+                        userInfo.setRole(userGroup.getGroupName());
+                        System.out.println(userGroup.getGroupName());
+                        userInfo.setPermission(userGroup.getGroupPermission());
+                    }
                     userInfo.setUserLock(user.getUserLock());
-                    userInfo.setRole(userGroup.getGroupName());
-                    System.out.println(userGroup.getGroupName());
-                    userInfo.setPermission(userGroup.getGroupPermission());
                     logService.insertLog(user.getUserId(), "用户登入", "用户管理");
                     return new ResponseBean(ResponseBean.SUCCESS, "登录成功", userInfo);
                 } else {

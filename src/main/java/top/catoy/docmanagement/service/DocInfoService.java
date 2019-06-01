@@ -26,4 +26,6 @@ public interface DocInfoService {
     PageInfo pageData(List<DocInfo> list, Integer pagesize, Integer pageno);
 
     DocInfo getDocInfoByName(String name);
+
+    public int deleteDocInfo(DocInfo docInfo);
 }

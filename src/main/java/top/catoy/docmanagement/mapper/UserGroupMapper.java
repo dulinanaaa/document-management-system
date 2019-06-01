@@ -29,5 +29,7 @@ public interface UserGroupMapper {
 
     public String getUserPermissions(@Param("name") String name);
 
+    public int getUserGroupIdByName(@Param("name") String name);
+
 
 }

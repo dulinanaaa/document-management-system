@@ -83,77 +83,84 @@ public class FileController {
     , @RequestParam("region") String region, @RequestParam("type")String type, @RequestParam("date")String date, @RequestParam("number")String number,
                                    @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
+
+        System.out.println(tags+"((((((((((((((((&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         Subject subject = SecurityUtils.getSubject();
-        String token = (String) subject.getPrincipal();
-        User user = JWTUtil.getUserInfo(token);
-        if (System.getProperty("os.name").equals("Windows 10")) {
-            upload = windowsuploadPath;
-        } else if (System.getProperty("os.name").equals("Linux")) {
-            upload = linuxuploadPath;
-        }
-        else if (System.getProperty("os.name").equals("Windows 7")) {
-            upload = windowsuploadPath;
-        }
-        if (Objects.isNull(file) || file.isEmpty()) {
-            return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
-        }
-        try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(upload + file.getOriginalFilename());
-            if (!Files.isWritable(path)) {
-                Files.createDirectories(Paths.get(upload));
+        if(subject.isPermitted("上传")){
+            String token = (String) subject.getPrincipal();
+            User user = JWTUtil.getUserInfo(token);
+
+            if (System.getProperty("os.name").equals("Windows 10")) {
+                upload = windowsuploadPath;
+            } else if (System.getProperty("os.name").equals("Linux")) {
+                upload = linuxuploadPath;
             }
-            Files.write(path, bytes);
-            DocInfo docInfo = new DocInfo();
-            docInfo.setDocSavePath(upload + file.getOriginalFilename());
-            docInfo.setDocName(file.getOriginalFilename());
-            String fileName = file.getOriginalFilename();
-            int pos = fileName.lastIndexOf('.');
-            String suffix = fileName.substring(pos);
-            docInfo.setSuffixName(suffix);
-            docInfo.setUserId(user.getUserId());
-            docInfo.setDepartmentId(user.getDepartmentId());
-            docInfoService.insertDocInfo(docInfo);
-            int docId = docInfoService.getDocId(docInfo);
-            if(tags != null){
-                String tag[] = tags.split(",");
-                for(int i = 0;i < tag.length;i++){
-                    Tag t = tagService.getTagByName(tag[i]);
-                    if(t == null){
-                        Tag tg = new Tag();
-                        tg.setTagName(tag[i]);
-                        tg.setIsuse(1);
-                        tagService.insertTags(tg);
-                        DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
-                        docInfoAndTag.setDocInfo_id(docId);
-                        int tagId = tagService.getIdByTagName(tag[i]);
-                        docInfoAndTag.setTag_id(tagId);
-                        docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
-                    }else {
-                        DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
-                        docInfoAndTag.setDocInfo_id(docId);
-                        int tagId = tagService.getIdByTagName(tag[i]);
-                        docInfoAndTag.setTag_id(tagId);
-                        docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+            else if (System.getProperty("os.name").equals("Windows 7")) {
+                upload = windowsuploadPath;
+            }
+            if (Objects.isNull(file) || file.isEmpty()) {
+                return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
+            }
+            try {
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(upload + file.getOriginalFilename());
+                if (!Files.isWritable(path)) {
+                    Files.createDirectories(Paths.get(upload));
+                }
+                Files.write(path, bytes);
+                DocInfo docInfo = new DocInfo();
+                docInfo.setDocSavePath(upload + file.getOriginalFilename());
+                docInfo.setDocName(file.getOriginalFilename());
+                String fileName = file.getOriginalFilename();
+                int pos = fileName.lastIndexOf('.');
+                String suffix = fileName.substring(pos);
+                docInfo.setSuffixName(suffix);
+                docInfo.setUserId(user.getUserId());
+                docInfo.setDepartmentId(user.getDepartmentId());
+                docInfoService.insertDocInfo(docInfo);
+                int docId = docInfoService.getDocId(docInfo);
+                if(tags != null || tags.equals("") == false){
+                    String tag[] = tags.split(",");
+                    for(int i = 0;i < tag.length;i++){
+                        Tag t = tagService.getTagByName(tag[i]);
+                        if(t == null){
+                            Tag tg = new Tag();
+                            tg.setTagName(tag[i]);
+                            tg.setIsuse(1);
+                            tagService.insertTags(tg);
+                            DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                            docInfoAndTag.setDocInfo_id(docId);
+                            int tagId = tagService.getIdByTagName(tag[i]);
+                            docInfoAndTag.setTag_id(tagId);
+                            docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                        }else {
+                            DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                            docInfoAndTag.setDocInfo_id(docId);
+                            int tagId = tagService.getIdByTagName(tag[i]);
+                            docInfoAndTag.setTag_id(tagId);
+                            docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                        }
                     }
                 }
+                String types[] = type.split(",");
+                List<DocLabel> docLabels = docLabelService.getLabelByName(types);
+                for(int i = 0;i < docLabels.size();i++){
+                    System.out.println("type"+types[i]);
+                    DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
+                    System.out.println("id:"+docLabels.get(i).getDocLabelId());
+                    docInfoAndDocLabel.setLabelId(docLabels.get(i).getDocLabelId());
+                    docInfoAndDocLabel.setDocId(docId);
+                    docInfoAndDocLabelService.insertDocInfoAndDocLabel(docInfoAndDocLabel);
+                }
+                return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseBean(ResponseBean.FAILURE, "上传失败", null);
             }
-
-            String types[] = type.split(",");
-            List<DocLabel> docLabels = docLabelService.getLabelByName(types);
-            for(int i = 0;i < docLabels.size();i++){
-                System.out.println("type"+types[i]);
-                DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
-                System.out.println("id:"+docLabels.get(i).getDocLabelId());
-                docInfoAndDocLabel.setLabelId(docLabels.get(i).getDocLabelId());
-                docInfoAndDocLabel.setDocId(docId);
-                docInfoAndDocLabelService.insertDocInfoAndDocLabel(docInfoAndDocLabel);
-            }
-            return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseBean(ResponseBean.FAILURE, "上传失败", null);
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
         }
+
     }
 
 
@@ -177,42 +184,54 @@ public class FileController {
     @RequestMapping(value = "/uploadannex",method = RequestMethod.POST)
     public ResponseBean uploadannex(@RequestParam("file")MultipartFile file,@RequestParam("filename")String name){
         String upload = null;
-        if (System.getProperty("os.name").equals("Windows 10")) {
-            upload = windowsuploadPath;
-        } else if (System.getProperty("os.name").equals("Linux")) {
-            upload = linuxuploadPath;
-        }
-        else if (System.getProperty("os.name").equals("Windows 7")) {
-            upload = windowsuploadPath;
-        }
-        try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(upload + file.getOriginalFilename());
-            if(Files.isWritable(path)){
-                Files.createDirectories(Paths.get(upload));
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("上传")){
+            if (System.getProperty("os.name").equals("Windows 10")) {
+                upload = windowsuploadPath;
+            } else if (System.getProperty("os.name").equals("Linux")) {
+                upload = linuxuploadPath;
             }
-            Files.write(path, bytes);
-        }catch (Exception e){
+            else if (System.getProperty("os.name").equals("Windows 7")) {
+                upload = windowsuploadPath;
+            }
+            try {
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(upload + file.getOriginalFilename());
+                if(Files.isWritable(path)){
+                    Files.createDirectories(Paths.get(upload));
+                }
+                Files.write(path, bytes);
+            }catch (Exception e){
 
-        }
-        DocInfo docInfo = new DocInfo();
-        docInfo.setDocName(name);
-        int docId = docInfoService.getDocId(docInfo);
-        Annex annex = new Annex();
-        annex.setAnnexName(file.getOriginalFilename());
-        annex.setAnnexPath(upload+file.getOriginalFilename());
-        annex.setDocId(docId);
-        int result = annexService.insertAnnex(annex);
-        if(result > 0){
-            return new ResponseBean(ResponseBean.SUCCESS,"添加成功",null);
+            }
+            DocInfo docInfo = new DocInfo();
+            docInfo.setDocName(name);
+            int docId = docInfoService.getDocId(docInfo);
+            Annex annex = new Annex();
+            annex.setAnnexName(file.getOriginalFilename());
+            annex.setAnnexPath(upload+file.getOriginalFilename());
+            annex.setDocId(docId);
+            int result = annexService.insertAnnex(annex);
+            if(result > 0){
+                return new ResponseBean(ResponseBean.SUCCESS,"添加成功",null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"添加失败",null);
+            }
         }else {
-            return new ResponseBean(ResponseBean.FAILURE,"添加失败",null);
+            return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
         }
+
     }
 
     @RequestMapping(value = "/getName",method = RequestMethod.GET)
-    public void getDocName(@RequestParam("name") String name,@RequestParam("token")String token,HttpServletResponse response){
-        System.out.println(name+"----------------------"+token);
+    public ResponseBean getDocName(@RequestParam("name") String name,@RequestParam("token")String token,HttpServletResponse response){
+
+        download(name,response);
+        return new ResponseBean(ResponseBean.SUCCESS,"下载成功!",null);
+    }
+
+    public void download(String name,HttpServletResponse response){
+//        System.out.println(name+"----------------------"+token);
         String download = null;
         if (System.getProperty("os.name").equals("Windows 7")) {
             download = windowsuploadPath;
@@ -313,37 +332,60 @@ public class FileController {
 
     @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
     public ResponseBean PreViewFile(@RequestParam("FilePath") String filePath){
-        try {
-            System.out.println(filePath);
-            int last = filePath.lastIndexOf('/');
-            int lastpot = filePath.lastIndexOf('.');
-            String suffix = filePath.substring(filePath.lastIndexOf('.')+1);
-            if(suffix.equals("jpg") || suffix.equals("png")){
-                String name = filePath.substring(last+1,lastpot);
-                try {
-                    String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
-                    boolean flag = imgToPdf(filePath,destFile);
-                    if(flag == true){
-                        return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
-                    }else {
-                        return new ResponseBean(ResponseBean.FAILURE,"",null);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("预览")){
+            try {
+                System.out.println(filePath);
+                int last = filePath.lastIndexOf('/');
+                int lastpot = filePath.lastIndexOf('.');
+                String suffix = filePath.substring(filePath.lastIndexOf('.')+1);
+                if(suffix.equals("jpg") || suffix.equals("png")){
+                    String name = filePath.substring(last+1,lastpot);
+                    try {
+                        String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
+                        boolean flag = imgToPdf(filePath,destFile);
+                        if(flag == true){
+                            return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
+                        }else {
+                            return new ResponseBean(ResponseBean.FAILURE,"",null);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+                String name = filePath.substring(last+1,lastpot);
+                System.out.println(name);
+                String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
+                boolean flag = officeToPDF(filePath,destFile);
+                if(flag == true){
+                    return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
+                }else {
+                    return new ResponseBean(ResponseBean.FAILURE,"",null);
+                }
+            }catch (Exception e){
+                return new ResponseBean(ResponseBean.FAILURE,"该文件无法预览",null);
             }
-            String name = filePath.substring(last+1,lastpot);
-            System.out.println(name);
-            String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
-            boolean flag = officeToPDF(filePath,destFile);
-            if(flag == true){
-                return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
-            }else {
-                return new ResponseBean(ResponseBean.FAILURE,"",null);
-            }
-        }catch (Exception e){
-            return new ResponseBean(ResponseBean.FAILURE,"该文件无法预览",null);
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"你没有该权限!",null);
         }
+
+    }
+
+    @RequestMapping("/public/deleteAnnex")
+    public ResponseBean deleteAnnex(@RequestBody Annex annex){
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("删除")){
+            int result = annexService.deleteAnnex(annex);
+            if(result > 0 ){
+                return new ResponseBean(ResponseBean.SUCCESS,"删除成功！",null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"删除失败！",null);
+            }
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
+        }
+
+//        return null;
     }
 
 
@@ -548,6 +590,31 @@ public class FileController {
             }
         }
         return response;
+    }
+
+
+    @RequestMapping(value = "/deleteFile",method = RequestMethod.POST)
+    public ResponseBean deleteFile(@RequestBody DocInfo docInfo){
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("删除")){
+            System.out.println(docInfo);
+            int result = docInfoService.deleteDocInfo(docInfo);
+            File file = new File(docInfo.getDocSavePath());
+
+            List<Annex> annexes = annexService.getAnnexListByDocId(docInfo.getDocId());
+//            int res =
+            if(file.exists() && file.isFile()){
+                if(result > 0 && file.delete()){
+                    return new ResponseBean(ResponseBean.SUCCESS,"删除成功!",null);
+                }else {
+                    return new ResponseBean(ResponseBean.FAILURE,"删除失败!",null);
+                }
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"删除失败!",null);
+            }
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
+        }
     }
 
 
