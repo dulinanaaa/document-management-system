@@ -3,6 +3,7 @@ package top.catoy.docmanagement.service.impl;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.text.resources.sk.CollationData_sk;
 import top.catoy.docmanagement.domain.*;
 import top.catoy.docmanagement.mapper.*;
 import top.catoy.docmanagement.service.DepartmentService;
@@ -12,6 +13,7 @@ import top.catoy.docmanagement.utils.JWTUtil;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -178,7 +180,13 @@ public class DocInfoServiceImpl implements DocInfoService {
 
             //获得文件的附件信息、标签、分类和部门信息
             if(docInfos!=null){
+                sort(docInfos);//发文按时间排序
                 PageInfo pageInfo = pageData(docInfos,pageSize,currentPage);
+                System.out.println("+++++++++++++++++++++++++++=");
+
+                for(Object d:pageInfo.getList()){
+                    System.out.println(((DocInfo)d).getDocPostTime());
+                }
                 pageInfo.getList().forEach((docInfo) -> {
                     DocInfo doc = (DocInfo) docInfo;
                     List<Annex> annexes = annexMapper.getAnnexsByDocId(doc.getDocId());
@@ -295,5 +303,11 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Override
     public int deleteDocInfo(DocInfo docInfo) {
         return docInfoMapper.delDocInfo(docInfo);
+    }
+
+    public void sort(List<DocInfo> docInfos){
+        Collections.sort(docInfos,(doc1,doc2)->{
+            return -(doc1.getDocPostTime().compareTo(doc2.getDocPostTime()));
+        });
     }
 }
