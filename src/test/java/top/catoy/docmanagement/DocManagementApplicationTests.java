@@ -206,10 +206,12 @@ public class DocManagementApplicationTests {
         System.out.println(pos);
     }
 
-    @Test
-    public void TestDocInfoMapper(){
-        List<Integer> docLabels = new ArrayList<>();
-        List<Tag> tags = new ArrayList<>();
+//    @Test
+//    public void TestDocInfoMapper(){
+//       int a  = docInfoMapper.getDocInfoNumByDepartmentId(17);
+//       System.out.println(a);
+//        List<Integer> docLabels = new ArrayList<>();
+//        List<Tag> tags = new ArrayList<>();
 //        Tag tag = new Tag();
 //        Tag tag2 = new Tag();
 //        tag.setTagId(1);
@@ -224,123 +226,129 @@ public class DocManagementApplicationTests {
 //        docLabels.add(doclabel2);
 //        docLabels.add(19);
 //        docLabels.add(20);
-       List<DocInfo> docInfos =  docInfoMapper.getDocByDepartmentIdAndSearchParam(17, "", "2019", docLabels, new List<Integer>() {
-           @Override
-           public int size() {
-               return 0;
-           }
+//       List<DocInfo> docInfos =  docInfoMapper.getDocByDepartmentIdAndSearchParam(17, "", "2019", docLabels, new List<Integer>() {
+//           @Override
+//           public int size() {
+//               return 0;
+//           }
+//
+//           @Override
+//           public boolean isEmpty() {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean contains(Object o) {
+//               return false;
+//           }
+//
+//           @Override
+//           public Iterator<Integer> iterator() {
+//               return null;
+//           }
+//
+//           @Override
+//           public Object[] toArray() {
+//               return new Object[0];
+//           }
+//
+//           @Override
+//           public <T> T[] toArray(T[] a) {
+//               return null;
+//           }
+//
+//           @Override
+//           public boolean add(Integer integer) {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean remove(Object o) {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean containsAll(Collection<?> c) {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean addAll(Collection<? extends Integer> c) {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean addAll(int index, Collection<? extends Integer> c) {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean removeAll(Collection<?> c) {
+//               return false;
+//           }
+//
+//           @Override
+//           public boolean retainAll(Collection<?> c) {
+//               return false;
+//           }
+//
+//           @Override
+//           public void clear() {
+//
+//           }
+//
+//           @Override
+//           public Integer get(int index) {
+//               return null;
+//           }
+//
+//           @Override
+//           public Integer set(int index, Integer element) {
+//               return null;
+//           }
+//
+//           @Override
+//           public void add(int index, Integer element) {
+//
+//           }
+//
+//           @Override
+//           public Integer remove(int index) {
+//               return null;
+//           }
+//
+//           @Override
+//           public int indexOf(Object o) {
+//               return 0;
+//           }
+//
+//           @Override
+//           public int lastIndexOf(Object o) {
+//               return 0;
+//           }
+//
+//           @Override
+//           public ListIterator<Integer> listIterator() {
+//               return null;
+//           }
+//
+//           @Override
+//           public ListIterator<Integer> listIterator(int index) {
+//               return null;
+//           }
+//
+//           @Override
+//           public List<Integer> subList(int fromIndex, int toIndex) {
+//               return null;
+//           }
+//       });
+//       System.out.println(docInfos.toString());
+//    }
 
-           @Override
-           public boolean isEmpty() {
-               return false;
-           }
-
-           @Override
-           public boolean contains(Object o) {
-               return false;
-           }
-
-           @Override
-           public Iterator<Integer> iterator() {
-               return null;
-           }
-
-           @Override
-           public Object[] toArray() {
-               return new Object[0];
-           }
-
-           @Override
-           public <T> T[] toArray(T[] a) {
-               return null;
-           }
-
-           @Override
-           public boolean add(Integer integer) {
-               return false;
-           }
-
-           @Override
-           public boolean remove(Object o) {
-               return false;
-           }
-
-           @Override
-           public boolean containsAll(Collection<?> c) {
-               return false;
-           }
-
-           @Override
-           public boolean addAll(Collection<? extends Integer> c) {
-               return false;
-           }
-
-           @Override
-           public boolean addAll(int index, Collection<? extends Integer> c) {
-               return false;
-           }
-
-           @Override
-           public boolean removeAll(Collection<?> c) {
-               return false;
-           }
-
-           @Override
-           public boolean retainAll(Collection<?> c) {
-               return false;
-           }
-
-           @Override
-           public void clear() {
-
-           }
-
-           @Override
-           public Integer get(int index) {
-               return null;
-           }
-
-           @Override
-           public Integer set(int index, Integer element) {
-               return null;
-           }
-
-           @Override
-           public void add(int index, Integer element) {
-
-           }
-
-           @Override
-           public Integer remove(int index) {
-               return null;
-           }
-
-           @Override
-           public int indexOf(Object o) {
-               return 0;
-           }
-
-           @Override
-           public int lastIndexOf(Object o) {
-               return 0;
-           }
-
-           @Override
-           public ListIterator<Integer> listIterator() {
-               return null;
-           }
-
-           @Override
-           public ListIterator<Integer> listIterator(int index) {
-               return null;
-           }
-
-           @Override
-           public List<Integer> subList(int fromIndex, int toIndex) {
-               return null;
-           }
-       });
-       System.out.println(docInfos.toString());
+    @Test
+    public void TestDocInfoMapper(){
+        int a  = docInfoMapper.getDocInfoNumByDepartmentId(18);
+        System.out.println(a);
     }
 
 
