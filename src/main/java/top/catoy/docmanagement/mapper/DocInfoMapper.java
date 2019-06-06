@@ -35,4 +35,6 @@ public interface DocInfoMapper {
     int updateDocInfo(DocInfo docInfo);
 
     int delDocInfo(DocInfo docInfo);
+
+    int getDocInfoNumByDepartmentId(@Param("departmentId") int departmentId);
 }

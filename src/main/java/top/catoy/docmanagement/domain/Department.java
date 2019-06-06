@@ -17,6 +17,8 @@ public class Department {
     private String instroduction;
     private String label;
     private String value;
+    private int docTotalNum;//部门拥有总文件的数目，包含子部门
+    private int docNum;//部门拥有文件数，不包含子部门
 
     private int sort;
     private List<Department> children;
@@ -79,6 +81,30 @@ public class Department {
         return value;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public int getDocTotalNum() {
+        return docTotalNum;
+    }
+
+    public void setDocTotalNum(int docTotalNum) {
+        this.docTotalNum = docTotalNum;
+    }
+
+    public int getDocNum() {
+        return docNum;
+    }
+
+    public void setDocNum(int docNum) {
+        this.docNum = docNum;
+    }
+
     @Override
     public String toString() {
         return "Department{" +
@@ -86,6 +112,10 @@ public class Department {
                 ", name='" + name + '\'' +
                 ", parent_id=" + parent_id +
                 ", instroduction='" + instroduction + '\'' +
+                ", label='" + label + '\'' +
+                ", value='" + value + '\'' +
+                ", docTotalNum=" + docTotalNum +
+                ", docNum=" + docNum +
                 ", sort=" + sort +
                 ", children=" + children +
                 '}';

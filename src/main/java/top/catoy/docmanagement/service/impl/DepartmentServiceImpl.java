@@ -9,7 +9,6 @@ import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.mapper.DepartmentMapper;
 import top.catoy.docmanagement.mapper.DocInfoMapper;
-import top.catoy.docmanagement.mapper.LogMapper;
 import top.catoy.docmanagement.mapper.UserMapper;
 import top.catoy.docmanagement.service.DepartmentService;
 import top.catoy.docmanagement.service.LogService;
@@ -33,6 +32,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private LogService logService;
+
+    private int deptDocNum = 0;
 
     @Override
     public String getDepartmentNameById(int id) {
@@ -72,6 +73,8 @@ public class DepartmentServiceImpl implements DepartmentService {
                 });
                 for (Department department : fatherList) {
                     department.setChildren(getChild(department.getId(), departments));
+                    department.setDocNum(docInfoMapper.getDocInfoNumByDepartmentId(department.getId()));
+                    getdeptTotalNum(department);
                 }
                 return new ResponseBean(ResponseBean.SUCCESS,"查询成功",fatherList);
 
@@ -80,6 +83,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
 
         }catch (RuntimeException r){
+            r.printStackTrace();
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
     }
@@ -89,6 +93,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentMapper.getTopDepartmemt();
     }
 
+    /**
+     * 得到部门的子部门
+     * @param id
+     * @param fatherList
+     * @return
+     */
     @Override
     public List<Department> getChild(int id, List<Department> fatherList) {
         List<Department> childList = new ArrayList<>();
@@ -101,16 +111,14 @@ public class DepartmentServiceImpl implements DepartmentService {
                 count++;
             }
         }
-        for (Department department : childList) {
-
-                department.setChildren(getChild(department.getId(), fatherList));
-
-        } // 递归退出条件
+        // 递归退出条件
         if (childList.size() == 0) {
             return null;
         }
-
-        System.out.println(childList.toString());
+        for (Department department : childList) {
+                department.setChildren(getChild(department.getId(), fatherList));
+                department.setDocNum(docInfoMapper.getDocInfoNumByDepartmentId(department.getId()));
+        }
         return childList;
     }
 
@@ -195,6 +203,26 @@ public class DepartmentServiceImpl implements DepartmentService {
            e.printStackTrace();
            return new ResponseBean(ResponseBean.ERROR,"失败",null);
        }
+    }
+
+    /**
+     * 得到子部门的文件数
+     * @param department
+     * @return
+     */
+    public int getdeptTotalNum(Department department){
+        List<Department> childList = department.getChildren();
+        if(childList == null){
+            //递归出口
+            department.setDocTotalNum(department.getDocNum());
+            return department.getDocTotalNum();
+        }else {
+            for(Department d:childList){
+                department.setDocTotalNum(department.getDocTotalNum()+getdeptTotalNum(d));
+            }
+            department.setDocTotalNum(department.getDocTotalNum() + department.getDocNum());
+            return department.getDocTotalNum();
+        }
     }
 
     public void getAllChildList(int id,List<Department> allList,List<Department> childList){
