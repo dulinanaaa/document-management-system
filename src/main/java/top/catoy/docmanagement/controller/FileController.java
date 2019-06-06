@@ -2,6 +2,7 @@ package top.catoy.docmanagement.controller;
 
 
 
+import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import com.artofsolving.jodconverter.DocumentConverter;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
@@ -90,15 +91,7 @@ public class FileController {
         if(subject.isPermitted("上传")){
             String token = (String) subject.getPrincipal();
             User user = JWTUtil.getUserInfo(token);
-
-            if (System.getProperty("os.name").equals("Windows 10")) {
-                upload = windowsuploadPath;
-            } else if (System.getProperty("os.name").equals("Linux")) {
-                upload = linuxuploadPath;
-            }
-            else if (System.getProperty("os.name").equals("Windows 7")) {
-                upload = windowsuploadPath;
-            }
+            upload = getPath();
             if (Objects.isNull(file) || file.isEmpty()) {
                 return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
             }
@@ -120,7 +113,8 @@ public class FileController {
                 docInfo.setDepartmentId(user.getDepartmentId());
                 docInfoService.insertDocInfo(docInfo);
                 int docId = docInfoService.getDocId(docInfo);
-                if(tags != null || tags.equals("") == false){
+                System.out.println(tags.equals("")+"??????????????????????????????????????????????????????????");
+                if(tags.equals("") == false){
                     String tag[] = tags.split(",");
                     for(int i = 0;i < tag.length;i++){
                         Tag t = tagService.getTagByName(tag[i]);
@@ -186,14 +180,7 @@ public class FileController {
         String upload = null;
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("上传")){
-            if (System.getProperty("os.name").equals("Windows 10")) {
-                upload = windowsuploadPath;
-            } else if (System.getProperty("os.name").equals("Linux")) {
-                upload = linuxuploadPath;
-            }
-            else if (System.getProperty("os.name").equals("Windows 7")) {
-                upload = windowsuploadPath;
-            }
+          upload = getPath();
             try {
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(upload + file.getOriginalFilename());
@@ -232,13 +219,7 @@ public class FileController {
     public void download(String name,HttpServletResponse response){
 //        System.out.println(name+"----------------------"+token);
         String download = null;
-        if (System.getProperty("os.name").equals("Windows 7")) {
-            download = windowsuploadPath;
-        } else if (System.getProperty("os.name").equals("Linux")) {
-            download = linuxuploadPath;
-        }else if(System.getProperty("os.name").equals("Windows 10")){
-            download = windowsuploadPath;
-        }
+        download = getPath();
         String fileName = null;
         try {
             fileName = new String(name.getBytes("utf-8"),"ISO-8859-1");
@@ -273,6 +254,17 @@ public class FileController {
                 }
             }
         }
+    }
+
+
+    public String getPath(){
+        String path = null;
+        if(System.getProperty("os.name").indexOf("Windows") != -1){
+            path = windowsuploadPath;
+        }else {
+            path = linuxuploadPath;
+        }
+        return path;
     }
 
     public boolean imgToPdf(String imgFilePath, String pdfFilePath)throws IOException {
