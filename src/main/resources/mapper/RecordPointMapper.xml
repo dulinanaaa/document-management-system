@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.catoy.docmanagement.mapper.RecordPointMapper">
+
+    <resultMap id="RecordPointMap" type="RecordPoint">
+        <id column="recordPoint_id" property="recordPointId"></id>
+        <result column="timestamp" property="timestamp"></result>
+        <result column="sqlFileName" property="sqlFileName"></result>
+        <result column="docDirName" property="docDirName"></result>
+
+    </resultMap>
+
+    <insert id="addRecordPoint" keyProperty="recordPointId" useGeneratedKeys="true">
+        INSERT INTO
+            recordPoint(timestamp,sqlFileName,docDirName)
+        VALUES
+            (#{timestamp},#{sqlFileName},#{docDirName})
+    </insert>
+
+</mapper>
