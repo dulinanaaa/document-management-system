@@ -14,9 +14,13 @@
 
     <insert id="addRecordPoint" keyProperty="recordPointId" useGeneratedKeys="true">
         INSERT INTO
-            recordPoint(timestamp,sqlFileName,docDirName)
+            recordPoint(timestamp,sqlFileName,docDirName,backupPath)
         VALUES
-            (#{timestamp},#{sqlFileName},#{docDirName})
+            (#{timestamp},#{sqlFileName},#{docDirName},#{backupPath})
     </insert>
+
+    <select id="getAllRecordPoints" resultMap="RecordPointMap">
+        SELECT * FROM recordPoint ORDER BY timestamp DESC
+    </select>
 
 </mapper>

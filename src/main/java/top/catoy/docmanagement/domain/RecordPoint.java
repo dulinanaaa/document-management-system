@@ -10,6 +10,7 @@ public class RecordPoint {
     private String timestamp;
     private String sqlFileName;
     private String docDirName;
+    private String backupPath;//备份目录路径
 
     public int getRecordPointId() {
         return recordPointId;
@@ -43,6 +44,14 @@ public class RecordPoint {
         this.docDirName = docDirName;
     }
 
+    public String getBackupPath() {
+        return backupPath;
+    }
+
+    public void setBackupPath(String backupPath) {
+        this.backupPath = backupPath;
+    }
+
     @Override
     public String toString() {
         return "RecordPoint{" +
@@ -50,6 +59,7 @@ public class RecordPoint {
                 ", timestamp='" + timestamp + '\'' +
                 ", sqlFileName='" + sqlFileName + '\'' +
                 ", docDirName='" + docDirName + '\'' +
+                ", backupPath='" + backupPath + '\'' +
                 '}';
     }
 }

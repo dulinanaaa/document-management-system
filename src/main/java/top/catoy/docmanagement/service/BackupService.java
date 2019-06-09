@@ -6,4 +6,5 @@ import top.catoy.docmanagement.domain.ResponseBean;
 public interface BackupService {
     ResponseBean backupDatabase();
     ResponseBean recover(RecordPoint recordPoint);
+    ResponseBean getAllRecordPoint(int currentPage, int pageSize);
 }

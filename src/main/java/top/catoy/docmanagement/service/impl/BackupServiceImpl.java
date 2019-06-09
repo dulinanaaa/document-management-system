@@ -1,15 +1,24 @@
 package top.catoy.docmanagement.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.io.FileUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.RecordPoint;
 import top.catoy.docmanagement.domain.ResponseBean;
+import top.catoy.docmanagement.domain.User;
 import top.catoy.docmanagement.mapper.RecordPointMapper;
 import top.catoy.docmanagement.service.BackupService;
+import top.catoy.docmanagement.service.LogService;
+import top.catoy.docmanagement.utils.JWTUtil;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @description:
@@ -39,6 +48,9 @@ public class BackupServiceImpl implements BackupService {
     @Autowired
     private RecordPointMapper recordPointMapper;
 
+    @Autowired
+    private LogService logService;
+
     @Override
     public ResponseBean backupDatabase(){
         long time = new java.util.Date().getTime();
@@ -50,11 +62,11 @@ public class BackupServiceImpl implements BackupService {
 
         if(System.getProperty("os.name").contains("Windows")){
             backupPath = winBackPath + time;
-            docDirPath = windowsuploadPath + "\\";
+            docDirPath = windowsuploadPath;
             System.out.println(backupPath);
         }else if(System.getProperty("os.name").contains("Linux")){
             backupPath = linuxBackPath + time;
-            docDirPath = linuxuploadPath + "\\";
+            docDirPath = linuxuploadPath;
             System.out.println(backupPath);
         }else {
             return new ResponseBean(ResponseBean.ERROR,"系统不支持",null);
@@ -80,7 +92,8 @@ public class BackupServiceImpl implements BackupService {
                 sb.append(inStr + "\r\n");
             }
             outStr = sb.toString();
-            FileOutputStream fout = new FileOutputStream(backupPath + "\\" + dbName + ".sql"); // 要用来做导入用的sql目标文件：
+            FileOutputStream fout = new FileOutputStream(new File(backupPath + "/" + dbName + ".sql")); // 要用来做导入用的sql目标文件：
+            System.out.println(new File(backupPath + "/" + dbName + ".sql").getName()+"sql");
             OutputStreamWriter writer = new OutputStreamWriter(fout, "utf-8");
             writer.write(outStr);
             writer.flush();
@@ -91,10 +104,13 @@ public class BackupServiceImpl implements BackupService {
             fout.close();
             FileUtils.copyDirectoryToDirectory(new File(docDirPath),new File(backupPath));
             RecordPoint recordPoint = new RecordPoint();
-            recordPoint.setSqlFileName(dbName + ".sql");
+            recordPoint.setSqlFileName(dbName);
             recordPoint.setTimestamp(String.valueOf(time));
             recordPoint.setDocDirName(new File(docDirPath).getName());
+            recordPoint.setBackupPath(backupPath);
             recordPointMapper.addRecordPoint(recordPoint);
+            User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+            logService.insertLog(u.getUserId(), "备份数据库-目录:"+backupPath, "文件管理");
             return new ResponseBean(ResponseBean.SUCCESS,"数据备份成功,所在目录为"+backupPath,recordPoint);
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,11 +120,6 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public ResponseBean recover(RecordPoint recordPoint){
-        recordPoint = new RecordPoint();
-        recordPoint.setDocDirName("sxito");
-        recordPoint.setRecordPointId(1);
-        recordPoint.setSqlFileName("documentManagementSystem");
-        recordPoint.setTimestamp("1559920831363");
         String backupPath = "";//存档目录
         String sqlFileName = "";//存档目录中的sql脚本名
         String docDirName = "";//存档目录中的文件根目录名
@@ -127,7 +138,7 @@ public class BackupServiceImpl implements BackupService {
                 backupPath = winBackPath + recordPoint.getTimestamp() + "\\";
                 docDirPath = windowsuploadPath;
             }else if(System.getProperty("os.name").contains("Linux")){
-                backupPath = linuxBackPath + recordPoint.getTimestamp() + "\\";
+                backupPath = linuxBackPath + recordPoint.getTimestamp() + "/";
                 docDirPath = linuxuploadPath;
             }else {
                 return new ResponseBean(ResponseBean.ERROR,"系统不支持",null);
@@ -158,6 +169,11 @@ public class BackupServiceImpl implements BackupService {
                 System.out.println(backupPath + docDirName);
                 FileUtils.deleteDirectory(new File(docDirPath));
                 FileUtils.copyDirectory(new File(backupPath + docDirName),new File(docDirPath));
+                User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
+                String res;
+                Date date = new Date(new Long(recordPoint.getTimestamp()));
+                res = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                logService.insertLog(u.getUserId(), "恢复数据-到:"+res, "文件管理");
                 return new ResponseBean(ResponseBean.SUCCESS,"数据恢复成功",null);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -166,5 +182,22 @@ public class BackupServiceImpl implements BackupService {
         }else{
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
+    }
+
+    @Override
+    public ResponseBean getAllRecordPoint(int currentPage, int pageSize) {
+       try {
+           PageHelper.startPage(currentPage, pageSize);
+           List<RecordPoint> recordPoints = recordPointMapper.getAllRecordPoints();
+           if(recordPoints != null){
+               PageInfo<RecordPoint> pageInfo = new PageInfo<>(recordPoints);
+               return new ResponseBean(ResponseBean.SUCCESS,"查询成功",pageInfo);
+           }else {
+               return new ResponseBean(ResponseBean.FAILURE,"查询失败",null);
+           }
+       }catch (Exception e){
+           e.printStackTrace();
+           return new ResponseBean(ResponseBean.ERROR,"错误",null);
+       }
     }
 }
