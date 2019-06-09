@@ -531,7 +531,12 @@ public class FileController {
 
     public HttpServletResponse downLoadFiles(List<File> files,HttpServletResponse response){
         try {
-            String zipFilename = "D:/tempFile.zip";
+            String zipFilename;
+            if(System.getProperty("os.name").indexOf("Windows") != -1){
+                zipFilename = "D:/tempFile.zip";
+            }else {
+                zipFilename = "/tmp/tempFile.zip";
+            }
             File file = new File(zipFilename);
             file.createNewFile();
             if (!file.exists()) {

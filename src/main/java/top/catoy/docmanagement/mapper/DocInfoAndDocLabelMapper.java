@@ -31,4 +31,6 @@ public interface DocInfoAndDocLabelMapper {
 
     int insertDocInfoAndDocLabels(@Param("docLabelList") List<DocLabel> docLabels,@Param("docId") int docInfoId);
 
+    int getDocQuantityByLabelId(@Param("docLabelId") int docLabelId);
+
 }

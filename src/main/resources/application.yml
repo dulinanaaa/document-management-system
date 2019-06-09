@@ -43,6 +43,8 @@ com:
     custom:
       windows-path: d://sxito/
       linux-path: /sxito/
+      windows-backupPath: d://backup/
+      linux-backupPath: /backup/
       keys: fourzeroeight
 #jwt:
 #  secret: xljSecret

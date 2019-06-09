@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.DocLabel;
 import top.catoy.docmanagement.domain.ResponseBean;
 import top.catoy.docmanagement.domain.User;
+import top.catoy.docmanagement.mapper.DocInfoAndDocLabelMapper;
 import top.catoy.docmanagement.mapper.DocLabelMapper;
 import top.catoy.docmanagement.service.DocLabelService;
 import top.catoy.docmanagement.service.LogService;
@@ -26,6 +27,9 @@ public class DocLabelServiceImpl implements DocLabelService {
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private DocInfoAndDocLabelMapper docInfoAndDocLabelMapper;
 
     /**
      * 插入类别
@@ -129,6 +133,8 @@ public class DocLabelServiceImpl implements DocLabelService {
                 });
                 for (DocLabel docLabel : fatherList) {
                     docLabel.setChildren(getChild(docLabel.getDocLabelId(), docLabels));
+                    docLabel.setDocQuantity(docInfoAndDocLabelMapper.getDocQuantityByLabelId(docLabel.getDocLabelId()));
+                    getdocTotalNum(docLabel);
                 }
                 return new ResponseBean(ResponseBean.SUCCESS,"查询成功",fatherList);
 
@@ -154,6 +160,7 @@ public class DocLabelServiceImpl implements DocLabelService {
         }
         for (DocLabel docLabel : childList) {
             docLabel.setChildren(getChild(docLabel.getDocLabelId(), fatherList));
+            docLabel.setDocQuantity(docInfoAndDocLabelMapper.getDocQuantityByLabelId(docLabel.getDocLabelId()));
         } // 递归退出条件
         if (childList.size() == 0) {
             return null;
@@ -220,5 +227,25 @@ public class DocLabelServiceImpl implements DocLabelService {
     public List<DocLabel> getLabelByName(String[] labels) {
         List<DocLabel> docLabels = docLabelMapper.getLabelsByName(labels);
         return docLabels;
+    }
+
+    /**
+     * 得到子标签的文件数
+     * @param docLabel
+     * @return
+     */
+    public int getdocTotalNum(DocLabel docLabel){
+        List<DocLabel> childList = docLabel.getChildren();
+        if(childList == null){
+            //递归出口
+            docLabel.setDocTotalQuantity(docLabel.getDocQuantity());
+            return docLabel.getDocTotalQuantity();
+        }else {
+            for(DocLabel d:childList){
+                docLabel.setDocTotalQuantity(docLabel.getDocTotalQuantity()+getdocTotalNum(d));
+            }
+            docLabel.setDocTotalQuantity(docLabel.getDocTotalQuantity() + docLabel.getDocQuantity());
+            return docLabel.getDocQuantity();
+        }
     }
 }

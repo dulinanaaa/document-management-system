@@ -20,7 +20,7 @@
     </insert>
 
     <insert id="insertDocInfoAndDocLabels">
-        INSERT INTO docInfo_docLabel(label_id,doc_id) value
+        INSERT INTO docInfo_docLabel(label_id,doc_id) values
         <foreach collection="docLabelList" item="docLabel" separator="," close=";">
             (#{docLabel.docLabelId},#{docId})
         </foreach>
@@ -38,6 +38,10 @@
 
     <select id="getAllFileOfTags" resultType="top.catoy.docmanagement.domain.DocInfo">
         select * from docInfo_docLabel where label_id = #{tagid}
+    </select>
+
+    <select id="getDocQuantityByLabelId" resultType="int">
+        select count(dLabel_id) as docQuantity from docInfo_docLabel where label_id = #{docLabelId}
     </select>
 
     <select id="getDocInfoIdByLabelId" resultType="Integer" parameterType="java.util.List">
