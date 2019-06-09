@@ -193,7 +193,7 @@ public class FileController {
             }
             DocInfo docInfo = new DocInfo();
             docInfo.setDocName(name);
-            String token = (String) subject.getPrincipal();
+             String token = (String) subject.getPrincipal();
             User user = JWTUtil.getUserInfo(token);
             docInfo.setDepartmentId(user.getDepartmentId());
             int docId = docInfoService.getDocId(docInfo);
