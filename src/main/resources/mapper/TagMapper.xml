@@ -35,7 +35,7 @@
         SELECT * FROM
         tag
         WHERE
-        table_name IN
+        tag_name IN
         <foreach collection="tags" item="tag" open="(" close=")" separator=",">
             #{tag}
         </foreach>

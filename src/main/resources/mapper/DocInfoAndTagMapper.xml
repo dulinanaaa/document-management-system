@@ -19,7 +19,7 @@
     insert into docInfo_tag(docInfo_id,tag_id) values (#{docInfo_id},#{tag_id})
 </insert>
     <insert id="insertDocInfoAndTags">
-        INSERT INTO docInfo_tag(tag_id,docInfo_id) value
+        INSERT INTO docInfo_tag(tag_id,docInfo_id) values
         <foreach collection="tagList" item="tag" separator="," close=";">
             (#{tag.tagId},#{docId})
         </foreach>
@@ -47,7 +47,7 @@
         DELETE FROM
         docInfo_tag
         WHERE
-        doc_id = #{docId}
+        docInfo_id = #{docId}
     </delete>
     <select id="getTagsByDocId" resultMap="TagMap">
         SELECT * FROM tag,docInfo_tag

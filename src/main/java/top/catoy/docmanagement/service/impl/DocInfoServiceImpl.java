@@ -61,18 +61,22 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Override
     public ResponseBean editDoc(DocInfo docInfo) {
         try {
+            System.out.println(docInfo);
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
             //更新文件与分类关系
             docInfoAndDocLabelMapper.delByDocId(docInfo.getDocId());
             String[] docLabelList = docInfo.getDocLabelList().split(",");
             List<DocLabel> docLabels = docLabelMapper.getLabelsByName(docLabelList);
-            docInfoAndDocLabelMapper.insertDocInfoAndDocLabels(docLabels,docInfo.getDocId());
-
+            if(docLabels !=null && docLabels.size()>0){
+                docInfoAndDocLabelMapper.insertDocInfoAndDocLabels(docLabels,docInfo.getDocId());
+            }
             //更新文件与标签关系
             docInfoAndTagMapper.delByDocId(docInfo.getDocId());
             String[] docTagList = docInfo.getTagList().split(",");
             List<Tag> tags = tagMapper.getTagsByName(docTagList);
-            docInfoAndTagMapper.insertDocInfoAndTags(tags,docInfo.getDocId());
+            if(tags !=null && tags.size()>0){
+                docInfoAndTagMapper.insertDocInfoAndTags(tags,docInfo.getDocId());
+            }
             if(sum > 0){
                 return new ResponseBean(ResponseBean.SUCCESS,"文件编辑成功",null);
             }else{

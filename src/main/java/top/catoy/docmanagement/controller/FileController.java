@@ -193,6 +193,10 @@ public class FileController {
             }
             DocInfo docInfo = new DocInfo();
             docInfo.setDocName(name);
+            String token = (String) subject.getPrincipal();
+            User user = JWTUtil.getUserInfo(token);
+            docInfo.setDepartmentId(user.getDepartmentId());
+
             int docId = docInfoService.getDocId(docInfo);
             Annex annex = new Annex();
             annex.setAnnexName(file.getOriginalFilename());
@@ -352,7 +356,6 @@ public class FileController {
                 if(suffix.equals("jpg") || suffix.equals("png")){
                     String name = filePath.substring(last+1,lastpot);
                     try {
-
                         String destFile = "";
                         if(System.getProperty("os.name").indexOf("Windows") != -1){
                             destFile = "D:\\temp\\" + this.fileName + ".pdf";
@@ -532,7 +535,12 @@ public class FileController {
 
     public HttpServletResponse downLoadFiles(List<File> files,HttpServletResponse response){
         try {
-            String zipFilename = "D:/tempFile.zip";
+            String zipFilename;
+            if(System.getProperty("os.name").indexOf("Windows") != -1){
+                zipFilename = "D:/tempFile.zip";
+            }else {
+                zipFilename = "/tmp/tempFile.zip";
+            }
             File file = new File(zipFilename);
             file.createNewFile();
             if (!file.exists()) {
