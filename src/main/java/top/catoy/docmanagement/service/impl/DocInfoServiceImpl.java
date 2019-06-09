@@ -11,6 +11,7 @@ import top.catoy.docmanagement.service.DocInfoService;
 import top.catoy.docmanagement.service.LogService;
 import top.catoy.docmanagement.utils.JWTUtil;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +63,13 @@ public class DocInfoServiceImpl implements DocInfoService {
     public ResponseBean editDoc(DocInfo docInfo) {
         try {
             System.out.println(docInfo);
+            File oldFile = new File(docInfo.getDocSavePath());
+            String newPath = oldFile.getParent()+"/"+docInfo.getDocName()+"."+oldFile.getName().substring(oldFile.getName().lastIndexOf(".")+1);
+            File newFile = new File(newPath);
+            oldFile.renameTo(newFile);
+            docInfo.setDocSavePath(newFile.getPath());
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
+
             //更新文件与分类关系
             docInfoAndDocLabelMapper.delByDocId(docInfo.getDocId());
             String[] docLabelList = docInfo.getDocLabelList().split(",");
