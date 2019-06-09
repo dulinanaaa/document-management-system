@@ -150,7 +150,7 @@ public class FileController {
                 return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseBean(ResponseBean.FAILURE, "上传失败,部门下已有此文件", null);
+                return new ResponseBean(ResponseBean.FAILURE, "上传失败", null);
             }
         }else {
             return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
@@ -193,6 +193,10 @@ public class FileController {
             }
             DocInfo docInfo = new DocInfo();
             docInfo.setDocName(name);
+            String token = (String) subject.getPrincipal();
+            User user = JWTUtil.getUserInfo(token);
+            docInfo.setDepartmentId(user.getDepartmentId());
+
             int docId = docInfoService.getDocId(docInfo);
             Annex annex = new Annex();
             annex.setAnnexName(file.getOriginalFilename());
@@ -211,10 +215,13 @@ public class FileController {
 
     @RequestMapping(value = "/getName",method = RequestMethod.GET)
     public ResponseBean getDocName(@RequestParam("name") String name,@RequestParam("token")String token,HttpServletResponse response){
+
         download(name,response);
         return new ResponseBean(ResponseBean.SUCCESS,"下载成功!",null);
     }
+
     public void download(String name,HttpServletResponse response){
+//        System.out.println(name+"----------------------"+token);
         String download = null;
         download = getPath();
         String fileName = null;
@@ -315,50 +322,22 @@ public class FileController {
             return false;
         }
     }
-    public String fileName = "";
-    @RequestMapping(value = "/getFileNameAndFilePath",method = RequestMethod.GET)
-    public void getFileName(@RequestParam("fileName")String name){
-        System.out.println(name);
 
-        this.fileName = name.substring(0,name.lastIndexOf('.'));
-    }
+
 
     @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
     public ResponseBean PreViewFile(@RequestParam("FilePath") String filePath){
-        System.out.println("filepath:"+filePath);
-        System.out.println(filePath.substring(filePath.lastIndexOf('/') + 1));
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("预览")){
             try {
-
+                System.out.println(filePath);
                 int last = filePath.lastIndexOf('/');
                 int lastpot = filePath.lastIndexOf('.');
                 String suffix = filePath.substring(filePath.lastIndexOf('.')+1);
-                System.out.println("pdf:"+suffix);
-                if(suffix.equals("pdf")){
-                    File start = new File(filePath);
-                    String path = "";
-                    if(System.getProperty("os.name").indexOf("Windows") != -1){
-                        path = "D:\\temp\\" + filePath.substring(filePath.lastIndexOf('/') + 1);
-                    }else {
-                        path = "/tmpFile/" + filePath.substring(filePath.lastIndexOf('/') + 1);
-                    }
-                    System.out.println(start.exists());
-                    System.out.println(path);
-                    File target = new File(path);
-                    start.renameTo(target);
-                    return new ResponseBean(ResponseBean.SUCCESS,"成功",null);
-                }
                 if(suffix.equals("jpg") || suffix.equals("png")){
                     String name = filePath.substring(last+1,lastpot);
                     try {
-                        String destFile = "";
-                        if(System.getProperty("os.name").indexOf("Windows") != -1){
-                            destFile = "D:\\temp\\" + this.fileName + ".pdf";
-                        }else {
-                            destFile = "/tmpFile/" + this.fileName + ".pdf";
-                        }
-//                        String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+this.fileName+".pdf";
+                        String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
                         boolean flag = imgToPdf(filePath,destFile);
                         if(flag == true){
                             return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
@@ -371,12 +350,7 @@ public class FileController {
                 }
                 String name = filePath.substring(last+1,lastpot);
                 System.out.println(name);
-                String destFile = "";
-                if(System.getProperty("os.name").indexOf("Windows") != -1){
-                    destFile = "D:\\temp\\" + this.fileName + ".pdf";
-                }else {
-                    destFile = "/tmpFile/" + this.fileName + ".pdf";
-                }
+                String destFile = "G:\\session_data\\PHPTutorial\\WWW\\"+name+".pdf";
                 boolean flag = officeToPDF(filePath,destFile);
                 if(flag == true){
                     return new ResponseBean(ResponseBean.SUCCESS,"",destFile);
@@ -390,44 +364,6 @@ public class FileController {
             return new ResponseBean(ResponseBean.FAILURE,"你没有该权限!",null);
         }
     }
-
-
-    @RequestMapping(value = "/pdfPreView",method = RequestMethod.GET)
-    public void pdfStreamHandler(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response){
-        System.out.println(fileName+"-------------***-");
-        System.out.println(this.fileName);
-        String readFilePath = "";
-        if(System.getProperty("os.name").indexOf("Windows") != -1){
-            readFilePath = "D:\\temp\\" + this.fileName + ".pdf";
-        }else {
-            readFilePath = "/tmpFile/" + this.fileName + ".pdf";
-        }
-        File file = new File(readFilePath);
-        System.out.println(file.exists());
-        if (file.exists()){
-            byte[] data = null;
-            try {
-                FileInputStream input = new FileInputStream(file);
-                data = new byte[input.available()];
-                input.read(data);
-                response.getOutputStream().write(data);
-                input.close();
-            } catch (Exception e) {
-
-            }
-        }else{
-            return;
-        }
-
-    }
-
-    @RequestMapping(value = "/public/editDocInfo",method = RequestMethod.POST)
-    public ResponseBean editDocinfo(@RequestBody DocInfo docInfo){
-        System.out.println(docInfo);
-        return docInfoService.editDoc(docInfo);
-    }
-
-
 
     @RequestMapping("/public/deleteAnnex")
     public ResponseBean deleteAnnex(@RequestBody Annex annex){
@@ -443,6 +379,7 @@ public class FileController {
             return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
         }
 
+//        return null;
     }
 
 
@@ -507,6 +444,27 @@ public class FileController {
         byte[] bytes = new byte[1024];
         BufferedInputStream bufferedInputStream = null;
         OutputStream os = null;
+//        try {
+//            os = response.getOutputStream();
+//            bufferedInputStream = new BufferedInputStream(new FileInputStream(new File(download
+//                    + fileName)));
+//            int k = bufferedInputStream.read(bytes);
+//            while (k != -1){
+//                os.write(bytes, 0, bytes.length);
+//                os.flush();
+//                k = bufferedInputStream.read(bytes);
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        } finally {
+//            if (bufferedInputStream != null) {
+//                try {
+//                    bufferedInputStream.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
 
