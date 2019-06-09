@@ -352,7 +352,7 @@ public class FileController {
                 if(suffix.equals("jpg") || suffix.equals("png")){
                     String name = filePath.substring(last+1,lastpot);
                     try {
-                        
+
                         String destFile = "";
                         if(System.getProperty("os.name").indexOf("Windows") != -1){
                             destFile = "D:\\temp\\" + this.fileName + ".pdf";
