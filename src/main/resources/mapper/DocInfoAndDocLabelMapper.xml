@@ -20,7 +20,7 @@
     </insert>
 
     <insert id="insertDocInfoAndDocLabels">
-        INSERT INTO docInfo_docLabel(label_id,doc_id) value
+        INSERT INTO docInfo_docLabel(label_id,doc_id) values
         <foreach collection="docLabelList" item="docLabel" separator="," close=";">
             (#{docLabel.docLabelId},#{docId})
         </foreach>
