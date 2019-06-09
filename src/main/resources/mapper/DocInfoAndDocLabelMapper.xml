@@ -40,6 +40,10 @@
         select * from docInfo_docLabel where label_id = #{tagid}
     </select>
 
+    <select id="getDocQuantityByLabelId" resultType="int">
+        select count(dLabel_id) as docQuantity from docInfo_docLabel where label_id = #{docLabelId}
+    </select>
+
     <select id="getDocInfoIdByLabelId" resultType="Integer" parameterType="java.util.List">
         SELECT doc_id FROM docInfo_docLabel
         <where>
