@@ -16,6 +16,8 @@ public class DocLabel {
     private String docLabelName;
     private int superId;
     private List<DocLabel> children;
+    private int docQuantity;
+    private int docTotalQuantity;//包括子标签的数量
 
     private List<DocInfo> list;
 
@@ -59,6 +61,22 @@ public class DocLabel {
         this.children = children;
     }
 
+    public int getDocQuantity() {
+        return docQuantity;
+    }
+
+    public void setDocQuantity(int docQuantity) {
+        this.docQuantity = docQuantity;
+    }
+
+    public int getDocTotalQuantity() {
+        return docTotalQuantity;
+    }
+
+    public void setDocTotalQuantity(int docTotalQuantity) {
+        this.docTotalQuantity = docTotalQuantity;
+    }
+
     @Override
     public String toString() {
         return "DocLabel{" +
@@ -66,6 +84,8 @@ public class DocLabel {
                 ", docLabelName='" + docLabelName + '\'' +
                 ", superId=" + superId +
                 ", children=" + children +
+                ", docQuantity=" + docQuantity +
+                ", docTotalQuantity=" + docTotalQuantity +
                 ", list=" + list +
                 '}';
     }
