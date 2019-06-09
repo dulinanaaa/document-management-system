@@ -474,6 +474,12 @@ public class DocManagementApplicationTests {
         docInfoAndTagMapper.insertDocInfoAndTags(tags,142);
     }
 
+    @Test
+    public void getName(){
+        String name = "C:\\Users\\hp\\Desktop\\赛题13_建达科技_投诉线索智能筛查系统\\13_S1_方案概要\\next.pdf";
+        System.out.println(name.substring(name.lastIndexOf("\\") + 1));
+//        System.out.println(name.substring(0,name.lastIndexOf('.')));
+    }
 
 
 
