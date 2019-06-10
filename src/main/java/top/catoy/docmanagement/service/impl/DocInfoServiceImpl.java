@@ -64,10 +64,12 @@ public class DocInfoServiceImpl implements DocInfoService {
         try {
             System.out.println(docInfo);
             File oldFile = new File(docInfo.getDocSavePath());
-            String newPath = oldFile.getParent()+"/"+docInfo.getDocName()+"."+oldFile.getName().substring(oldFile.getName().lastIndexOf(".")+1);
+            String suffix = oldFile.getName().substring(oldFile.getName().lastIndexOf(".")+1);
+            String newPath = oldFile.getParent()+"/"+docInfo.getDocName()+"."+ suffix;
             File newFile = new File(newPath);
             oldFile.renameTo(newFile);
             docInfo.setDocSavePath(newFile.getPath());
+            docInfo.setDocName(newFile.getName());
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
 
             //更新文件与分类关系
