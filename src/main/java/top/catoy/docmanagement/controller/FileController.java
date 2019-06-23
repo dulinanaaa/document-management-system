@@ -20,6 +20,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import jdk.nashorn.internal.ir.ReturnNode;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
@@ -323,8 +324,8 @@ public class FileController {
     @RequestMapping(value = "/getFileNameAndFilePath",method = RequestMethod.GET)
     public void getFileName(@RequestParam("fileName")String name){
         System.out.println(name);
-
         this.fileName = name.substring(0,name.lastIndexOf('.'));
+        System.out.println(this.fileName);
     }
 
     @RequestMapping(value = "/public/preViewFile",method = RequestMethod.POST)
@@ -350,7 +351,8 @@ public class FileController {
                     System.out.println(start.exists());
                     System.out.println(path);
                     File target = new File(path);
-                    start.renameTo(target);
+                    System.out.println(target.exists());
+                    FileUtils.copyFile(start,target);
                     return new ResponseBean(ResponseBean.SUCCESS,"成功",null);
                 }
                 if(suffix.equals("jpg") || suffix.equals("png")){
