@@ -45,6 +45,8 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -56,6 +58,9 @@ public class FileController {
 
     @Value("${com.sxito.custom.linux-path}")
     private String linuxuploadPath;
+
+    @Value("${com.sxito.custom.mac-path}")
+    private String macuploadPath;
 
     @Autowired
     private DocInfoService docInfoService;
@@ -84,17 +89,27 @@ public class FileController {
      * @return
      */
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public ResponseBean uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("department")String department
-    , @RequestParam("region") String region, @RequestParam("type")String type, @RequestParam("date")String date, @RequestParam("number")String number,
+    public ResponseBean uploadFile(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("department")String department,
+                                   @RequestParam("region") String region,
+                                   @RequestParam("type")String type,
+                                   @RequestParam("date")String date,
+                                   @RequestParam("number")String number,
+                                   @RequestParam("pageNum")String pageNum,
                                    @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
         Subject subject = SecurityUtils.getSubject();
+        String pattern = "[1-9]\\d*";
+        Pattern r = Pattern.compile(pattern);
         if(subject.isPermitted("上传")){
             String token = (String) subject.getPrincipal();
             User user = JWTUtil.getUserInfo(token);
             upload = getPath();
             if (Objects.isNull(file) || file.isEmpty()) {
                 return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
+            }
+            if (pageNum == null || !r.matcher(pageNum).matches()){
+                return new ResponseBean(ResponseBean.FAILURE, "文件页数格式有误", null);
             }
             try {
                 byte[] bytes = file.getBytes();
@@ -106,6 +121,7 @@ public class FileController {
                 DocInfo docInfo = new DocInfo();
                 docInfo.setDocSavePath(upload + file.getOriginalFilename());
                 docInfo.setDocName(file.getOriginalFilename());
+                docInfo.setPageNum(pageNum);
                 String fileName = file.getOriginalFilename();
                 int pos = fileName.lastIndexOf('.');
                 String suffix = fileName.substring(pos);
@@ -263,6 +279,8 @@ public class FileController {
         String path = null;
         if(System.getProperty("os.name").indexOf("Windows") != -1){
             path = windowsuploadPath;
+        }else if(System.getProperty("os.name").indexOf("Mac")!= -1){
+            path = macuploadPath;
         }else {
             path = linuxuploadPath;
         }
