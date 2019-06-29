@@ -75,6 +75,16 @@ public class DepartmentServiceImpl implements DepartmentService {
                     department.setChildren(getChild(department.getId(), departments));
                     department.setDocNum(docInfoMapper.getDocInfoNumByDepartmentId(department.getId()));
                     getdeptTotalNum(department);
+
+                    List<DocInfo> docInfos = docInfoMapper.getDocByDepartmentId(department.getId());
+                    int pageNum = 0;
+                    if(docInfos != null && docInfos.size()>0){
+                        for(DocInfo d:docInfos){
+                            pageNum = pageNum + Integer.parseInt(d.getPageNum());
+                        }
+                    }
+                    department.setDocPageNum(pageNum);
+                    getdeptTotalPageNum(department);
                 }
                 return new ResponseBean(ResponseBean.SUCCESS,"查询成功",fatherList);
 
@@ -116,8 +126,16 @@ public class DepartmentServiceImpl implements DepartmentService {
             return null;
         }
         for (Department department : childList) {
-                department.setChildren(getChild(department.getId(), fatherList));
-                department.setDocNum(docInfoMapper.getDocInfoNumByDepartmentId(department.getId()));
+            department.setChildren(getChild(department.getId(), fatherList));
+            department.setDocNum(docInfoMapper.getDocInfoNumByDepartmentId(department.getId()));
+            List<DocInfo> docInfos = docInfoMapper.getDocByDepartmentId(department.getId());
+            int pageNum = 0;
+            if(docInfos != null && docInfos.size()>0){
+                for(DocInfo d:docInfos){
+                    pageNum = pageNum + Integer.parseInt(d.getPageNum());
+                }
+            }
+            department.setDocPageNum(pageNum);
         }
         return childList;
     }
@@ -224,6 +242,28 @@ public class DepartmentServiceImpl implements DepartmentService {
             return department.getDocTotalNum();
         }
     }
+
+    /**
+     * 得到子部门的页数
+     * @param department
+     * @return
+     */
+    public int getdeptTotalPageNum(Department department){
+        List<Department> childList = department.getChildren();
+        if(childList == null){
+            //递归出口
+            department.setDocTotalPagenum(department.getDocPageNum());
+            System.out.println("docpageNum"+department.getDocTotalNum());
+            return department.getDocTotalPagenum();
+        }else {
+            for(Department d:childList){
+                department.setDocTotalPagenum(department.getDocTotalPagenum()+getdeptTotalPageNum(d));
+            }
+            department.setDocTotalPagenum(department.getDocTotalPagenum() + department.getDocPageNum());
+            return department.getDocTotalPagenum();
+        }
+    }
+
 
     public void getAllChildList(int id,List<Department> allList,List<Department> childList){
         List<Department> list;

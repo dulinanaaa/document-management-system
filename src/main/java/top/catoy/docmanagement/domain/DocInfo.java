@@ -23,6 +23,7 @@ public class DocInfo {
     private String tagList;
     private List<Tag> tagArrayList;
     private List<DocLabel> docLabelArrayList;
+    private String pageNum;
 
 
     private List<DocLabel> docLabels;
@@ -139,6 +140,14 @@ public class DocInfo {
         this.docLabelArrayList = docLabelArrayList;
     }
 
+    public String getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(String pageNum) {
+        this.pageNum = pageNum;
+    }
+
     @Override
     public String toString() {
         return "DocInfo{" +
@@ -155,6 +164,7 @@ public class DocInfo {
                 ", tagList='" + tagList + '\'' +
                 ", tagArrayList=" + tagArrayList +
                 ", docLabelArrayList=" + docLabelArrayList +
+                ", pageNum='" + pageNum + '\'' +
                 ", docLabels=" + docLabels +
                 '}';
     }
