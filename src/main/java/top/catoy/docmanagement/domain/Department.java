@@ -19,6 +19,8 @@ public class Department {
     private String value;
     private int docTotalNum;//部门拥有总文件的数目，包含子部门
     private int docNum;//部门拥有文件数，不包含子部门
+    private int docTotalPagenum;//部门拥有的总文件页数 ，包含子部门文件的页数
+    private int docPageNum;//部门拥有文件的总页数之和，不包含子部门
 
     private int sort;
     private List<Department> children;
@@ -105,6 +107,22 @@ public class Department {
         this.docNum = docNum;
     }
 
+    public int getDocTotalPagenum() {
+        return docTotalPagenum;
+    }
+
+    public void setDocTotalPagenum(int docTotalPagenum) {
+        this.docTotalPagenum = docTotalPagenum;
+    }
+
+    public int getDocPageNum() {
+        return docPageNum;
+    }
+
+    public void setDocPageNum(int docPageNum) {
+        this.docPageNum = docPageNum;
+    }
+
     @Override
     public String toString() {
         return "Department{" +
@@ -116,6 +134,8 @@ public class Department {
                 ", value='" + value + '\'' +
                 ", docTotalNum=" + docTotalNum +
                 ", docNum=" + docNum +
+                ", docTotalPagenum=" + docTotalPagenum +
+                ", docPageNum=" + docPageNum +
                 ", sort=" + sort +
                 ", children=" + children +
                 '}';
