@@ -13,4 +13,6 @@ public interface FileSourceService {
 
     public List<FileSource> getAllFileSource();
 
+    public int getFileSourceIdByName(String name);
+
 }

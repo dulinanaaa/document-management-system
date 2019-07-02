@@ -2,6 +2,7 @@ package top.catoy.docmanagement.mapper;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import top.catoy.docmanagement.domain.FileSource;
 
 import java.io.File;
@@ -15,4 +16,6 @@ public interface FileSourceMapper {
     public int deleteFileSouce(FileSource fileSource);
 
     public List<FileSource> getAllFileSouce(FileSource fileSource);
+
+    public int getFileSourceById(@Param("fileSourceName")String fileSourceName);
 }

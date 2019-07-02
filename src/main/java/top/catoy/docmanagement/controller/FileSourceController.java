@@ -45,6 +45,7 @@ public class FileSourceController {
     }
 
 
+    @RequestMapping(value = "/getAllFileSource",method = RequestMethod.POST)
     public ResponseBean findAllFileSource(){
         try {
             List<FileSource> fileSources = fileSourceService.getAllFileSource();

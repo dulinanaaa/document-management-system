@@ -28,6 +28,16 @@ public class DocInfo {
 
     private List<DocLabel> docLabels;
 
+    private int fileSourceId;
+
+    public int getFileSourceId() {
+        return fileSourceId;
+    }
+
+    public void setFileSourceId(int fileSourceId) {
+        this.fileSourceId = fileSourceId;
+    }
+
     public List<DocLabel> getDocLabels() {
         return docLabels;
     }

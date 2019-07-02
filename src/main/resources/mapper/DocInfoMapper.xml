@@ -12,10 +12,12 @@
         <result column="department_id" property="departmentId"></result>
         <result column="doc_postTime" property="docPostTime"></result>
         <result column="doc_pageNum" property="pageNum"></result>
+        <result column="fileSource_id" property="fileSourceId"></result>
     </resultMap>
 
     <insert id="insertDocInfo" parameterType="top.catoy.docmanagement.domain.DocInfo">
-        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id,doc_pageNum) VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId},#{pageNum});
+        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id,doc_pageNum,fileSource_id)
+        VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId},#{pageNum},#{fileSourceId});
     </insert>
     <delete id="delDocInfo">
         delete from docInfo where doc_id = #{docId}
@@ -73,7 +75,7 @@
     </select>
 
 
-    <select id="getDocId" resultType="java.lang.Integer">
+    <select id="getDocId" resultType="Integer">
         select doc_id from docInfo where doc_name = #{docName} and department_id = #{departmentId}
     </select>
 
