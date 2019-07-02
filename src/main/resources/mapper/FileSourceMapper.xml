@@ -25,4 +25,8 @@
         select fileSource_id from fileSource where fileSource_name = #{fileSourceName}
     </select>
 
+    <select id="getFileSourceNameById" parameterType="Integer" resultType="String">
+        select fileSource_name from fileSource where fileSource_id =#{id}
+    </select>
+
 </mapper>
