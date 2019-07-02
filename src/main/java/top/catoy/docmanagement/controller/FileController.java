@@ -124,10 +124,12 @@ public class FileController {
                     Files.createDirectories(Paths.get(upload));
                 }
                 Files.write(path, bytes);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 DocInfo docInfo = new DocInfo();
                 docInfo.setDocSavePath(upload + file.getOriginalFilename());
                 docInfo.setDocName(file.getOriginalFilename());
                 docInfo.setPageNum(pageNum);
+                docInfo.setDocPostTime(sdf.parse(date));
                 String fileName = file.getOriginalFilename();
                 int pos = fileName.lastIndexOf('.');
                 String suffix = fileName.substring(pos);
