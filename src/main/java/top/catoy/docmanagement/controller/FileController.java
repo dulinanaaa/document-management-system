@@ -83,6 +83,9 @@ public class FileController {
     @Autowired
     private LogService logService;
 
+    @Autowired
+    private FileSourceService fileSourceService;
+
     /***
      * 单文件上传
      * @param file
@@ -96,9 +99,12 @@ public class FileController {
                                    @RequestParam("date")String date,
                                    @RequestParam("number")String number,
                                    @RequestParam("pageNum")String pageNum,
+                                   @RequestParam("fileSource")String fileSourceName,
                                    @RequestParam("tags")String tags,HttpServletRequest request) {
         String upload = null;
         Subject subject = SecurityUtils.getSubject();
+        System.out.println("files:"+fileSourceName);
+        int fileSourceId = fileSourceService.getFileSourceIdByName(fileSourceName);
         String pattern = "[1-9]\\d*";
         Pattern r = Pattern.compile(pattern);
         if(subject.isPermitted("上传")){
@@ -128,6 +134,7 @@ public class FileController {
                 docInfo.setSuffixName(suffix);
                 docInfo.setUserId(user.getUserId());
                 docInfo.setDepartmentId(user.getDepartmentId());
+                docInfo.setFileSourceId(fileSourceId);
                 docInfoService.insertDocInfo(docInfo);
                 int docId = docInfoService.getDocId(docInfo);
                 System.out.println(tags.equals("")+"??????????????????????????????????????????????????????????");
@@ -193,41 +200,53 @@ public class FileController {
 
 
     @RequestMapping(value = "/uploadannex",method = RequestMethod.POST)
-    public ResponseBean uploadannex(@RequestParam("file")MultipartFile file,@RequestParam("filename")String name){
+    public ResponseBean uploadannex(@RequestParam("file")MultipartFile file,@RequestParam("filename")String name,
+                                    @RequestParam("suffixName")String suffixName){
         String upload = null;
+        System.out.println("suffix:"+suffixName);
         Subject subject = SecurityUtils.getSubject();
-        if(subject.isPermitted("上传")){
-          upload = getPath();
-            try {
-                byte[] bytes = file.getBytes();
-                Path path = Paths.get(upload + file.getOriginalFilename());
-                if(Files.isWritable(path)){
-                    Files.createDirectories(Paths.get(upload));
+        try{
+
+            if(subject.isPermitted("上传")){
+                upload = getPath();
+                try {
+                    byte[] bytes = file.getBytes();
+                    Path path = Paths.get(upload + file.getOriginalFilename());
+                    if(Files.isWritable(path)){
+                        Files.createDirectories(Paths.get(upload));
+                    }
+                    Files.write(path, bytes);
+                }catch (Exception e){
+
                 }
-                Files.write(path, bytes);
-            }catch (Exception e){
+                DocInfo docInfo = new DocInfo();
+                docInfo.setDocName(name+suffixName);
+//                System.out.println();
+                String token = (String) subject.getPrincipal();
+                User user = JWTUtil.getUserInfo(token);
+                docInfo.setDepartmentId(user.getDepartmentId());
+                System.out.println("doc:"+docInfo);
 
-            }
-            DocInfo docInfo = new DocInfo();
-            docInfo.setDocName(name);
-            String token = (String) subject.getPrincipal();
-            User user = JWTUtil.getUserInfo(token);
-            docInfo.setDepartmentId(user.getDepartmentId());
-
-            int docId = docInfoService.getDocId(docInfo);
-            Annex annex = new Annex();
-            annex.setAnnexName(file.getOriginalFilename());
-            annex.setAnnexPath(upload+file.getOriginalFilename());
-            annex.setDocId(docId);
-            int result = annexService.insertAnnex(annex);
-            if(result > 0){
-                return new ResponseBean(ResponseBean.SUCCESS,"添加成功",null);
+                int docId = docInfoService.getDocId(docInfo);
+                Annex annex = new Annex();
+                annex.setAnnexName(file.getOriginalFilename());
+                annex.setAnnexPath(upload+file.getOriginalFilename());
+                annex.setDocId(docId);
+                int result = annexService.insertAnnex(annex);
+                if(result > 0){
+                    return new ResponseBean(ResponseBean.SUCCESS,"添加成功",null);
+                }else {
+                    return new ResponseBean(ResponseBean.FAILURE,"添加失败",null);
+                }
             }else {
-                return new ResponseBean(ResponseBean.FAILURE,"添加失败",null);
+                return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
             }
-        }else {
-            return new ResponseBean(ResponseBean.FAILURE,"你没有该权限",null);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseBean(ResponseBean.FAILURE,"添加失败!",null);
         }
+
     }
 
     @RequestMapping(value = "/getName",method = RequestMethod.GET)
@@ -353,7 +372,6 @@ public class FileController {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("预览")){
             try {
-
                 int last = filePath.lastIndexOf('/');
                 int lastpot = filePath.lastIndexOf('.');
                 String suffix = filePath.substring(filePath.lastIndexOf('.')+1);

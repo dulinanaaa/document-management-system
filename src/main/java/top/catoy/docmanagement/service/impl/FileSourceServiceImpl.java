@@ -3,6 +3,7 @@ package top.catoy.docmanagement.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.catoy.docmanagement.domain.FileSource;
+import top.catoy.docmanagement.mapper.FileSourceMapper;
 import top.catoy.docmanagement.service.FileSourceService;
 
 import java.util.List;
@@ -12,21 +13,26 @@ public class FileSourceServiceImpl implements FileSourceService {
 
 
     @Autowired
-    private FileSourceService fileSourceService;
+    private FileSourceMapper fileSourceMapper;
 
     @Override
     public int insertFileSource(FileSource fileSource) {
-        return fileSourceService.insertFileSource(fileSource);
+        return fileSourceMapper.insertFileSource(fileSource);
     }
 
     @Override
     public int deleteFileSource(FileSource fileSource) {
-        return fileSourceService.deleteFileSource(fileSource);
+        return fileSourceMapper.deleteFileSouce(fileSource);
     }
 
     @Override
     public List<FileSource> getAllFileSource() {
-        return fileSourceService.getAllFileSource();
+        return fileSourceMapper.getAllFileSouce(null);
+    }
+
+    @Override
+    public int getFileSourceIdByName(String name) {
+        return fileSourceMapper.getFileSourceById(name);
     }
 
 
