@@ -29,6 +29,15 @@ public class DocInfo {
     private List<DocLabel> docLabels;
 
     private int fileSourceId;
+    private String fileSourceName;
+
+    public String getFileSourceName() {
+        return fileSourceName;
+    }
+
+    public void setFileSourceName(String fileSourceName) {
+        this.fileSourceName = fileSourceName;
+    }
 
     private String fileSourceName;
 
