@@ -52,6 +52,8 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Autowired
     private  TagMapper tagMapper;
 
+    @Autowired
+    private FileSourceMapper fileSourceMapper;
     @Override
     public int insertDocInfo(DocInfo docInfo) {
         User u = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal());
@@ -70,7 +72,14 @@ public class DocInfoServiceImpl implements DocInfoService {
             oldFile.renameTo(newFile);
             docInfo.setDocSavePath(newFile.getPath());
             docInfo.setDocName(newFile.getName());
+            String fileSoureName = docInfo.getFileSourceName();
+            System.out.println("filename:"+fileSoureName);
+
+            int fileSoureId = fileSourceMapper.getFileSourceById(fileSoureName);
+
+            docInfo.setFileSourceId(fileSoureId);
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
+
 
             //更新文件与分类关系
             docInfoAndDocLabelMapper.delByDocId(docInfo.getDocId());
