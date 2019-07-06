@@ -188,6 +188,12 @@ public class DocInfoServiceImpl implements DocInfoService {
             }else if(docInfoSearchParams.getDepartmentId() == -1) {//没有选择部门
                 departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
                 docs = docInfoMapper.getDocByDepartmentIdAndSearchParam(departmentId,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+
+                System.out.println("docs:"+docs);
+                for(int i = 0;i < docs.size();i++){
+                    String fileSourceName = fileSourceMapper.getFileSourceNameById(docs.get(i).getFileSourceId());
+                    docs.get(i).setFileSourceName(fileSourceName);
+                }
                 //获得未分配部门的文件
                 if("管理员".equals(userRole)){
                     List<DocInfo> notTrackedDoc = docInfoMapper.getDocByDepartmentIdAndSearchParam(-1,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
@@ -325,6 +331,11 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Override
     public int deleteDocInfo(DocInfo docInfo) {
         return docInfoMapper.delDocInfo(docInfo);
+    }
+
+    @Override
+    public int updateDocInfo(DocInfo docInfo) {
+        return docInfoMapper.updateDocInfo(docInfo);
     }
 
     public void sort(List<DocInfo> docInfos){

@@ -185,6 +185,8 @@ public class DocInfo {
                 ", docLabelArrayList=" + docLabelArrayList +
                 ", pageNum='" + pageNum + '\'' +
                 ", docLabels=" + docLabels +
+                ", fileSourceId=" + fileSourceId +
+                ", fileSourceName='" + fileSourceName + '\'' +
                 '}';
     }
 }

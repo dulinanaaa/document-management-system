@@ -29,4 +29,6 @@ public interface DocInfoService {
     DocInfo getDocInfoByName(String name);
 
     public int deleteDocInfo(DocInfo docInfo);
+
+    int updateDocInfo(DocInfo docInfo);
 }
