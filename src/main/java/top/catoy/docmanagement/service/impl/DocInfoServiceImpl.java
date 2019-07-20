@@ -80,7 +80,6 @@ public class DocInfoServiceImpl implements DocInfoService {
             docInfo.setFileSourceId(fileSoureId);
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
 
-
             //更新文件与分类关系
             docInfoAndDocLabelMapper.delByDocId(docInfo.getDocId());
             String[] docLabelList = docInfo.getDocLabelList().split(",");
@@ -215,6 +214,7 @@ public class DocInfoServiceImpl implements DocInfoService {
                     String departmentName = departmentMapper.getDepartmentNameById(doc.getDepartmentId());
                     List<Tag> tagList = docInfoAndTagMapper.getTagsByDocId(((DocInfo) docInfo).getDocId());
                     List<DocLabel> docLabelList = docInfoAndDocLabelMapper.getDocLabelByDocId(((DocInfo) docInfo).getDocId());
+                    String fileSourceName = fileSourceMapper.getFileSourceNameById(((DocInfo) docInfo).getFileSourceId());
                     if(annexes !=null && annexes.size()>0){
                         doc.setAnnexes(annexes);
                     }
@@ -226,6 +226,9 @@ public class DocInfoServiceImpl implements DocInfoService {
                     }
                     if(docLabelList !=null && docLabelList.size()>0){
                         doc.setDocLabelArrayList(docLabelList);
+                    }
+                    if(fileSourceName != null && fileSourceName.length()>0){
+                        doc.setFileSourceName(fileSourceName);
                     }
                 });
 

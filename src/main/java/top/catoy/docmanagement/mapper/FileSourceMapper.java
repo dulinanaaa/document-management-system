@@ -18,4 +18,6 @@ public interface FileSourceMapper {
     public List<FileSource> getAllFileSouce(FileSource fileSource);
 
     public int getFileSourceById(@Param("fileSourceName")String fileSourceName);
+
+    public String getFileSourceNameById(@Param("id") int fileSourceId);
 }

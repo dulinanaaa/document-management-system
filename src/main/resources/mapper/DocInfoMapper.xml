@@ -16,8 +16,8 @@
     </resultMap>
 
     <insert id="insertDocInfo" parameterType="top.catoy.docmanagement.domain.DocInfo">
-        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id,doc_pageNum,fileSource_id)
-        VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId},#{pageNum},#{fileSourceId});
+        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id,doc_pageNum,fileSource_id,doc_postTime)
+        VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId},#{pageNum},#{fileSourceId},#{docPostTime});
     </insert>
     <delete id="delDocInfo">
         delete from docInfo where doc_id = #{docId}

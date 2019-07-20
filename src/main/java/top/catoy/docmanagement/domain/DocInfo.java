@@ -31,13 +31,6 @@ public class DocInfo {
     private int fileSourceId;
     private String fileSourceName;
 
-    public String getFileSourceName() {
-        return fileSourceName;
-    }
-
-    public void setFileSourceName(String fileSourceName) {
-        this.fileSourceName = fileSourceName;
-    }
 
     public int getFileSourceId() {
         return fileSourceId;
@@ -167,6 +160,14 @@ public class DocInfo {
         this.pageNum = pageNum;
     }
 
+    public String getFileSourceName() {
+        return fileSourceName;
+    }
+
+    public void setFileSourceName(String fileSourceName) {
+        this.fileSourceName = fileSourceName;
+    }
+
     @Override
     public String toString() {
         return "DocInfo{" +
@@ -185,6 +186,8 @@ public class DocInfo {
                 ", docLabelArrayList=" + docLabelArrayList +
                 ", pageNum='" + pageNum + '\'' +
                 ", docLabels=" + docLabels +
+                ", fileSourceId=" + fileSourceId +
+                ", fileSourceName='" + fileSourceName + '\'' +
                 '}';
     }
 }
