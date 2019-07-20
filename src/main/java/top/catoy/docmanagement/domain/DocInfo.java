@@ -30,7 +30,7 @@ public class DocInfo {
 
     private int fileSourceId;
     private String fileSourceName;
-    
+
 
     public int getFileSourceId() {
         return fileSourceId;
