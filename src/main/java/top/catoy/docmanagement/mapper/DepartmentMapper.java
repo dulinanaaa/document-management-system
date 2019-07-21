@@ -31,5 +31,6 @@ public interface DepartmentMapper {
 
     int updateDepartment(Department department);
 
+    public String getDepartmentNumberById(int id);
 
 }

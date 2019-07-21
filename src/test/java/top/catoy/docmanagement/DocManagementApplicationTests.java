@@ -91,6 +91,12 @@ public class DocManagementApplicationTests {
     }
 
     @Test
+    public void getDepartmentNumberById(){
+        String s=departmentMapper.getDepartmentNumberById(18);
+        System.out.println(s+"=====================");
+    }
+
+    @Test
     public void testLogService(){
 //        int sun = 0;
 //        ResponseBean responseBean = logService.insertLog(1,"删除用户","用户管理");

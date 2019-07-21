@@ -52,6 +52,10 @@
         SELECT department_name FROM `department` WHERE department_id = #{id};
     </select>
 
+    <select id="getDepartmentNumberById" resultType="java.lang.String">
+        SELECT department_number FROM `department` WHERE department_id = #{id};
+    </select>
+
     <select id="getDepartmentById" resultMap="DepartmentMap">
         SELECT * FROM `department` WHERE department_id = #{id};
     </select>
