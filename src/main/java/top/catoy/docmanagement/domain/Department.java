@@ -44,6 +44,8 @@ public class Department {
         this.label = name;
     }
 
+
+
     public int getParent_id() {
         return parent_id;
     }

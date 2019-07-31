@@ -42,6 +42,7 @@ import java.net.ConnectException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -85,6 +86,9 @@ public class FileController {
 
     @Autowired
     private FileSourceService fileSourceService;
+
+    @Autowired
+    private DepartmentService departmentService;
 
     /***
      * 单文件上传
@@ -137,6 +141,12 @@ public class FileController {
                 docInfo.setUserId(user.getUserId());
                 docInfo.setDepartmentId(user.getDepartmentId());
                 docInfo.setFileSourceId(fileSourceId);
+                String  doc_number1=departmentService.getDepartmentNumberById(user.getDepartmentId());
+                Date date1=  sdf.parse(date);
+                String data2=date1.toString().substring(date1.toString().length()-4,date1.toString().length());
+                String data3=getFourRandom();
+                String doc_number=doc_number1+data2+data3;
+                docInfo.setDocNumber(doc_number);
                 docInfoService.insertDocInfo(docInfo);
                 int docId = docInfoService.getDocId(docInfo);
                 System.out.println(tags.equals("")+"??????????????????????????????????????????????????????????");
@@ -183,6 +193,16 @@ public class FileController {
         }
     }
 
+    public static String getFourRandom(){
+        Random random = new Random();
+        String fourRandom = random.nextInt(10000) + "";
+        int randLength = fourRandom.length();
+        if(randLength<4){
+            for(int i=1; i<=4-randLength; i++)
+                fourRandom = "0" + fourRandom ;
+        }
+        return fourRandom;
+    }
 
     @RequestMapping(value = "/public/getTagById",method = RequestMethod.POST)
     public ResponseBean getTagByFileId(@RequestParam("fileId") int id){

@@ -24,6 +24,7 @@ public class DocInfo {
     private List<Tag> tagArrayList;
     private List<DocLabel> docLabelArrayList;
     private String pageNum;
+    private String docNumber;
 
 
     private List<DocLabel> docLabels;
@@ -164,8 +165,17 @@ public class DocInfo {
         return fileSourceName;
     }
 
+
     public void setFileSourceName(String fileSourceName) {
         this.fileSourceName = fileSourceName;
+    }
+
+    public String getDocNumber() {
+        return docNumber;
+    }
+
+    public void setDocNumber(String docNumber) {
+        this.docNumber = docNumber;
     }
 
     @Override
@@ -185,6 +195,7 @@ public class DocInfo {
                 ", tagArrayList=" + tagArrayList +
                 ", docLabelArrayList=" + docLabelArrayList +
                 ", pageNum='" + pageNum + '\'' +
+                ", docNumber='" + docNumber + '\'' +
                 ", docLabels=" + docLabels +
                 ", fileSourceId=" + fileSourceId +
                 ", fileSourceName='" + fileSourceName + '\'' +

@@ -9,6 +9,8 @@ public interface DepartmentService {
 
      String getDepartmentNameById(int id);
 
+     String getDepartmentNumberById(int id);
+
      int getDepartmentIdByName(String name);
 
      ResponseBean getAllDepartments();
@@ -24,4 +26,6 @@ public interface DepartmentService {
      ResponseBean addDepartment(Department department);
 
      ResponseBean editDepartment(Department department);
+
+
 }
