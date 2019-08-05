@@ -61,6 +61,8 @@ public class DocInfoServiceImpl implements DocInfoService {
         return docInfoMapper.insertDocInfo(docInfo);
     }
 
+
+
     @Override
     public ResponseBean editDoc(DocInfo docInfo) {
         try {
@@ -75,9 +77,15 @@ public class DocInfoServiceImpl implements DocInfoService {
             String fileSoureName = docInfo.getFileSourceName();
             System.out.println("filename:"+fileSoureName);
 
+            DocInfo doc = docInfoMapper.getDocInfoByName(docInfo.getDocName());
+//            DocInfo info = docInfoMapper.getDocInfoById(docInfo);
+//            doc.setPageNum(info.getPageNum());
+
             int fileSoureId = fileSourceMapper.getFileSourceById(fileSoureName);
 
+            System.out.println("---docxxxxx:"+docInfo.getPageNum());
             docInfo.setFileSourceId(fileSoureId);
+            docInfo.setPageNum(docInfo.getPageNum());
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
 
 
@@ -104,6 +112,11 @@ public class DocInfoServiceImpl implements DocInfoService {
             e.printStackTrace();
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
+    }
+
+    @Override
+    public DocInfo getDocInfoById(DocInfo docInfo) {
+        return docInfoMapper.getDocInfoById(docInfo);
     }
 
     @Override

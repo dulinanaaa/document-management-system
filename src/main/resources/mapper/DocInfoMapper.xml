@@ -90,6 +90,9 @@
     <select id="getDocInfoNumByDepartmentId" resultType="int">
         select count(doc_id) as docTotalNum from docInfo where department_id = #{departmentId}
     </select>
+    <select id="getDocInfoById" resultMap="DocInfoMap">
+        select * from docInfo where doc_id = #{docId}
+    </select>
 
     <update id="updateDocInfo" parameterType="DocInfo">
         UPDATE docInfo

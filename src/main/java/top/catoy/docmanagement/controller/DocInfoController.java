@@ -37,6 +37,12 @@ public class DocInfoController {
 
     @PostMapping("/public/editDoc")
     public ResponseBean editDoc(@RequestBody DocInfo docInfo){
+        System.out.println("editdocInfo:"+docInfo);
+        DocInfo doc = docInfoService.getDocInfoById(docInfo);
+        System.out.println("Newdoc:"+doc.getPageNum());
+        docInfo.setPageNum(doc.getPageNum());
+        System.out.println("pages"+doc.getPageNum());
+//        DocInfo doc = docInfoService.getDocInfoByName(docInfo.)
         ResponseBean responseBean = docInfoService.editDoc(docInfo);
         return responseBean;
     }
