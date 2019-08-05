@@ -17,6 +17,7 @@ public class Department {
     private String instroduction;
     private String label;
     private String value;
+    private String departmentNumber;//部门编号
     private int docTotalNum;//部门拥有总文件的数目，包含子部门
     private int docNum;//部门拥有文件数，不包含子部门
     private int docTotalPagenum;//部门拥有的总文件页数 ，包含子部门文件的页数
@@ -42,6 +43,8 @@ public class Department {
         this.name = name;
         this.label = name;
     }
+
+
 
     public int getParent_id() {
         return parent_id;
@@ -123,6 +126,14 @@ public class Department {
         this.docPageNum = docPageNum;
     }
 
+    public String getDepartmentNumber() {
+        return departmentNumber;
+    }
+
+    public void setDepartmentNumber(String departmentNumber) {
+        this.departmentNumber = departmentNumber;
+    }
+
     @Override
     public String toString() {
         return "Department{" +
@@ -132,6 +143,7 @@ public class Department {
                 ", instroduction='" + instroduction + '\'' +
                 ", label='" + label + '\'' +
                 ", value='" + value + '\'' +
+                ", departmentNumber='" + departmentNumber + '\'' +
                 ", docTotalNum=" + docTotalNum +
                 ", docNum=" + docNum +
                 ", docTotalPagenum=" + docTotalPagenum +
