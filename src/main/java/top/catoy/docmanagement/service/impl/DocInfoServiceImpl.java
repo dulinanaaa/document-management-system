@@ -83,7 +83,7 @@ public class DocInfoServiceImpl implements DocInfoService {
 
             int fileSoureId = fileSourceMapper.getFileSourceById(fileSoureName);
 
-            System.out.println("---docxxxxx:"+docInfo.getPageNum());
+            System.out.println("---docxxxxxs:"+docInfo.getPageNum());
             docInfo.setFileSourceId(fileSoureId);
             docInfo.setPageNum(docInfo.getPageNum());
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
