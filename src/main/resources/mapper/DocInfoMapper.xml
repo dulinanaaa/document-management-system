@@ -13,11 +13,12 @@
         <result column="doc_postTime" property="docPostTime"></result>
         <result column="doc_pageNum" property="pageNum"></result>
         <result column="fileSource_id" property="fileSourceId"></result>
+        <result column="doc_number" property="docNumber"></result>
     </resultMap>
 
     <insert id="insertDocInfo" parameterType="top.catoy.docmanagement.domain.DocInfo">
-        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id,doc_pageNum,fileSource_id)
-        VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId},#{pageNum},#{fileSourceId});
+        INSERT INTO docInfo(doc_name,doc_savepath,user_id,suffix_name,department_id,doc_pageNum,fileSource_id,doc_postTime,doc_number)
+        VALUES(#{docName},#{docSavePath},#{userId},#{suffixName},#{departmentId},#{pageNum},#{fileSourceId},#{docPostTime},#{docNumber});
     </insert>
     <delete id="delDocInfo">
         delete from docInfo where doc_id = #{docId}

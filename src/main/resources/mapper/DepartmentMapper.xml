@@ -9,6 +9,7 @@
         <result column="department_description" property="instroduction"></result>
         <result column="department_name" property="name"></result>
         <result column="super_id" property="parent_id"></result>
+        <result column="department_number" property="departmentNumber"></result>
     </resultMap>
     <delete id="deleteDepartmentById">
         DELETE FROM department WHERE department_id = #{departmentId}
@@ -23,10 +24,10 @@
     <!--</insert>-->
 
     <insert id="insertDepartment" parameterType="Department" keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO department(department_name,super_id
+        INSERT INTO department(department_name,super_id,department_number
         <include refid="Field" />
         )
-        values(#{name},#{parent_id}
+        values(#{name},#{parent_id},#{departmentNumber}
         <include refid="Value" />
         )
     </insert>
@@ -51,6 +52,10 @@
         SELECT department_name FROM `department` WHERE department_id = #{id};
     </select>
 
+    <select id="getDepartmentNumberById" resultType="java.lang.String">
+        SELECT department_number FROM `department` WHERE department_id = #{id};
+    </select>
+
     <select id="getDepartmentById" resultMap="DepartmentMap">
         SELECT * FROM `department` WHERE department_id = #{id};
     </select>
@@ -71,7 +76,8 @@
         UPDATE department
         SET department_description = #{instroduction},
             department_name = #{name},
-            super_id = #{parent_id}
+            super_id = #{parent_id},
+            department_number = #{departmentNumber}
         WHERE
             department_id = #{id}
     </update>
