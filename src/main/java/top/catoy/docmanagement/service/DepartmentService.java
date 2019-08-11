@@ -27,5 +27,7 @@ public interface DepartmentService {
 
      ResponseBean editDepartment(Department department);
 
+     ResponseBean getDepartmentById(int departmentId);
+
 
 }

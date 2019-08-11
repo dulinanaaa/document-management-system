@@ -228,6 +228,16 @@ public class DepartmentServiceImpl implements DepartmentService {
        }
     }
 
+    @Override
+    public ResponseBean getDepartmentById(int departmentId) {
+        Department department = departmentMapper.getDepartmentById(departmentId);
+        if (department != null){
+            return new ResponseBean(ResponseBean.SUCCESS,"部门查询成功",department);
+        }else {
+            return new ResponseBean(ResponseBean.FAILURE,"部门查询失败",null);
+        }
+    }
+
     /**
      * 得到子部门的文件数
      * @param department
