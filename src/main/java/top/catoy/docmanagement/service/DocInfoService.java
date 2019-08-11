@@ -12,6 +12,8 @@ public interface DocInfoService {
     int insertDocInfo(DocInfo docInfo);
     ResponseBean  editDoc(DocInfo docInfo);
 
+    DocInfo getDocInfoById(DocInfo docInfo);
+
 //    ResponseBean getAllDocInfo(int currentPage, int pageSize);
 
     ResponseBean getDocsBySearchParam(DocInfoSearchParams docInfoSearchParams);
@@ -29,4 +31,6 @@ public interface DocInfoService {
     DocInfo getDocInfoByName(String name);
 
     public int deleteDocInfo(DocInfo docInfo);
+
+    int updateDocInfo(DocInfo docInfo);
 }

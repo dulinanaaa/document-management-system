@@ -42,7 +42,6 @@ import java.net.ConnectException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -87,9 +86,46 @@ public class FileController {
     @Autowired
     private FileSourceService fileSourceService;
 
-    @Autowired
-    private DepartmentService departmentService;
 
+
+    @RequestMapping(value = "/reUploadFile",method = RequestMethod.POST)
+    public ResponseBean reUploadFile(@RequestParam("file") MultipartFile file,
+                                     @RequestParam("docName")String olddocName,
+                                     @RequestParam("suffixName")String oldsuffix,
+                                     @RequestParam("fileSourceName") String fileSourceName,
+                                     @RequestParam("pagesize")int pagesize){
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            System.out.println("上传成功!");
+            System.out.println(olddocName);
+            System.out.println(pagesize);
+            if(subject.isPermitted("上传")){
+                DocInfo docInfo = docInfoService.getDocInfoByName(olddocName+oldsuffix);
+                String upload = getPath();
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(upload + file.getOriginalFilename());
+                if (!Files.isWritable(path)) {
+                    Files.createDirectories(Paths.get(upload));
+                }
+                Files.write(path, bytes);
+                docInfo.setDocName(file.getOriginalFilename());
+                docInfo.setDocSavePath(upload + file.getOriginalFilename());
+                String fileName = file.getOriginalFilename();
+                int pos = fileName.lastIndexOf('.');
+                String suffix = fileName.substring(pos);
+                docInfo.setSuffixName(suffix);
+                docInfo.setFileSourceName(fileSourceName);
+                docInfo.setPageNum(String.valueOf(pagesize));
+                docInfoService.updateDocInfo(docInfo);
+                return new ResponseBean(ResponseBean.SUCCESS,"上传成功!",null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"上传失败!",null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseBean(ResponseBean.FAILURE,"上传失败",null);
+        }
+    }
     /***
      * 单文件上传
      * @param file
@@ -108,101 +144,89 @@ public class FileController {
         String upload = null;
         Subject subject = SecurityUtils.getSubject();
         System.out.println("files:"+fileSourceName);
-        int fileSourceId = fileSourceService.getFileSourceIdByName(fileSourceName);
-        String pattern = "[1-9]\\d*";
-        Pattern r = Pattern.compile(pattern);
-        if(subject.isPermitted("上传")){
-            String token = (String) subject.getPrincipal();
-            User user = JWTUtil.getUserInfo(token);
-            upload = getPath();
-            if (Objects.isNull(file) || file.isEmpty()) {
-                return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
-            }
-            if (pageNum == null || !r.matcher(pageNum).matches()){
-                return new ResponseBean(ResponseBean.FAILURE, "文件页数格式有误", null);
-            }
-            try {
-                byte[] bytes = file.getBytes();
-                Path path = Paths.get(upload + file.getOriginalFilename());
-                if (!Files.isWritable(path)) {
-                    Files.createDirectories(Paths.get(upload));
+        try {
+            int fileSourceId = fileSourceService.getFileSourceIdByName(fileSourceName);
+            String pattern = "[1-9]\\d*";
+            Pattern r = Pattern.compile(pattern);
+            if(subject.isPermitted("上传")){
+                String token = (String) subject.getPrincipal();
+                User user = JWTUtil.getUserInfo(token);
+                upload = getPath();
+                if (Objects.isNull(file) || file.isEmpty()) {
+                    return new ResponseBean(ResponseBean.FAILURE, "文件为空,请重新上传", null);
                 }
-                Files.write(path, bytes);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                DocInfo docInfo = new DocInfo();
-                docInfo.setDocSavePath(upload + file.getOriginalFilename());
-                docInfo.setDocName(file.getOriginalFilename());
-                docInfo.setPageNum(pageNum);
-                docInfo.setDocPostTime(sdf.parse(date));
-                String fileName = file.getOriginalFilename();
-                int pos = fileName.lastIndexOf('.');
-                String suffix = fileName.substring(pos);
-                docInfo.setSuffixName(suffix);
-                docInfo.setUserId(user.getUserId());
-                docInfo.setDepartmentId(user.getDepartmentId());
-                docInfo.setFileSourceId(fileSourceId);
-                String  doc_number1=departmentService.getDepartmentNumberById(user.getDepartmentId());
-                Date date1=  sdf.parse(date);
-                String data2=date1.toString().substring(date1.toString().length()-4,date1.toString().length());
-                String data3=getFourRandom();
-                String doc_number=doc_number1+data2+data3;
-                docInfo.setDocNumber(doc_number);
-                docInfoService.insertDocInfo(docInfo);
-                int docId = docInfoService.getDocId(docInfo);
-                System.out.println(tags.equals("")+"??????????????????????????????????????????????????????????");
-                if(tags.equals("") == false){
-                    String tag[] = tags.split(",");
-                    for(int i = 0;i < tag.length;i++){
-                        Tag t = tagService.getTagByName(tag[i]);
-                        if(t == null){
-                            Tag tg = new Tag();
-                            tg.setTagName(tag[i]);
-                            tg.setIsuse(1);
-                            tagService.insertTags(tg);
-                            DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
-                            docInfoAndTag.setDocInfo_id(docId);
-                            int tagId = tagService.getIdByTagName(tag[i]);
-                            docInfoAndTag.setTag_id(tagId);
-                            docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
-                        }else {
-                            DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
-                            docInfoAndTag.setDocInfo_id(docId);
-                            int tagId = tagService.getIdByTagName(tag[i]);
-                            docInfoAndTag.setTag_id(tagId);
-                            docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                if (pageNum == null || !r.matcher(pageNum).matches()){
+                    return new ResponseBean(ResponseBean.FAILURE, "文件页数格式有误", null);
+                }
+                try {
+                    byte[] bytes = file.getBytes();
+                    Path path = Paths.get(upload + file.getOriginalFilename());
+                    if (!Files.isWritable(path)) {
+                        Files.createDirectories(Paths.get(upload));
+                    }
+                    Files.write(path, bytes);
+                    DocInfo docInfo = new DocInfo();
+                    docInfo.setDocSavePath(upload + file.getOriginalFilename());
+                    docInfo.setDocName(file.getOriginalFilename());
+                    docInfo.setPageNum(pageNum);
+                    String fileName = file.getOriginalFilename();
+                    int pos = fileName.lastIndexOf('.');
+                    String suffix = fileName.substring(pos);
+                    docInfo.setSuffixName(suffix);
+                    docInfo.setUserId(user.getUserId());
+                    docInfo.setDepartmentId(user.getDepartmentId());
+                    docInfo.setFileSourceId(fileSourceId);
+                    docInfoService.insertDocInfo(docInfo);
+                    int docId = docInfoService.getDocId(docInfo);
+                    System.out.println(tags.equals("")+"??????????????????????????????????????????????????????????");
+                    if(tags.equals("") == false){
+                        String tag[] = tags.split(",");
+                        for(int i = 0;i < tag.length;i++){
+                            Tag t = tagService.getTagByName(tag[i]);
+                            if(t == null){
+                                Tag tg = new Tag();
+                                tg.setTagName(tag[i]);
+                                tg.setIsuse(1);
+                                tagService.insertTags(tg);
+                                DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                                docInfoAndTag.setDocInfo_id(docId);
+                                int tagId = tagService.getIdByTagName(tag[i]);
+                                docInfoAndTag.setTag_id(tagId);
+                                docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                            }else {
+                                DocInfoAndTag docInfoAndTag = new DocInfoAndTag();
+                                docInfoAndTag.setDocInfo_id(docId);
+                                int tagId = tagService.getIdByTagName(tag[i]);
+                                docInfoAndTag.setTag_id(tagId);
+                                docInfoAndTagService.insertDocInfoAndTag(docInfoAndTag);
+                            }
                         }
                     }
+                    String types[] = type.split(",");
+                    List<DocLabel> docLabels = docLabelService.getLabelByName(types);
+                    for(int i = 0;i < docLabels.size();i++){
+                        System.out.println("type"+types[i]);
+                        DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
+                        System.out.println("id:"+docLabels.get(i).getDocLabelId());
+                        docInfoAndDocLabel.setLabelId(docLabels.get(i).getDocLabelId());
+                        docInfoAndDocLabel.setDocId(docId);
+                        docInfoAndDocLabelService.insertDocInfoAndDocLabel(docInfoAndDocLabel);
+                    }
+                    return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new ResponseBean(ResponseBean.FAILURE, "上传失败,部门下已有此文件", null);
                 }
-                String types[] = type.split(",");
-                List<DocLabel> docLabels = docLabelService.getLabelByName(types);
-                for(int i = 0;i < docLabels.size();i++){
-                    System.out.println("type"+types[i]);
-                    DocInfoAndDocLabel docInfoAndDocLabel = new DocInfoAndDocLabel();
-                    System.out.println("id:"+docLabels.get(i).getDocLabelId());
-                    docInfoAndDocLabel.setLabelId(docLabels.get(i).getDocLabelId());
-                    docInfoAndDocLabel.setDocId(docId);
-                    docInfoAndDocLabelService.insertDocInfoAndDocLabel(docInfoAndDocLabel);
-                }
-                return new ResponseBean(ResponseBean.SUCCESS, "上传成功", file.getOriginalFilename());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseBean(ResponseBean.FAILURE, "上传失败,部门下已有此文件", null);
+            }else {
+                return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
             }
-        }else {
-            return new ResponseBean(ResponseBean.FAILURE,"你没有权限进行此操作",null);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseBean(ResponseBean.FAILURE,"上传失败",null);
         }
+
     }
 
-    public static String getFourRandom(){
-        Random random = new Random();
-        String fourRandom = random.nextInt(10000) + "";
-        int randLength = fourRandom.length();
-        if(randLength<4){
-            for(int i=1; i<=4-randLength; i++)
-                fourRandom = "0" + fourRandom ;
-        }
-        return fourRandom;
-    }
 
     @RequestMapping(value = "/public/getTagById",method = RequestMethod.POST)
     public ResponseBean getTagByFileId(@RequestParam("fileId") int id){

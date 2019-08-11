@@ -19,5 +19,5 @@ public interface FileSourceMapper {
 
     public int getFileSourceById(@Param("fileSourceName")String fileSourceName);
 
-    public String getFileSourceNameById(@Param("id") int fileSourceId);
+    public String getFileSourceNameById(@Param("fileSourceId")int fileSourceId);
 }

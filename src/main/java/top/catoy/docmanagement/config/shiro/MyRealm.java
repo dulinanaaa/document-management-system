@@ -48,7 +48,6 @@ public class MyRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         System.out.println("————权限认证————");
         String username = JWTUtil.getUsername(principals.toString());
-
         User user = JWTUtil.getUserInfo(principals.toString());
 //        UserBean user = userService.getUser(username);
         System.out.println(user+"-------------------------------------------------*************");

@@ -24,9 +24,12 @@
     <select id="getFileSourceById" resultType="java.lang.Integer">
         select fileSource_id from fileSource where fileSource_name = #{fileSourceName}
     </select>
-
-    <select id="getFileSourceNameById" parameterType="Integer" resultType="String">
-        select fileSource_name from fileSource where fileSource_id =#{id}
+    <select id="getFileSourceNameById" resultType="java.lang.String">
+        select fileSource_name from fileSource where fileSource_id = #{fileSourceId}
     </select>
+
+    <!--<select id="getFileSourceNameById" parameterType="Integer" resultType="String">-->
+        <!--select fileSource_name from fileSource where fileSource_id =#{id}-->
+    <!--</select>-->
 
 </mapper>

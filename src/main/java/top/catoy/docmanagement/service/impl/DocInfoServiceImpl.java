@@ -61,6 +61,8 @@ public class DocInfoServiceImpl implements DocInfoService {
         return docInfoMapper.insertDocInfo(docInfo);
     }
 
+
+
     @Override
     public ResponseBean editDoc(DocInfo docInfo) {
         try {
@@ -75,9 +77,15 @@ public class DocInfoServiceImpl implements DocInfoService {
             String fileSoureName = docInfo.getFileSourceName();
             System.out.println("filename:"+fileSoureName);
 
+            DocInfo doc = docInfoMapper.getDocInfoByName(docInfo.getDocName());
+//            DocInfo info = docInfoMapper.getDocInfoById(docInfo);
+//            doc.setPageNum(info.getPageNum());
+
             int fileSoureId = fileSourceMapper.getFileSourceById(fileSoureName);
 
+            System.out.println("---docxxxxx:"+docInfo.getPageNum());
             docInfo.setFileSourceId(fileSoureId);
+            docInfo.setPageNum(docInfo.getPageNum());
             int sum =  docInfoMapper.updateDocInfo(docInfo);//更新文件信息
 
             //更新文件与分类关系
@@ -103,6 +111,11 @@ public class DocInfoServiceImpl implements DocInfoService {
             e.printStackTrace();
             return new ResponseBean(ResponseBean.ERROR,"错误",null);
         }
+    }
+
+    @Override
+    public DocInfo getDocInfoById(DocInfo docInfo) {
+        return docInfoMapper.getDocInfoById(docInfo);
     }
 
     @Override
@@ -187,6 +200,12 @@ public class DocInfoServiceImpl implements DocInfoService {
             }else if(docInfoSearchParams.getDepartmentId() == -1) {//没有选择部门
                 departmentId = JWTUtil.getUserInfo((String) SecurityUtils.getSubject().getPrincipal()).getDepartmentId();
                 docs = docInfoMapper.getDocByDepartmentIdAndSearchParam(departmentId,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
+
+                System.out.println("docs:"+docs);
+                for(int i = 0;i < docs.size();i++){
+                    String fileSourceName = fileSourceMapper.getFileSourceNameById(docs.get(i).getFileSourceId());
+                    docs.get(i).setFileSourceName(fileSourceName);
+                }
                 //获得未分配部门的文件
                 if("管理员".equals(userRole)){
                     List<DocInfo> notTrackedDoc = docInfoMapper.getDocByDepartmentIdAndSearchParam(-1,docInfoSearchParams.getDocName(),docPostTime,docLabels,tags);
@@ -328,6 +347,11 @@ public class DocInfoServiceImpl implements DocInfoService {
     @Override
     public int deleteDocInfo(DocInfo docInfo) {
         return docInfoMapper.delDocInfo(docInfo);
+    }
+
+    @Override
+    public int updateDocInfo(DocInfo docInfo) {
+        return docInfoMapper.updateDocInfo(docInfo);
     }
 
     public void sort(List<DocInfo> docInfos){
