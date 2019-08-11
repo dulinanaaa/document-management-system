@@ -103,7 +103,8 @@
             suffix_name=#{suffixName},
             department_id=#{departmentId},
             fileSource_id=#{fileSourceId},
-            doc_pageNum=#{pageNum}
+            doc_pageNum=#{pageNum},
+            doc_number=#{docNumber}
         WHERE doc_id=#{docId}
     </update>
 
