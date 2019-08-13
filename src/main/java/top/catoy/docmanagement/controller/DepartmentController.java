@@ -89,6 +89,12 @@ public class DepartmentController {
         return result;
     }
 
+    @RequestMapping(value = "/admin/getDepartmentById",method =RequestMethod.GET)
+    public ResponseBean getDepartmentById(@RequestParam int departmentId){
+        ResponseBean result = departmentService.getDepartmentById(departmentId);
+        return result;
+    }
+
     @RequestMapping(value = "/admin/editDepartment",method =RequestMethod.POST)
     public ResponseBean editDepartment(@RequestBody Department department){
         ResponseBean result = departmentService.editDepartment(department);
