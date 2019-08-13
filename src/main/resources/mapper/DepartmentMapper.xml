@@ -19,6 +19,9 @@
         SELECT * FROM department
     </select>
 
+
+
+
     <!--<insert id="insertDepartment" parameterType="Department" keyProperty="id" useGeneratedKeys="true">-->
         <!--INSERT INTO department(department_description,department_name,super_id) VALUES(#{instroduction},#{name},#{parent_id})-->
     <!--</insert>-->

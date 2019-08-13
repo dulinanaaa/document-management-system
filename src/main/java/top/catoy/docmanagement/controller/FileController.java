@@ -10,6 +10,7 @@ import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocume
 //import com.spire.pdf.PdfDocument;
 //import com.spire.pdf.PdfPageBase;
 //import com.spire.pdf.graphics.PdfImage;
+import com.auth0.jwt.JWT;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -44,6 +45,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,7 +88,37 @@ public class FileController {
     @Autowired
     private FileSourceService fileSourceService;
 
+    @Autowired
+    private DepartmentService departmentService;
 
+    private String fileNum;
+
+    @RequestMapping(value = "/getFileNumber",method = RequestMethod.POST)
+    public ResponseBean GenerateFileNumber(){
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            String token = (String) subject.getPrincipal();
+            User user = JWTUtil.getUserInfo(token);
+            System.out.println(user.getDepartmentId());
+            String departmentNum = departmentService.getDepartmentNumberById(user.getDepartmentId());
+//            System.out.println(departmentId);
+            Calendar date = Calendar.getInstance();
+            String year = String.valueOf(date.get(Calendar.YEAR));
+            Random random = new Random();
+            String fourRandom = random.nextInt(10000) + "";
+            int randLength = fourRandom.length();
+            if(randLength<4){
+                for(int i=1; i<=4-randLength; i++)
+                    fourRandom = "0" + fourRandom ;
+            }
+            System.out.println(fourRandom);
+            String fileNumber = departmentNum + year + fourRandom;
+            this.fileNum = fileNumber;
+            return new ResponseBean(ResponseBean.SUCCESS,"生成成功!",fileNumber);
+        }catch (Exception e){
+            return new ResponseBean(ResponseBean.FAILURE,"生成失败!",null);
+        }
+    }
 
     @RequestMapping(value = "/reUploadFile",method = RequestMethod.POST)
     public ResponseBean reUploadFile(@RequestParam("file") MultipartFile file,
@@ -144,6 +176,7 @@ public class FileController {
         String upload = null;
         Subject subject = SecurityUtils.getSubject();
         System.out.println("files:"+fileSourceName);
+        System.out.println("fileNum:"+this.fileNum);
         try {
             int fileSourceId = fileSourceService.getFileSourceIdByName(fileSourceName);
             String pattern = "[1-9]\\d*";
@@ -176,6 +209,7 @@ public class FileController {
                     docInfo.setUserId(user.getUserId());
                     docInfo.setDepartmentId(user.getDepartmentId());
                     docInfo.setFileSourceId(fileSourceId);
+                    docInfo.setDocNumber(this.fileNum);
                     docInfoService.insertDocInfo(docInfo);
                     int docId = docInfoService.getDocId(docInfo);
                     System.out.println(tags.equals("")+"??????????????????????????????????????????????????????????");
